@@ -1,0 +1,10 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center" class="container">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+  <!-- <button (click)="updateUsersTemp()">Update users</button> -->
+  <span *ngIf="loggedIn" class="pull-right lead">Hi, {{currentUser.fullName}}(<a
+      [routerLink]="['/login']">Logout</a>)</span>
+  <router-outlet></router-outlet>
+</div>

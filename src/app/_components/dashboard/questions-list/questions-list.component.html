@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col-sm-2 filters">
+        <h4>Filter By:</h4>
+        <div class="form-group row">
+            <label for="grade">Grade:</label>
+            <select class="form-control" [(ngModel)]="selectedGrade" id="grade" name="grade" (ngModelChange)="onFilterApplied($event)">
+                <option value="-1">Select Grade</option>
+                <option *ngFor="let grade of grades" [value]="grade">{{grade}}</option>
+            </select>
+        </div>
+        <div class="form-group row">
+            <label for="subject">Subject:</label>
+            <select class="form-control" [(ngModel)]="selectedSubject" id="subject" name="subject" (ngModelChange)="onFilterApplied($event)">
+                <option value="default">Select Subject</option>
+                <option *ngFor="let subject of subjects">{{subject}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-sm-10 list-of-questions">
+        <ul class="list-group">
+            <li class="list-group-item" *ngFor="let question of questions">{{question.title}}/Class
+                {{question.grade}}/{{question.subject}}<span class="close" (click)="removeQuestion(question.questionId)">x</span></li>
+        </ul>
+        <p *ngIf="questions.length<1">Sorry, No questions available to show.</p>
+    </div>
+</div>

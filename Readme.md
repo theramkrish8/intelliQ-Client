@@ -1,1 +1,1 @@
-intelliq client cose for front end
+intelliq client cose for front end my ways

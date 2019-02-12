@@ -21,6 +21,7 @@ import { SuperAdminDashboardComponent } from './_components/dashboard/super-admi
 import { ApproverDashboardComponent } from './_components/dashboard/approver-dashboard/approver-dashboard.component';
 import { LocalStorageService } from './_services/local-storage-service';
 import { QuestionService } from './_services/question.service';
+import { MaskService } from './_services/mask.service';
 
 
 @NgModule({
@@ -44,7 +45,7 @@ import { QuestionService } from './_services/question.service';
     ReactiveFormsModule,
     HttpModule
   ],
-  providers: [AuthGuard, AuthenticationService, UserService, RestService, LocalStorageService, QuestionService],
+  providers: [AuthGuard, AuthenticationService, UserService, RestService, LocalStorageService, QuestionService, MaskService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

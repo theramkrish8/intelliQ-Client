@@ -5,6 +5,7 @@ import { Role } from './_models/role.model';
 import { RoleType } from './_models/enums';
 import { UserService } from './_services/user.service';
 import { Question } from './_models/question.model';
+import { MaskService } from './_services/mask.service';
 
 @Component({
   selector: 'app-root',
@@ -15,8 +16,8 @@ export class AppComponent {
   title = 'Question Bank';
   currentUser: User;
   loggedIn = false;
-
-  constructor(private userService: UserService, private restService: RestService) {
+  showMask = false;
+  constructor(private userService: UserService, private restService: RestService, private maskService: MaskService) {
     userService.userDetailsUpdated.subscribe((user: User) => {
       this.currentUser = user;
       this.loggedIn = user ? true : false;

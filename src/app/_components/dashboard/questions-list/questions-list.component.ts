@@ -39,7 +39,7 @@ export class QuestionsListComponent implements OnInit, OnDestroy {
   }
 
   initQuestions(user: User) {
-    if (this.router.url === "/teacher/my-questions" || this.router.url === "/approver/my-questions") {
+    if (this.router.url === "/dashboard/teacher/my-questions" || this.router.url === "/dashboard/approver/my-questions") {
       this.questionService.getMyQuestions().subscribe((data) => {
         this.questions = data;
         this.allQuestions = data;

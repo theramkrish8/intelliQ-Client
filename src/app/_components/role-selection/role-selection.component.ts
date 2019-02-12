@@ -33,7 +33,7 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
 
 
   onRoleSelected(type) {
-    this.router.navigate([type.toLowerCase()]);
+    this.router.navigate(["dashboard", type.toLowerCase()]);
   }
 
   ngOnDestroy() {

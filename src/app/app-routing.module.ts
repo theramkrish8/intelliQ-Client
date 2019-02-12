@@ -14,7 +14,7 @@ import { ApproverDashboardComponent } from './_components/dashboard/approver-das
 
 const routes: Routes = [
   {
-    path: '', component: DashboardComponent,
+    path: 'dashboard', component: DashboardComponent,
     canActivate: [AuthGuard],
     children: [{
       path: 'teacher', component: TeacherDashboardComponent,
@@ -39,6 +39,8 @@ const routes: Routes = [
     }]
 
   },
+
+  { path: '', redirectTo: 'dashboard', pathMatch: "full" },
 
   { path: 'roles', component: RoleSelectionComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },

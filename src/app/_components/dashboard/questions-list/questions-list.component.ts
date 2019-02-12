@@ -15,8 +15,8 @@ import { QuestionService } from 'src/app/_services/question.service';
 export class QuestionsListComponent implements OnInit, OnDestroy {
   selectedGrade: string;
   selectedSubject: string;
-  allQuestions: Question[];
-  questions: Question[];
+  allQuestions: Question[] = [];
+  questions: Question[] = [];
   grades;
   subjects;
   userSubscription: Subscription;

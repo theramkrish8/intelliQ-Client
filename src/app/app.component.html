@@ -3,8 +3,12 @@
   <h1>
     Welcome to {{ title }}!
   </h1>
-  <!-- <button (click)="updateUsersTemp()">Update users</button> -->
+
+  <!-- <button class="btn btn-warning btn-sm" (click)="updateUsersTemp()">Update users</button>
+<button class="btn btn-warning btn-sm" (click)="updateQuesTemp()">Update Questions</button> -->
+
   <span *ngIf="loggedIn" class="pull-right lead">Hi, {{currentUser.fullName}}(<a
       [routerLink]="['/login']">Logout</a>)</span>
   <router-outlet></router-outlet>
+
 </div>

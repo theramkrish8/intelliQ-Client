@@ -4,7 +4,7 @@ import { map, catchError } from 'rxjs/operators';
 import { throwError } from "rxjs";
 
 @Injectable()
-export class HttpService {
+export class RestService {
     baseUrl: string;
     headers;
     constructor(private http: Http) {

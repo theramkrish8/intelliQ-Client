@@ -1,29 +1,28 @@
-import { Injectable, Output, EventEmitter, OnInit } from '@angular/core';
-import { User } from '../_models/user.model';
-import { Subject } from 'rxjs';
-import { HttpService } from './http.service';
-import { Router } from '@angular/router';
+import { Injectable, OnInit } from '@angular/core';
+import { RestService } from './rest.service';
+import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from './user.service';
+import { map, catchError } from 'rxjs/operators';
+import { LocalStorageService } from './local-storage-service';
 
 
 @Injectable()
 export class AuthenticationService implements OnInit {
     private loggedIn = false;
-    private currentUser: User;
 
-    constructor(private httpService: HttpService, private router: Router, private userService: UserService) {
-        var token = localStorage.getItem('id_token');
-        var userId = localStorage.getItem('uid');
-        if (token && userId) {
+    constructor(private restService: RestService, private userService: UserService, private localStorageService: LocalStorageService) {
+        var token = this.localStorageService.getItemFromLocalStorage('id_token');
+        var user = this.localStorageService.getCurrentUser();
+
+        if (token && user) {
             this.loggedIn = true;
-            this.refreshDetails(userId);
+            this.refreshDetails(user.userId);
         } else {
             this.logout();
         }
     }
 
     ngOnInit() {
-
     }
 
     isAuthenticated(): boolean {
@@ -31,54 +30,43 @@ export class AuthenticationService implements OnInit {
     }
 
     getCurrentUser() {
-        return this.currentUser;
+        return this.localStorageService.getCurrentUser();
     }
 
     login(mobile: string, password: string) {
-        this.httpService.get("user.json", []).subscribe((users) => {
+        return this.restService.get("user.json", []).pipe(map(users => {
             var user = users.find(x => x.mobile === mobile && x.password === password);
             if (user) {
-                localStorage.setItem('id_token', "testToken");
-                localStorage.setItem('uid', user.userId);
-              
+                this.localStorageService.addItemsToLocalStorage(['id_token', 'user'], ["testToken", JSON.stringify(user)]);
                 this.loggedIn = true;
-                this.currentUser = user;
-
-                this.router.navigate(['/roles']);
-                this.userService.setCurrentUser(user);
                 this.userService.userDetailsUpdated.next(user);
             }
             else {
                 alert("Incorrect credentials!");
             }
 
-        });
+            return user;
+        }));
+
     }
 
     logout() {
         this.loggedIn = false;
-        this.currentUser = null;
-        localStorage.removeItem('id_token');
-        localStorage.removeItem('user');
-        //  this.loggedInUserChanged.next(null);
+        this.localStorageService.removeItemsFromLocalStorage(['id_token', 'user']);
+        this.userService.userDetailsUpdated.next(null);
     }
 
-    refreshDetails(userId) {
-        this.httpService.get("user.json", []).subscribe((users) => {
+    refreshDetails(userId: String) {
+        this.restService.get("user.json", []).subscribe((users) => {
             var user = users.find(x => x.userId === userId);
             if (user) {
-                localStorage.setItem('id_token', "testToken");
-                localStorage.setItem('uid', user.userId);
-                this.currentUser = user;
-                this.userService.setCurrentUser(user);
+                this.localStorageService.addItemsToLocalStorage(['id_token', 'user'], ["testToken", JSON.stringify(user)]);
                 this.userService.userDetailsUpdated.next(user);
-
             }
             else {
                 alert("Incorrect credentials!");
             }
-
         });
-
     }
+
 }

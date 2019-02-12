@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './_components/dashboard/dashboard.component';
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
-import { LoginComponent } from './_components/auth/login/login.component';
+import { LoginComponent } from './_components/login/login.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { QuestionsListComponent } from './_components/dashboard/questions-list/questions-list.component';
 import { RoleSelectionComponent } from './_components/role-selection/role-selection.component';

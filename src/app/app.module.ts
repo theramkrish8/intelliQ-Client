@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './_components/auth/login/login.component';
+import { LoginComponent } from './_components/login/login.component';
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
 import { DashboardComponent } from './_components/dashboard/dashboard.component';
 import { AuthGuard } from './_guards/auth.guard';

@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 export class RoleSelectionComponent implements OnInit, OnDestroy {
 
   userSubscription: Subscription;
-  roles: Role[];
+  roles: string[];
   constructor(private userService: UserService, private router: Router) {
 
   }

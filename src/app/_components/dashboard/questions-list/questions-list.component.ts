@@ -3,7 +3,7 @@ import { Question } from 'src/app/_models/question.model';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/_services/user.service';
 import { User } from 'src/app/_models/user.model';
-import { LocalStorageService } from 'src/app/_services/local-storage-service';
+import { LocalStorageService } from 'src/app/_services/local-storage.service';
 import { Subscription } from 'rxjs';
 import { QuestionService } from 'src/app/_services/question.service';
 

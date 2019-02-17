@@ -1,9 +1,11 @@
 import { Injectable, OnInit } from '@angular/core';
 import { RestService } from './rest.service';
-import { Router, ActivatedRoute } from '@angular/router';
 import { UserService } from './user.service';
-import { map, catchError } from 'rxjs/operators';
-import { LocalStorageService } from './local-storage-service';
+import { LocalStorageService } from './local-storage.service';
+import { User } from '../_models/user.model';
+import { AppResponse } from '../_models/app-response.model';
+import { ResponseStatus } from '../_models/enums';
+
 
 
 @Injectable()
@@ -33,20 +35,15 @@ export class AuthenticationService implements OnInit {
         return this.localStorageService.getCurrentUser();
     }
 
-    login(mobile: string, password: string) {
-        return this.restService.get("user.json", []).pipe(map(users => {
-            var user = users.find(x => x.mobile === mobile && x.password === password);
-            if (user) {
-                this.localStorageService.addItemsToLocalStorage(['id_token', 'user'], ["testToken", JSON.stringify(user)]);
-                this.loggedIn = true;
-                this.userService.userDetailsUpdated.next(user);
-            }
-            else {
-                alert("Incorrect credentials!");
-            }
+    login(user: User) {
+        return this.restService.post("user/login", user);
+    }
 
-            return user;
-        }));
+    persistUser(user: User) {
+
+        this.localStorageService.addItemsToLocalStorage(['id_token', 'user'], ["testToken", JSON.stringify(user)]);
+        this.loggedIn = true;
+        this.userService.userDetailsUpdated.next(user);
 
     }
 
@@ -57,15 +54,14 @@ export class AuthenticationService implements OnInit {
     }
 
     refreshDetails(userId: String) {
-        this.restService.get("user.json", []).subscribe((users) => {
-            var user = users.find(x => x.userId === userId);
-            if (user) {
-                this.localStorageService.addItemsToLocalStorage(['id_token', 'user'], ["testToken", JSON.stringify(user)]);
-                this.userService.userDetailsUpdated.next(user);
+        this.restService.get("user/info/_id/" + userId, []).subscribe((appResponse: AppResponse) => {
+            if (appResponse.status === ResponseStatus.ERROR) {
+                this.logout();
             }
-            else {
-                alert("Incorrect credentials!");
+            else if (appResponse.status === ResponseStatus.SUCCESS) {
+                this.persistUser(appResponse.body);
             }
+
         });
     }
 

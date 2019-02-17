@@ -1,4 +1,4 @@
-import { jsonpFactory } from "@angular/http/src/http_module";
+
 import { User } from "../_models/user.model";
 
 export class LocalStorageService {

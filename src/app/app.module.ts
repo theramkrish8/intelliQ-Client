@@ -19,9 +19,15 @@ import { GroupAdminDashboardComponent } from './_components/dashboard/group-admi
 import { SchoolAdminDashboardComponent } from './_components/dashboard/school-admin-dashboard/school-admin-dashboard.component';
 import { SuperAdminDashboardComponent } from './_components/dashboard/super-admin-dashboard/super-admin-dashboard.component';
 import { ApproverDashboardComponent } from './_components/dashboard/approver-dashboard/approver-dashboard.component';
-import { LocalStorageService } from './_services/local-storage-service';
+import { LocalStorageService } from './_services/local-storage.service';
 import { QuestionService } from './_services/question.service';
 import { MaskService } from './_services/mask.service';
+import { AddGroupComponent } from './_components/dashboard/super-admin-dashboard/add-group/add-group.component';
+import { AddSchoolComponent } from './_components/dashboard/super-admin-dashboard/add-school/add-school.component';
+import { AddAdminComponent } from './_components/dashboard/super-admin-dashboard/add-admin/add-admin.component';
+import { UpsertMetadataComponent } from './_components/dashboard/super-admin-dashboard/upsert-metadata/upsert-metadata.component';
+import { GroupService } from './_services/group.service';
+
 
 
 @NgModule({
@@ -36,7 +42,12 @@ import { MaskService } from './_services/mask.service';
     GroupAdminDashboardComponent,
     SchoolAdminDashboardComponent,
     SuperAdminDashboardComponent,
-    ApproverDashboardComponent
+    ApproverDashboardComponent,
+    AddGroupComponent,
+    AddSchoolComponent,
+    AddAdminComponent,
+    UpsertMetadataComponent
+
   ],
   imports: [
     BrowserModule,
@@ -45,7 +56,7 @@ import { MaskService } from './_services/mask.service';
     ReactiveFormsModule,
     HttpModule
   ],
-  providers: [AuthGuard, AuthenticationService, UserService, RestService, LocalStorageService, QuestionService, MaskService],
+  providers: [AuthGuard, AuthenticationService, UserService, RestService, LocalStorageService, QuestionService, MaskService, GroupService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

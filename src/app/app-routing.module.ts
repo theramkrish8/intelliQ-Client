@@ -11,6 +11,10 @@ import { SuperAdminDashboardComponent } from './_components/dashboard/super-admi
 import { GroupAdminDashboardComponent } from './_components/dashboard/group-admin-dashboard/group-admin-dashboard.component';
 import { SchoolAdminDashboardComponent } from './_components/dashboard/school-admin-dashboard/school-admin-dashboard.component';
 import { ApproverDashboardComponent } from './_components/dashboard/approver-dashboard/approver-dashboard.component';
+import { AddGroupComponent } from './_components/dashboard/super-admin-dashboard/add-group/add-group.component';
+import { AddSchoolComponent } from './_components/dashboard/super-admin-dashboard/add-school/add-school.component';
+import { AddAdminComponent } from './_components/dashboard/super-admin-dashboard/add-admin/add-admin.component';
+import { UpsertMetadataComponent } from './_components/dashboard/super-admin-dashboard/upsert-metadata/upsert-metadata.component';
 
 const routes: Routes = [
   {
@@ -22,8 +26,10 @@ const routes: Routes = [
       { path: 'all-questions', component: QuestionsListComponent }]
     }, {
       path: 'super-admin', component: SuperAdminDashboardComponent,
-      children: [{ path: 'my-questions', component: QuestionsListComponent },
-      { path: 'all-questions', component: QuestionsListComponent }]
+      children: [{ path: 'group', component: AddGroupComponent },
+      { path: 'school', component: AddSchoolComponent },
+      { path: 'admin', component: AddAdminComponent },
+      { path: 'metadata', component: UpsertMetadataComponent }]
     }, {
       path: 'group-admin', component: GroupAdminDashboardComponent,
       children: [{ path: 'my-questions', component: QuestionsListComponent },

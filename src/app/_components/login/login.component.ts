@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
@@ -25,9 +25,8 @@ export class LoginComponent implements OnInit {
       mobile: ['', Validators.required],
       password: ['', Validators.required]
     });
-
-    this.authenticationService.logout();
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/roles';
+    this.authenticationService.logout(this.returnUrl !== '/roles');
 
   }
 
@@ -36,13 +35,13 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-    var u = new User();
-    u.mobile = this.loginForm.get('mobile').value;
-    u.password = this.loginForm.get('password').value;
-    this.authenticationService.login(u)
+    var user = new User();
+    user.mobile = this.loginForm.get('mobile').value;
+    user.password = this.loginForm.get('password').value;
+
+    this.authenticationService.login(user)
       .subscribe(
         (appResponse: AppResponse) => {
-
           if (appResponse.status === ResponseStatus.ERROR) {
             this.responseMsg = appResponse.msg;
           }
@@ -50,7 +49,6 @@ export class LoginComponent implements OnInit {
             this.authenticationService.persistUser(appResponse.body);
             this.router.navigate([this.returnUrl]);
           }
-
         });
 
   }

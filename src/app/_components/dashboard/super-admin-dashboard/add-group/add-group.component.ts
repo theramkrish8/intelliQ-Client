@@ -4,7 +4,8 @@ import { GroupService } from 'src/app/_services/group.service';
 import { Group } from 'src/app/_models/group.model';
 import { AppResponse } from 'src/app/_models/app-response.model';
 import { ResponseStatus } from 'src/app/_models/enums';
-import { identifierModuleUrl } from '@angular/compiler';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-add-group',
@@ -13,7 +14,7 @@ import { identifierModuleUrl } from '@angular/compiler';
 })
 export class AddGroupComponent implements OnInit {
   createGroupForm: FormGroup;
-  responseMsg: string;
+  responseMsg: Observable<string>;
   constructor(private formBuilder: FormBuilder, private groupService: GroupService) { }
 
   ngOnInit() {
@@ -30,16 +31,7 @@ export class AddGroupComponent implements OnInit {
       return;
     }
     var groupCode = this.createGroupForm.get('groupCode').value;
-    this.groupService.addGroup(new Group(groupCode)).subscribe((appResponse: AppResponse) => {
-      if (appResponse.status === ResponseStatus.ERROR) {
-        this.responseMsg = appResponse.msg;
-      }
-      else if (appResponse.status === ResponseStatus.SUCCESS) {
-        this.responseMsg = appResponse.body;
-      }
-
-    });
-
+    this.responseMsg = this.groupService.addGroup(new Group(groupCode));
   }
 
 }

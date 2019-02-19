@@ -2,14 +2,13 @@
 import { Injectable, OnInit } from "@angular/core";
 import { Subject } from "rxjs";
 import { LocalStorageService } from "./local-storage.service";
-import { CommonUtility } from "../_common/common-utility";
-import { RoleType } from "../_models/enums";
-import { forEach } from "@angular/router/src/utils/collection";
+import { UtilityService } from "./utility.service";
+
 
 @Injectable()
 export class UserService implements OnInit {
     userDetailsUpdated = new Subject();
-    constructor(private localStorageService: LocalStorageService) {
+    constructor(private localStorageService: LocalStorageService, private utilityService: UtilityService) {
 
     }
 
@@ -21,7 +20,7 @@ export class UserService implements OnInit {
         if (user) {
             var roles = [];
             user.roles.forEach(role => {
-                roles.push(CommonUtility.getRoleDescription(role.roleType));
+                roles.push(this.utilityService.getRoleDescription(role.roleType));
             });
             return roles;
         }

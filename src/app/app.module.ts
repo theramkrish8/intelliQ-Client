@@ -27,7 +27,10 @@ import { AddSchoolComponent } from './_components/dashboard/super-admin-dashboar
 import { AddAdminComponent } from './_components/dashboard/super-admin-dashboard/add-admin/add-admin.component';
 import { UpsertMetadataComponent } from './_components/dashboard/super-admin-dashboard/upsert-metadata/upsert-metadata.component';
 import { GroupService } from './_services/group.service';
-
+import { NotificationService } from './_services/notification.service';
+import { UtilityService } from './_services/utility.service';
+import { ToastrModule } from 'ngx-toastr';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -54,9 +57,12 @@ import { GroupService } from './_services/group.service';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule
+    HttpModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
-  providers: [AuthGuard, AuthenticationService, UserService, RestService, LocalStorageService, QuestionService, MaskService, GroupService],
+  providers: [AuthGuard, AuthenticationService, UserService, RestService, LocalStorageService,
+    QuestionService, MaskService, GroupService, NotificationService, UtilityService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

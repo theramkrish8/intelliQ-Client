@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { UserService } from '../../_services/user.service';
-import { Role } from '../../_models/role.model';
-import { RoleType } from '../../_models/enums';
 import { User } from '../../_models/user.model';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { LocalStorageService } from 'src/app/_services/local-storage.service';
+import { UtilityService } from 'src/app/_services/utility.service';
 
 @Component({
   selector: 'app-role-selection',
@@ -16,7 +16,8 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
 
   userSubscription: Subscription;
   roles: string[];
-  constructor(private userService: UserService, private router: Router) {
+  constructor(private userService: UserService, private router: Router,
+    private localStorageService: LocalStorageService, private utilityService: UtilityService) {
 
   }
 
@@ -32,7 +33,8 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
   }
 
 
-  onRoleSelected(type) {
+  onRoleSelected(type: string) {
+    this.localStorageService.addItemToLocalStorage("currentRole", this.utilityService.getRoleCode(type).toString());
     this.router.navigate(["dashboard", type.toLowerCase()]);
   }
 

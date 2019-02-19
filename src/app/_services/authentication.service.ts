@@ -5,22 +5,26 @@ import { LocalStorageService } from './local-storage.service';
 import { User } from '../_models/user.model';
 import { AppResponse } from '../_models/app-response.model';
 import { ResponseStatus } from '../_models/enums';
+import { Router } from '@angular/router';
 
 
 
 @Injectable()
 export class AuthenticationService implements OnInit {
+
     private loggedIn = false;
 
-    constructor(private restService: RestService, private userService: UserService, private localStorageService: LocalStorageService) {
+    constructor(private restService: RestService, private userService: UserService,
+        private localStorageService: LocalStorageService, private router: Router) {
         var token = this.localStorageService.getItemFromLocalStorage('id_token');
         var user = this.localStorageService.getCurrentUser();
+        // check session at server
 
         if (token && user) {
             this.loggedIn = true;
             this.refreshDetails(user.userId);
         } else {
-            this.logout();
+            this.logout(false);
         }
     }
 
@@ -31,9 +35,6 @@ export class AuthenticationService implements OnInit {
         return this.loggedIn;
     }
 
-    getCurrentUser() {
-        return this.localStorageService.getCurrentUser();
-    }
 
     login(user: User) {
         return this.restService.post("user/login", user);
@@ -47,16 +48,19 @@ export class AuthenticationService implements OnInit {
 
     }
 
-    logout() {
+    logout(invalidateServerSession: boolean) {
         this.loggedIn = false;
-        this.localStorageService.removeItemsFromLocalStorage(['id_token', 'user']);
+        this.localStorageService.removeItemsFromLocalStorage(['id_token', 'user', 'currentRole']);
         this.userService.userDetailsUpdated.next(null);
+        if (invalidateServerSession) {
+            // rest call to logout
+        }
     }
 
     refreshDetails(userId: String) {
         this.restService.get("user/info/_id/" + userId, []).subscribe((appResponse: AppResponse) => {
             if (appResponse.status === ResponseStatus.ERROR) {
-                this.logout();
+                this.logout(false);
             }
             else if (appResponse.status === ResponseStatus.SUCCESS) {
                 this.persistUser(appResponse.body);

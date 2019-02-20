@@ -31,7 +31,8 @@ import { NotificationService } from './_services/notification.service';
 import { UtilityService } from './_services/utility.service';
 import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { SchoolService } from './_services/school.service';
 
 @NgModule({
   declarations: [
@@ -59,10 +60,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     HttpModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    AngularFontAwesomeModule
   ],
   providers: [AuthGuard, AuthenticationService, UserService, RestService, LocalStorageService,
-    QuestionService, MaskService, GroupService, NotificationService, UtilityService],
+    QuestionService, MaskService, GroupService, NotificationService, UtilityService, SchoolService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

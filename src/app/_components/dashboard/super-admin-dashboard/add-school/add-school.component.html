@@ -1,3 +1,37 @@
-<p>
-  add-school works!
-</p>
+<div class="row" style="margin-top:60px;">
+  <div class="col-xs-offset-3 col-xs-6">
+    <form [ngClass]="{'form-inline': !selectedGroup}">
+      <div class="form-group">
+        <div class="input-group">
+          <input type="text" required="true" [readonly]="selectedGroup" class="form-control" placeholder="Group Code"
+            name="groupCode" [(ngModel)]="groupCode">
+          <span class="input-group-btn" *ngIf="selectedGroup">
+            <button (click)="resetForm()" class="btn btn-danger"><i class="fa fa-minus" aria-hidden="true"></i></button>
+          </span>
+        </div>
+      </div>
+      <div *ngIf="selectedGroup">
+
+        <div class="form-group">
+          <input type="text" required class="form-control" placeholder="School Name" name="schoolName"
+            [(ngModel)]="schoolName">
+        </div>
+
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="School Board" name="schoolBoard"
+            [(ngModel)]="schoolBoard">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="City" name="city" [(ngModel)]="city">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="State" name="state" [(ngModel)]="state">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Pin Code" name="pinCode" [(ngModel)]="pinCode">
+        </div>
+      </div>
+      <button (click)="onSubmit()" class="btn btn-primary">{{btnText}}</button>
+    </form>
+  </div>
+</div>

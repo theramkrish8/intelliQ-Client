@@ -1,7 +1,8 @@
 
 export class Address {
-    // tslint:disable-next-line:max-line-length
-    constructor(private area: string, private city: string, private state: string,
-        private pincode: string, private latitude: string, private longitude: string) { }
+    public area: string; public city: string; public state: string;
+    public pincode: string; public latitude: string; public longitude: string;
+
+    constructor() { }
 
 }

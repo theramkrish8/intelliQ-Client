@@ -5,14 +5,15 @@ import { map } from "rxjs/operators";
 import { AppResponse } from "../_models/app-response.model";
 import { UtilityService } from "./utility.service";
 import { Observable } from "rxjs";
+import { School } from "../_models/school.model";
 
 @Injectable()
-export class GroupService {
+export class SchoolService {
 
     constructor(private restService: RestService, private utilityService: UtilityService) { }
 
-    addGroup(group: Group) {
-        return this.restService.post("group/add", group).pipe(map((appResponse: AppResponse) => {
+    addSchool(school: School) {
+        return this.restService.post("school/add", school).pipe(map((appResponse: AppResponse) => {
             var result = this.utilityService.getAppResponse(appResponse, true, true);
             if (result === null) {
                 return null;
@@ -22,15 +23,5 @@ export class GroupService {
         }));
 
     }
-    getGroupByCode(code: String): Observable<Group> {
-        return this.restService.get("group/info/code/" + code, null).pipe(map((appResponse: AppResponse) => {
-            var result = this.utilityService.getAppResponse(appResponse, true, false);
-            if (result === null) {
-                return null;
-            }
-            // process result if required and return same
-            return result;
-        }));
 
-    }
 }

@@ -35,11 +35,10 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-    var user = new User();
-    user.mobile = this.loginForm.get('mobile').value;
-    user.password = this.loginForm.get('password').value;
-
-    this.authenticationService.login(user)
+    var u = new User();
+    u.mobile = this.loginForm.get('mobile').value;
+    u.password = this.loginForm.get('password').value;
+    this.authenticationService.login(u)
       .subscribe(
         (appResponse: AppResponse) => {
           if (appResponse.status === ResponseStatus.ERROR) {
@@ -49,6 +48,7 @@ export class LoginComponent implements OnInit {
             this.authenticationService.persistUser(appResponse.body);
             this.router.navigate([this.returnUrl]);
           }
+
         });
 
   }

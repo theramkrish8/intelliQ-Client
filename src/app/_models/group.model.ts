@@ -6,12 +6,12 @@ import { Subject } from "./subject.model";
 export class Group {
     groupId: string;
     code: string;
-    questionCategories: string[];
+    quesCategories: string[];
     auxQuestions: Question[];
     createDate: Date;
     lastModifiedDate: Date;
     admin: User;
-    subject: Subject;
+    subjects: Subject[];
 
 
     constructor(code?: string) {

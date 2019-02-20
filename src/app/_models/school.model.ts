@@ -4,10 +4,11 @@ import { Group } from "./group.model";
 import { QuestionPaper } from "./question-paper.model";
 
 export class School {
-    // tslint:disable-next-line:max-line-length
-    constructor(private scholId: string, private shortName: string, private fullName: string, private code: string,
-        private address: Address, private contact: Contact, private board: string, private group: Group,
-        private previousGroups: Group[], standard: Number[], private auxQuesPaper: QuestionPaper[],
-        private createDate: Date, private lastModifiedDate: Date, private renewalDate: Date) { }
+    public schoolId: string; public shortName: string; public fullName: string; public code: string;
+    public address: Address; public contact: Contact; public board: string; public group: Group;
+    public previousGroups: Group[]; standard: Number[]; public auxQuesPaper: QuestionPaper[];
+    public createDate: Date; public lastModifiedDate: Date; public renewalDate: Date;
+
+    constructor() { }
 
 }

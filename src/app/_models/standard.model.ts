@@ -1,7 +1,5 @@
-import { Subject } from "./subject.model";
+import { Subject } from './subject.model';
 
 export class Standard {
-
-    constructor(private std: number, private subjects: Subject[]) { }
-
+	constructor(private std: number, private subjects: Subject[]) {}
 }

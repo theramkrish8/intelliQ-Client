@@ -35,36 +35,46 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { SchoolService } from './_services/school.service';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    PageNotFoundComponent,
-    DashboardComponent,
-    QuestionsListComponent,
-    RoleSelectionComponent,
-    TeacherDashboardComponent,
-    GroupAdminDashboardComponent,
-    SchoolAdminDashboardComponent,
-    SuperAdminDashboardComponent,
-    ApproverDashboardComponent,
-    AddGroupComponent,
-    AddSchoolComponent,
-    AddAdminComponent,
-    UpsertMetadataComponent
-
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpModule,
-    BrowserAnimationsModule,
-    ToastrModule.forRoot(),
-    AngularFontAwesomeModule
-  ],
-  providers: [AuthGuard, AuthenticationService, UserService, RestService, LocalStorageService,
-    QuestionService, MaskService, GroupService, NotificationService, UtilityService, SchoolService],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent,
+		LoginComponent,
+		PageNotFoundComponent,
+		DashboardComponent,
+		QuestionsListComponent,
+		RoleSelectionComponent,
+		TeacherDashboardComponent,
+		GroupAdminDashboardComponent,
+		SchoolAdminDashboardComponent,
+		SuperAdminDashboardComponent,
+		ApproverDashboardComponent,
+		AddGroupComponent,
+		AddSchoolComponent,
+		AddAdminComponent,
+		UpsertMetadataComponent
+	],
+	imports: [
+		BrowserModule,
+		AppRoutingModule,
+		FormsModule,
+		ReactiveFormsModule,
+		HttpModule,
+		BrowserAnimationsModule,
+		ToastrModule.forRoot(),
+		AngularFontAwesomeModule
+	],
+	providers: [
+		AuthGuard,
+		AuthenticationService,
+		UserService,
+		RestService,
+		LocalStorageService,
+		QuestionService,
+		MaskService,
+		GroupService,
+		NotificationService,
+		UtilityService,
+		SchoolService
+	],
+	bootstrap: [ AppComponent ]
 })
-export class AppModule { }
+export class AppModule {}

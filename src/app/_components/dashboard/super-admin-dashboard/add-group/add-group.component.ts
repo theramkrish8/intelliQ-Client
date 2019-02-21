@@ -8,30 +8,27 @@ import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-add-group',
-  templateUrl: './add-group.component.html',
-  styleUrls: ['./add-group.component.css']
+	selector: 'app-add-group',
+	templateUrl: './add-group.component.html',
+	styleUrls: [ './add-group.component.css' ]
 })
 export class AddGroupComponent implements OnInit {
-  createGroupForm: FormGroup;
-  responseMsg: Observable<string>;
-  constructor(private formBuilder: FormBuilder, private groupService: GroupService) { }
+	createGroupForm: FormGroup;
+	responseMsg: Observable<string>;
+	constructor(private formBuilder: FormBuilder, private groupService: GroupService) {}
 
-  ngOnInit() {
-    this.createGroupForm = this.formBuilder.group({
-      groupCode: ['', Validators.required]
-    });
+	ngOnInit() {
+		this.createGroupForm = this.formBuilder.group({
+			groupCode: [ '', Validators.required ]
+		});
+	}
 
-  }
-
-
-  onSubmit() {
-    // stop here if form is invalid
-    if (this.createGroupForm.invalid) {
-      return;
-    }
-    var groupCode = this.createGroupForm.get('groupCode').value;
-    this.responseMsg = this.groupService.addGroup(new Group(groupCode));
-  }
-
+	onSubmit() {
+		// stop here if form is invalid
+		if (this.createGroupForm.invalid) {
+			return;
+		}
+		var groupCode = this.createGroupForm.get('groupCode').value;
+		this.responseMsg = this.groupService.addGroup(new Group(groupCode));
+	}
 }

@@ -1,8 +1,11 @@
-import { Group } from "./group.model";
+import { Group } from './group.model';
 
 export class AuxQuestionRequest {
-
-    constructor(private group: Group, private schoolId: string,
-        private teacherId: string, private approverId: string, private auxQuestionId: string) { }
-
+	constructor(
+		private group: Group,
+		private schoolId: string,
+		private teacherId: string,
+		private approverId: string,
+		private auxQuestionId: string
+	) {}
 }

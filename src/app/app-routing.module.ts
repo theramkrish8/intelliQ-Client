@@ -17,46 +17,67 @@ import { AddAdminComponent } from './_components/dashboard/super-admin-dashboard
 import { UpsertMetadataComponent } from './_components/dashboard/super-admin-dashboard/upsert-metadata/upsert-metadata.component';
 
 const routes: Routes = [
-  {
-    path: 'dashboard', component: DashboardComponent,
-    canActivate: [AuthGuard],
-    children: [{
-      path: 'teacher', component: TeacherDashboardComponent,
-      children: [{ path: 'my-questions', component: QuestionsListComponent },
-      { path: 'all-questions', component: QuestionsListComponent }]
-    }, {
-      path: 'super-admin', component: SuperAdminDashboardComponent,
-      children: [{ path: 'group', component: AddGroupComponent },
-      { path: 'school', component: AddSchoolComponent },
-      { path: 'admin', component: AddAdminComponent },
-      { path: 'metadata', component: UpsertMetadataComponent }]
-    }, {
-      path: 'group-admin', component: GroupAdminDashboardComponent,
-      children: [{ path: 'my-questions', component: QuestionsListComponent },
-      { path: 'all-questions', component: QuestionsListComponent }]
-    }, {
-      path: 'school-admin', component: SchoolAdminDashboardComponent,
-      children: [{ path: 'my-questions', component: QuestionsListComponent },
-      { path: 'all-questions', component: QuestionsListComponent }]
-    }, {
-      path: 'approver', component: ApproverDashboardComponent,
-      children: [{ path: 'my-questions', component: QuestionsListComponent },
-      { path: 'all-questions', component: QuestionsListComponent }]
-    }]
+	{
+		path: 'dashboard',
+		component: DashboardComponent,
+		canActivate: [ AuthGuard ],
+		children: [
+			{
+				path: 'teacher',
+				component: TeacherDashboardComponent,
+				children: [
+					{ path: 'my-questions', component: QuestionsListComponent },
+					{ path: 'all-questions', component: QuestionsListComponent }
+				]
+			},
+			{
+				path: 'super-admin',
+				component: SuperAdminDashboardComponent,
+				children: [
+					{ path: 'group', component: AddGroupComponent },
+					{ path: 'school', component: AddSchoolComponent },
+					{ path: 'admin', component: AddAdminComponent },
+					{ path: 'metadata', component: UpsertMetadataComponent }
+				]
+			},
+			{
+				path: 'group-admin',
+				component: GroupAdminDashboardComponent,
+				children: [
+					{ path: 'my-questions', component: QuestionsListComponent },
+					{ path: 'all-questions', component: QuestionsListComponent }
+				]
+			},
+			{
+				path: 'school-admin',
+				component: SchoolAdminDashboardComponent,
+				children: [
+					{ path: 'my-questions', component: QuestionsListComponent },
+					{ path: 'all-questions', component: QuestionsListComponent }
+				]
+			},
+			{
+				path: 'approver',
+				component: ApproverDashboardComponent,
+				children: [
+					{ path: 'my-questions', component: QuestionsListComponent },
+					{ path: 'all-questions', component: QuestionsListComponent }
+				]
+			}
+		]
+	},
 
-  },
+	{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
-  { path: '', redirectTo: 'dashboard', pathMatch: "full" },
+	{ path: 'roles', component: RoleSelectionComponent, canActivate: [ AuthGuard ] },
+	{ path: 'login', component: LoginComponent },
 
-  { path: 'roles', component: RoleSelectionComponent, canActivate: [AuthGuard] },
-  { path: 'login', component: LoginComponent },
-
-  { path: 'not-found', component: PageNotFoundComponent },
-  { path: '**', redirectTo: 'not-found' }
+	{ path: 'not-found', component: PageNotFoundComponent },
+	{ path: '**', redirectTo: 'not-found' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+	imports: [ RouterModule.forRoot(routes) ],
+	exports: [ RouterModule ]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

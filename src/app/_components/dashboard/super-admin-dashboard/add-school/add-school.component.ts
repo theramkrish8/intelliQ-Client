@@ -9,57 +9,61 @@ import { SchoolService } from 'src/app/_services/school.service';
 import { NotificationService } from 'src/app/_services/notification.service';
 
 @Component({
-  selector: 'app-add-school',
-  templateUrl: './add-school.component.html',
-  styleUrls: ['./add-school.component.css']
+	selector: 'app-add-school',
+	templateUrl: './add-school.component.html',
+	styleUrls: [ './add-school.component.css' ]
 })
 export class AddSchoolComponent implements OnInit {
-  selectedGroup: Group;
-  groupCode = ""; schoolName = ""; schoolBoard = ""; city = ""; state = ""; pinCode = "";
-  btnText = "Find Group";
-  constructor(private groupService: GroupService, private schoolService: SchoolService, private notificationService: NotificationService) { }
+	selectedGroup: Group;
+	groupCode = '';
+	schoolName = '';
+	schoolBoard = '';
+	city = '';
+	state = '';
+	pinCode = '';
+	btnText = 'Find Group';
+	constructor(
+		private groupService: GroupService,
+		private schoolService: SchoolService,
+		private notificationService: NotificationService
+	) {}
 
-  ngOnInit() {
-  }
-  onSubmit() {
-    if (this.selectedGroup) {
-      if (this.schoolName && this.schoolBoard && this.city && this.state && this.pinCode) {
-        const school = new School();
-        school.shortName = this.schoolName;
-        school.board = this.schoolBoard;
-        school.address = new Address();
-        school.address.city = this.city;
-        school.address.state = this.state;
-        school.address.pincode = this.pinCode;
-        school.group = new Group();
-        school.group.groupId = this.selectedGroup.groupId;
-        school.group.code = this.selectedGroup.code;
+	ngOnInit() {}
+	onSubmit() {
+		if (this.selectedGroup) {
+			if (this.schoolName && this.schoolBoard && this.city && this.state && this.pinCode) {
+				const school = new School();
+				school.shortName = this.schoolName;
+				school.board = this.schoolBoard;
+				school.address = new Address();
+				school.address.city = this.city;
+				school.address.state = this.state;
+				school.address.pincode = this.pinCode;
+				school.group = new Group();
+				school.group.groupId = this.selectedGroup.groupId;
+				school.group.code = this.selectedGroup.code;
 
-        this.schoolService.addSchool(school).subscribe();
-      }
-      else {
-        this.notificationService.showErrorWithTimeout("Please fill all fields", null, 2000);
-      }
-    }
-    else {
-      if (this.groupCode !== "") {
-        this.groupService.getGroupByCode(this.groupCode).subscribe((data) => {
-          if (group) {
-            this.selectedGroup = data;
-            this.btnText = "Add School";
-          }
-        });
-      }
-      else {
-        this.notificationService.showErrorWithTimeout("Please enter Group Code", null, 2000);
-      }
+				this.schoolService.addSchool(school).subscribe();
+			} else {
+				this.notificationService.showErrorWithTimeout('Please fill all fields', null, 2000);
+			}
+		} else {
+			if (this.groupCode !== '') {
+				this.groupService.getGroupByCode(this.groupCode).subscribe((data) => {
+					if (group) {
+						this.selectedGroup = data;
+						this.btnText = 'Add School';
+					}
+				});
+			} else {
+				this.notificationService.showErrorWithTimeout('Please enter Group Code', null, 2000);
+			}
+		}
+	}
 
-    }
-  }
-
-  resetForm() {
-    this.groupCode = '';
-    this.selectedGroup = null;
-    this.btnText = "Find Group";
-  }
+	resetForm() {
+		this.groupCode = '';
+		this.selectedGroup = null;
+		this.btnText = 'Find Group';
+	}
 }

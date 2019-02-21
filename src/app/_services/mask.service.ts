@@ -1,11 +1,10 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable()
 export class MaskService {
+	showMask = false;
 
-    showMask = false;
-
-    getMask() {
-        return this.showMask;
-    }
+	getMask() {
+		return this.showMask;
+	}
 }

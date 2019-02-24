@@ -6,10 +6,8 @@ export class Group {
 	groupId: string;
 	code: string;
 	quesCategories: string[];
-	auxQuestions: Question[];
 	createDate: Date;
 	lastModifiedDate: Date;
-	admin: User;
 	subjects: Subject[];
 
 	constructor(code?: string) {

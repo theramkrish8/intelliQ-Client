@@ -12,8 +12,8 @@ export class School {
 	public contact: Contact;
 	public board: string;
 	public group: Group;
-	public previousGroups: Group[];
-	standard: Number[];
+	public prevGroups: Group[];
+	public stds: Number[];
 	public auxQuesPaper: QuestionPaper[];
 	public createDate: Date;
 	public lastModifiedDate: Date;

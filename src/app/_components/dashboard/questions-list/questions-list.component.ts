@@ -81,12 +81,12 @@ export class QuestionsListComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	removeQuestion(questionId) {
-		this.allQuestions = this.allQuestions.filter(function(item) {
-			return item.questionId !== questionId;
-		});
-		this.onFilterApplied();
-	}
+	// removeQuestion(questionId) {
+	// 	this.allQuestions = this.allQuestions.filter(function(item) {
+	// 		return item.questionId !== questionId;
+	// 	});
+	// 	this.onFilterApplied();
+	// }
 
 	unique(arr, prop) {
 		return arr

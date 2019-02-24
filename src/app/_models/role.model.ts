@@ -2,6 +2,6 @@ import { RoleType } from './enums';
 import { Standard } from './standard.model';
 
 export class Role {
-	public std: Standard[];
+	public stds: Standard[];
 	constructor(public roleType: RoleType) {}
 }

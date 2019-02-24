@@ -1,26 +1,32 @@
-import { DifficultyType, LengthType } from './enums';
+import { DifficultyType, LengthType, QuestionStatus } from './enums';
 import { School } from './school.model';
-import { Group } from './group.model';
 
 export class Question {
-	// tslint:disable-next-line:max-line-length
 	constructor(
-		public questionId: string,
+		public quesId: string,
 		public title: string,
-		public description: string,
-		public subject: string,
 		public std: number,
-		public owner: string,
-		public approver: string,
+		public subject: string,
 		public topic: string,
-		public dissiculty: DifficultyType,
+		public difficulty: DifficultyType,
 		public length: LengthType,
+		public status: QuestionStatus,
 		public tags: string[],
 		public category: string,
-		public school: School,
-		public group: Group,
-		public createDate: Date,
 		public imageUrl: string,
-		public newTopic: boolean
+		public owner: Contributer,
+		public reviewer: Contributer,
+		public school: School,
+		public groupCode: string,
+		public description: string,
+		public createDate: Date,
+		public lastModifiedDate: Date,
+		public rejectDesc: string,
+		public originId: string
 	) {}
+}
+
+class Contributer {
+	public userId: string;
+	public userName: string;
 }

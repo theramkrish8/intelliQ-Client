@@ -7,19 +7,28 @@ export enum RoleType {
 }
 
 export enum LengthType {
-	OBJECTIVE,
-	SHORT,
-	MEDIUM,
-	LONG
+	OBJECTIVE = 0,
+	SHORT = 1,
+	BRIEF = 2,
+	LONG = 3
 }
 
 export enum DifficultyType {
-	EASY,
-	MEDIUM,
-	HARD
+	EASY = 0,
+	MEDIUM = 1,
+	HARD = 2
 }
 
 export enum ResponseStatus {
 	SUCCESS = 204,
 	ERROR = 402
+}
+export enum QuestionStatus {
+	NEW = 0,
+	TRANSIT = 1,
+	REMOVE = 2,
+	APPROVED = 3,
+	REJECTED = 4,
+	PENDING = 5,
+	OBSOLETE = 6
 }

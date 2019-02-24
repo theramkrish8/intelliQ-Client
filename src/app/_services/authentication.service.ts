@@ -47,7 +47,7 @@ export class AuthenticationService implements OnInit {
 
 	logout(invalidateServerSession: boolean) {
 		this.loggedIn = false;
-		this.localStorageService.removeItemsFromLocalStorage([ 'id_token', 'user', 'currentRole' ]);
+		this.localStorageService.removeItemsFromLocalStorage([ 'id_token', 'user' ]);
 		this.userService.userDetailsUpdated.next(null);
 		if (invalidateServerSession) {
 			// rest call to logout

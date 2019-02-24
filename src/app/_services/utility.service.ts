@@ -60,4 +60,18 @@ export class UtilityService {
 			return appResponse.body;
 		}
 	}
+	getAppResponseAll(appResponse: AppResponse, showError: boolean, showSuccess: boolean) {
+		var timeOut = 3000;
+		if (appResponse.status === ResponseStatus.ERROR) {
+			if (showError) {
+				this.notificationService.showErrorWithTimeout(appResponse.msg, null, timeOut);
+			}
+			return appResponse.msg;
+		} else if (appResponse.status === ResponseStatus.SUCCESS) {
+			if (showSuccess) {
+				this.notificationService.showSuccessWithTimeout(appResponse.body, null, timeOut);
+			}
+			return appResponse.body;
+		}
+	}
 }

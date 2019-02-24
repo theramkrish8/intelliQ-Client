@@ -34,7 +34,6 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
 	}
 
 	onRoleSelected(type: string) {
-		this.localStorageService.addItemToLocalStorage('currentRole', this.utilityService.getRoleCode(type).toString());
 		this.router.navigate([ 'dashboard', type.toLowerCase() ]);
 	}
 

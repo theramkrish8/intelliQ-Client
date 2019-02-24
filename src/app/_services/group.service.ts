@@ -34,4 +34,16 @@ export class GroupService {
 			})
 		);
 	}
+	getAllGroups(): Observable<Group[]> {
+		return this.restService.get('group/all/1', null).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
 }

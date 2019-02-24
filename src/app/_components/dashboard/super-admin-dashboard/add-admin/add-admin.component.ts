@@ -1,4 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { NotificationService } from 'src/app/_services/notification.service';
+import { SchoolService } from 'src/app/_services/school.service';
+import { GroupService } from 'src/app/_services/group.service';
+import { School } from 'src/app/_models/school.model';
+import { Observable } from 'rxjs';
+import { UserService } from 'src/app/_services/user.service';
+import { User } from 'src/app/_models/user.model';
+import { Role } from 'src/app/_models/role.model';
+import { RoleType } from 'src/app/_models/enums';
+import { Group } from 'src/app/_models/group.model';
 
 @Component({
 	selector: 'app-add-admin',
@@ -6,7 +16,129 @@ import { Component, OnInit } from '@angular/core';
 	styleUrls: [ './add-admin.component.css' ]
 })
 export class AddAdminComponent implements OnInit {
-	constructor() {}
+	adminType: string;
+	schoolCode: string;
+	groupCode: string;
+	selectedSchool: School;
+	mobile: string;
+	selectedUser: User;
+	userSearchDone = false;
+	name: string;
+	isAlreadySchoolAdmin = false;
+	selectedGroup: Group;
+	isAlreadyGroupAdmin = false;
+	constructor(
+		private notificationService: NotificationService,
+		private schoolService: SchoolService,
+		private groupService: GroupService,
+		private userService: UserService
+	) {
+		this.adminType = '';
+	}
 
 	ngOnInit() {}
+
+	onAdminTypeChanged(value: string) {}
+	findSchool() {
+		if (this.schoolCode) {
+			this.schoolService.getSchoolBySchoolCode(this.schoolCode).subscribe((school) => {
+				this.selectedSchool = school;
+			});
+		} else {
+			this.notificationService.showErrorWithTimeout('Please enter School Code', null, 2000);
+		}
+	}
+
+	findGroup() {
+		if (this.groupCode) {
+			this.groupService.getGroupByCode(this.groupCode).subscribe((group: Group) => {
+				this.selectedGroup = group;
+			});
+		} else {
+			this.notificationService.showErrorWithTimeout('Please enter Group Code', null, 2000);
+		}
+	}
+	findUser() {
+		if (this.mobile) {
+			this.userService.getUserByMobile(this.mobile).subscribe((user: User) => {
+				var selectedGroup = this.adminType === 'groupAdmin' ? this.selectedGroup : this.selectedSchool.group;
+				if (user && user.school.group.groupId !== selectedGroup.groupId) {
+					this.notificationService.showErrorWithTimeout(
+						'User is not part of group ' + selectedGroup.code,
+						null,
+						2000
+					);
+					this.resetForm();
+					return;
+				}
+				this.userSearchDone = true;
+				this.selectedUser = user;
+				if (this.selectedUser) {
+					this.name = this.selectedUser.name;
+					if (this.selectedUser.roles.findIndex((z) => z.roleType === RoleType.SCHOOLADMIN) > -1) {
+						this.isAlreadySchoolAdmin = true;
+					}
+					if (this.selectedUser.roles.findIndex((z) => z.roleType === RoleType.GROUPADMIN) > -1) {
+						this.isAlreadyGroupAdmin = true;
+					}
+				}
+			});
+		} else {
+			this.notificationService.showErrorWithTimeout('Please enter Mobile number', null, 2000);
+		}
+	}
+	addUser() {
+		if (this.name) {
+			var group = this.adminType === 'groupAdmin' ? this.selectedGroup : this.selectedSchool.group;
+			var roleType: any, school: School;
+			if (this.adminType === 'schoolAdmin') {
+				roleType = RoleType.SCHOOLADMIN;
+				school = this.selectedSchool;
+			} else {
+				roleType = RoleType.GROUPADMIN;
+				school = new School();
+				school.code = 'MASTER';
+				school.group = group;
+			}
+
+			const user = new User();
+			user.name = this.name;
+			user.school = school;
+			user.mobile = this.mobile;
+			user.roles = [ new Role(roleType) ];
+			this.userService.addUser(user).subscribe((response) => {
+				this.resetForm();
+			});
+		} else {
+			this.notificationService.showErrorWithTimeout('Please enter Name', null, 2000);
+		}
+	}
+
+	assignRoleToUser() {
+		var roleType: any;
+		if (this.adminType === 'schoolAdmin') {
+			roleType = RoleType.SCHOOLADMIN;
+			this.selectedUser.school = this.selectedSchool;
+		} else {
+			roleType = RoleType.GROUPADMIN;
+		}
+		this.selectedUser.roles.push(new Role(roleType));
+
+		this.userService.updateUser(this.selectedUser).subscribe((response) => {
+			this.resetForm();
+		});
+	}
+	resetForm() {
+		this.adminType = '';
+		this.schoolCode = '';
+		this.groupCode = '';
+		this.selectedSchool = null;
+		this.mobile = '';
+		this.selectedUser = null;
+		this.userSearchDone = false;
+		this.name = '';
+		this.isAlreadySchoolAdmin = false;
+		this.selectedGroup = null;
+		this.isAlreadyGroupAdmin = false;
+	}
 }

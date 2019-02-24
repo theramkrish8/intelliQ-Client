@@ -20,7 +20,7 @@ export class RestService {
 	}
 
 	get(method: string, queryStrings: any[]) {
-		var headers = new Headers({ currentRole: this.localStorageService.getItemFromLocalStorage('currentRole') });
+		var headers = new Headers();
 		this.maskService.showMask = true;
 		return this.http.get(this.baseUrl + method, { headers: headers }).pipe(
 			map((response: Response) => {
@@ -37,7 +37,7 @@ export class RestService {
 	}
 
 	post(method: string, body: any) {
-		var headers = new Headers({ currentRole: this.localStorageService.getItemFromLocalStorage('currentRole') });
+		var headers = new Headers();
 		this.maskService.showMask = true;
 		return this.http.post(this.baseUrl + method, body, { headers: headers }).pipe(
 			map((response: Response) => {
@@ -53,7 +53,7 @@ export class RestService {
 		);
 	}
 	put(method: string, body: any) {
-		var headers = new Headers({ currentRole: this.localStorageService.getItemFromLocalStorage('currentRole') });
+		var headers = new Headers();
 		this.maskService.showMask = true;
 		return this.http.put(this.baseUrl + method, body, { headers: headers }).pipe(
 			map((response: Response) => {
@@ -70,7 +70,7 @@ export class RestService {
 		);
 	}
 	delete(method: string, body: any) {
-		var headers = new Headers({ currentRole: this.localStorageService.getItemFromLocalStorage('currentRole') });
+		var headers = new Headers();
 		this.maskService.showMask = true;
 		return this.http.delete(this.baseUrl + method, { headers: headers }).pipe(
 			map((response: Response) => {

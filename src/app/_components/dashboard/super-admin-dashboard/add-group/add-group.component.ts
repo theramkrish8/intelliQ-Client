@@ -15,12 +15,14 @@ import { Observable } from 'rxjs';
 export class AddGroupComponent implements OnInit {
 	createGroupForm: FormGroup;
 	responseMsg: Observable<string>;
+	groups: Observable<Group[]>;
 	constructor(private formBuilder: FormBuilder, private groupService: GroupService) {}
 
 	ngOnInit() {
 		this.createGroupForm = this.formBuilder.group({
 			groupCode: [ '', Validators.required ]
 		});
+		this.groups = this.groupService.getAllGroups();
 	}
 
 	onSubmit() {

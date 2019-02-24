@@ -7,6 +7,7 @@ import { Address } from 'src/app/_models/address.model';
 import { group } from '@angular/animations';
 import { SchoolService } from 'src/app/_services/school.service';
 import { NotificationService } from 'src/app/_services/notification.service';
+import { map } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-add-school',
@@ -14,6 +15,8 @@ import { NotificationService } from 'src/app/_services/notification.service';
 	styleUrls: [ './add-school.component.css' ]
 })
 export class AddSchoolComponent implements OnInit {
+	schools: School[];
+	schoolMsg: string;
 	selectedGroup: Group;
 	groupCode = '';
 	schoolName = '';
@@ -50,9 +53,12 @@ export class AddSchoolComponent implements OnInit {
 		} else {
 			if (this.groupCode !== '') {
 				this.groupService.getGroupByCode(this.groupCode).subscribe((data) => {
-					if (group) {
+					if (data) {
 						this.selectedGroup = data;
 						this.btnText = 'Add School';
+						this.schoolService.getSchoolByGroupId(this.selectedGroup.groupId).subscribe((schools) => {
+							this.schools = schools;
+						});
 					}
 				});
 			} else {

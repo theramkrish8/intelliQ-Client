@@ -1,3 +1,65 @@
-<p>
-  add-admin works!
-</p>
+<div class="row" style="margin-top:60px;">
+  <div class="col-xs-offset-3 col-xs-6">
+    <h2>Add New Admin:</h2>
+    <div class="form-group">
+      <select [disabled]="adminType!==''" class="form-control" [(ngModel)]="adminType" name="adminType"
+        (ngModelChange)="onAdminTypeChanged($event)">
+        <option value="" disabled selected>Select Admin Type</option>
+        <option value="schoolAdmin">School Admin</option>
+        <option value="groupAdmin">Group Admin</option>
+      </select>
+    </div>
+    <div *ngIf="adminType">
+
+      <div *ngIf="adminType=='schoolAdmin'">
+        <div class="form-group">
+          <input [disabled]="selectedSchool" type="text" class="form-control" placeholder="School Code"
+            [(ngModel)]="schoolCode">
+        </div>
+        <button *ngIf="!selectedSchool" (click)="findSchool()" class="btn btn-primary">Find School</button>
+        <div *ngIf="selectedSchool">
+          <div class="form-group">
+            <input [disabled]="userSearchDone" type="text" class="form-control" placeholder="Mobile"
+              [(ngModel)]="mobile">
+          </div>
+          <button *ngIf="!userSearchDone" (click)="findUser()" class="btn btn-primary">Find User</button>
+          <div *ngIf="userSearchDone">
+            <div class="form-group">
+              <input [disabled]="selectedUser" type="text" class="form-control" placeholder="Name" [(ngModel)]="name">
+            </div>
+            <button *ngIf="!selectedUser" (click)="addUser()" class="btn btn-primary">Add User as School Admin</button>
+            <button *ngIf="selectedUser && !isAlreadySchoolAdmin" (click)="assignRoleToUser()"
+              class="btn btn-primary">Assign School Admin Role
+              to User</button>
+            <h2 *ngIf="isAlreadySchoolAdmin">User is already a School Admin</h2>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="adminType=='groupAdmin'">
+        <div class="form-group">
+          <input [disabled]="selectedGroup" type="text" class="form-control" placeholder="Group Code" [(ngModel)]="groupCode">
+        </div>
+        <button *ngIf="!selectedGroup" (click)="findGroup()" class="btn btn-primary">Find Group</button>
+        <div *ngIf="selectedGroup">
+          <div class="form-group">
+            <input [disabled]="userSearchDone" type="text" class="form-control" placeholder="Mobile"
+              [(ngModel)]="mobile">
+          </div>
+          <button *ngIf="!userSearchDone" (click)="findUser()" class="btn btn-primary">Find User</button>
+          <div *ngIf="userSearchDone">
+            <div class="form-group">
+              <input [disabled]="selectedUser" type="text" class="form-control" placeholder="Name" [(ngModel)]="name">
+            </div>
+            <button *ngIf="!selectedUser" (click)="addUser()" class="btn btn-primary">Add User as Group Admin</button>
+            <button *ngIf="selectedUser && !isAlreadyGroupAdmin" (click)="assignRoleToUser()" class="btn btn-primary">Assign Group Admin Role
+              to User</button>
+            <h2 *ngIf="isAlreadyGroupAdmin">User is already a Group Admin</h2>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <button class="btn btn-link" (click)="resetForm()">Reset Form</button>
+</div>

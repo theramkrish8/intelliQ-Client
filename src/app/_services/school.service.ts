@@ -23,4 +23,41 @@ export class SchoolService {
 			})
 		);
 	}
+
+	getSchoolBySchoolCode(schoolCode: string) {
+		return this.restService.get('school/info/code/' + schoolCode, null).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
+	getSchoolByGroupCode(groupCode: string) {
+		return this.restService.get('school/all/code/' + groupCode, null).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
+	getSchoolByGroupId(groupId: string) {
+		return this.restService.get('school/all/_id/' + groupId, null).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
 }

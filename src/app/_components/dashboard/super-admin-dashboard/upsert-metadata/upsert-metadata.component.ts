@@ -15,11 +15,15 @@ export class UpsertMetadataComponent implements OnInit {
 	metadata: Meta;
 	metadataLoaded = false;
 	metaSubscription: Subscription;
+	deleteMetadata: Meta;
+	isDirty = false;
 	constructor(
 		private formBuilder: FormBuilder,
 		private metaService: MetaService,
 		private notificationService: NotificationService
-	) {}
+	) {
+		this.deleteMetadata = new Meta();
+	}
 
 	ngOnInit() {
 		this.addMetadataForm = this.formBuilder.group({
@@ -27,7 +31,7 @@ export class UpsertMetadataComponent implements OnInit {
 			standards: ''
 		});
 
-		this.initiateSubscription();
+		this.getMetaData();
 	}
 	onSubmit() {
 		var standardsStr = this.addMetadataForm.get('standards').value;
@@ -36,6 +40,9 @@ export class UpsertMetadataComponent implements OnInit {
 		var subjects: string[];
 		if (!standardsStr && !subjectsStr) {
 			this.notificationService.showErrorWithTimeout('Please enter values!', null, 2000);
+			return;
+		} else if (subjectsStr && (subjectsStr[0] === ',' || subjectsStr[subjectsStr.length - 1] === ',')) {
+			this.notificationService.showErrorWithTimeout('Please remove extra comma!', null, 2000);
 			return;
 		}
 		if (subjectsStr) {
@@ -62,19 +69,43 @@ export class UpsertMetadataComponent implements OnInit {
 		if (this.metadata) {
 			meta.metaId = this.metadata.metaId;
 			this.metaService.updateMeta(meta).subscribe(() => {
-				this.initiateSubscription();
+				this.getMetaData();
 			});
 		} else {
 			this.metaService.addMeta(meta).subscribe(() => {
-				this.initiateSubscription();
+				this.getMetaData();
 			});
 		}
 	}
 
-	initiateSubscription() {
+	getMetaData() {
 		this.metaSubscription = this.metaService.getMeta().subscribe((metadata: Meta) => {
 			this.metadataLoaded = true;
 			this.metadata = metadata;
+			this.deleteMetadata.metaId = this.metadata ? this.metadata.metaId : null;
+			this.deleteMetadata.standards = [];
+			this.deleteMetadata.subjects = [];
+		});
+	}
+	removeStandard(value) {
+		this.metadata.standards = this.metadata.standards.filter((item) => item !== value);
+		this.deleteMetadata.standards.push(value);
+		this.isDirty = true;
+	}
+	removeSubject(value) {
+		this.metadata.subjects = this.metadata.subjects.filter((item) => item !== value);
+		this.deleteMetadata.subjects.push(value);
+		this.isDirty = true;
+	}
+	deleteMeta() {
+		this.metaService.deleteMeta(this.deleteMetadata).subscribe((response) => {
+			if (response) {
+				this.deleteMetadata.subjects = [];
+				this.deleteMetadata.standards = [];
+			} else {
+				this.getMetaData();
+			}
+			this.isDirty = false;
 		});
 	}
 }

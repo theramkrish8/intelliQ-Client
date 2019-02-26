@@ -74,7 +74,7 @@ export class RestService {
 	delete(method: string, body: any) {
 		var headers = new Headers();
 		this.maskService.showMask = true;
-		return this.http.delete(this.baseUrl + method, { headers: headers }).pipe(
+		return this.http.delete(this.baseUrl + method, { headers: headers, body: body }).pipe(
 			map((response: Response) => {
 				return response.json();
 			}),

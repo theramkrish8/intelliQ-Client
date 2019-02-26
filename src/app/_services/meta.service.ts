@@ -48,4 +48,17 @@ export class MetaService {
 			})
 		);
 	}
+
+	deleteMeta(meta: Meta) {
+		return this.restService.delete('meta/remove', meta).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, true);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
 }

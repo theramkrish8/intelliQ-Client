@@ -1,5 +1,5 @@
 <div class="row" style="margin-top:30px;">
-  <h4 *ngIf="metadataLoaded && !metadata">(No Metadata available to show.)</h4>
+  <h4 *ngIf="metadataLoaded && (!metadata || (metadata?.subjects.length==0 && metadata?.standards.length==0))">(No Metadata available to show.)</h4>
 
   <div class="col-xs-4">
     <h2>Add Metadata</h2>
@@ -19,19 +19,26 @@
   <div class="col-xs-3">
     <h2>Subjects</h2>
     <div *ngIf="metadata?.subjects">
-      <div class="list-group list-of-subjects">
-        <a *ngFor="let subject of metadata.subjects" class="list-group-item">{{subject}}</a>
-      </div>
+
+      <ul class="list-group list-of-subjects">
+        <li class="list-group-item" *ngFor="let subject of metadata.subjects">{{subject}}
+          <span class="close" (click)="removeSubject(subject)">x</span></li>
+      </ul>
     </div>
   </div>
 
   <div class="col-xs-3">
     <h2>Standards</h2>
     <div *ngIf="metadata?.standards">
-      <div class="list-group list-of-subjects">
-        <a *ngFor="let standard of metadata.standards" class="list-group-item">{{standard}}</a>
-      </div>
+      <ul class="list-group list-of-subjects">
+        <li class="list-group-item" *ngFor="let standard of  metadata.standards">{{standard}}
+          <span class="close" (click)="removeStandard(standard)">x</span></li>
+      </ul>
+
     </div>
   </div>
 
+  <div class="col-xs-2">
+    <button class="btn btn-link pull-right" *ngIf="isDirty" (click)="deleteMeta()">Save Changes</button>
+  </div>
 </div>

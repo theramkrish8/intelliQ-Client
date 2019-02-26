@@ -38,7 +38,7 @@
       <h2>No Schools added in selected group.</h2>
       </ng-template>
       <div class="list-group list-of-schools">
-        <a *ngFor="let school of schools" class="list-group-item">{{school.shortName}} - {{school.code}}</a>
+        <a *ngFor="let school of schools" class="list-group-item">{{school.code}}</a>
       </div>
     </div>
       <button class="btn btn-link col-xs-1 pull-right" (click)="resetForm(true)">Reset Form</button>

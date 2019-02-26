@@ -7,7 +7,7 @@
     Welcome to {{ title }}!
   </h1>
 
-  <span *ngIf="loggedIn" class="pull-right lead">Hi, {{currentUser?.name}}(<a
+  <span *ngIf="loggedIn" class="pull-right lead">Hi, {{currentUser?.name | uppercase}}(<a
       [routerLink]="['/login']">Logout</a>)</span>
   <router-outlet></router-outlet>
 

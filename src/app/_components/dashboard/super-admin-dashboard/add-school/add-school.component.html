@@ -1,15 +1,10 @@
 <div class="row" style="margin-top:60px;">
   <div class="col-xs-6">
     <h2>Add New School:</h2>
-    <form [ngClass]="{'form-inline': !selectedGroup}">
+    <form>
       <div class="form-group">
-        <div class="input-group">
-          <input type="text" required="true" [readonly]="selectedGroup" class="form-control" placeholder="Group Code"
+           <input type="text" required="true" [readonly]="selectedGroup" class="form-control" placeholder="Group Code"
             name="groupCode" [(ngModel)]="groupCode">
-          <span class="input-group-btn" *ngIf="selectedGroup">
-            <button (click)="resetForm()" class="btn btn-danger"><i class="fa fa-minus" aria-hidden="true"></i></button>
-          </span>
-        </div>
       </div>
       <div *ngIf="selectedGroup">
 
@@ -37,7 +32,7 @@
 
   </div>
 
-    <div class="col-xs-6" *ngIf="selectedGroup">
+    <div class="col-xs-5" *ngIf="selectedGroup">
       <h2 *ngIf="schools;else noSchools">Schools:</h2>
       <ng-template #noSchools>
       <h2>No Schools added in selected group.</h2>
@@ -46,4 +41,5 @@
         <a *ngFor="let school of schools" class="list-group-item">{{school.shortName}} - {{school.code}}</a>
       </div>
     </div>
+      <button class="btn btn-link col-xs-1 pull-right" (click)="resetForm(true)">Reset Form</button>
     </div>

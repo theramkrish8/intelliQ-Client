@@ -31,6 +31,8 @@ export class AddGroupComponent implements OnInit {
 			return;
 		}
 		var groupCode = this.createGroupForm.get('groupCode').value;
-		this.responseMsg = this.groupService.addGroup(new Group(groupCode));
+		this.groupService.addGroup(new Group(groupCode)).subscribe(() => {
+			this.groups = this.groupService.getAllGroups();
+		});
 	}
 }

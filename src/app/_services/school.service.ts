@@ -48,7 +48,7 @@ export class SchoolService {
 			})
 		);
 	}
-	getSchoolByGroupId(groupId: string) {
+	getSchoolsByGroupId(groupId: string) {
 		return this.restService.get('school/all/_id/' + groupId, null).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);

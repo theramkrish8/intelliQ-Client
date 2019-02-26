@@ -33,6 +33,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { SchoolService } from './_services/school.service';
+import { MetaService } from './_services/meta.service';
 
 @NgModule({
 	declarations: [
@@ -73,7 +74,8 @@ import { SchoolService } from './_services/school.service';
 		GroupService,
 		NotificationService,
 		UtilityService,
-		SchoolService
+		SchoolService,
+		MetaService
 	],
 	bootstrap: [ AppComponent ]
 })

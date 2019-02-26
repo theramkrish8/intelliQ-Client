@@ -6,6 +6,7 @@ import { User } from '../_models/user.model';
 import { AppResponse } from '../_models/app-response.model';
 import { ResponseStatus } from '../_models/enums';
 import { Router } from '@angular/router';
+import { NotificationService } from './notification.service';
 
 @Injectable()
 export class AuthenticationService implements OnInit {
@@ -15,7 +16,8 @@ export class AuthenticationService implements OnInit {
 		private restService: RestService,
 		private userService: UserService,
 		private localStorageService: LocalStorageService,
-		private router: Router
+		private router: Router,
+		private notificationService: NotificationService
 	) {
 		var token = this.localStorageService.getItemFromLocalStorage('id_token');
 		var user = this.localStorageService.getCurrentUser();
@@ -25,7 +27,7 @@ export class AuthenticationService implements OnInit {
 			this.loggedIn = true;
 			this.refreshDetails(user.userId);
 		} else {
-			this.logout(false);
+			this.logout(false, true);
 		}
 	}
 
@@ -45,19 +47,23 @@ export class AuthenticationService implements OnInit {
 		this.userService.userDetailsUpdated.next(user);
 	}
 
-	logout(invalidateServerSession: boolean) {
+	logout(invalidateServerSession: boolean, redirectToLogin: boolean) {
 		this.loggedIn = false;
 		this.localStorageService.removeItemsFromLocalStorage([ 'id_token', 'user' ]);
 		this.userService.userDetailsUpdated.next(null);
 		if (invalidateServerSession) {
 			// rest call to logout
 		}
+		if (redirectToLogin) {
+			this.router.navigate([ '/login' ]);
+		}
 	}
 
 	refreshDetails(userId: String) {
 		this.restService.get('user/info/_id/' + userId, []).subscribe((appResponse: AppResponse) => {
 			if (appResponse.status === ResponseStatus.ERROR) {
-				this.logout(false);
+				this.notificationService.showErrorWithTimeout(appResponse.msg, null, 2000);
+				this.logout(false, true);
 			} else if (appResponse.status === ResponseStatus.SUCCESS) {
 				this.persistUser(appResponse.body);
 			}

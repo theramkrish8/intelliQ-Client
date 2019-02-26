@@ -46,7 +46,12 @@ export class AddSchoolComponent implements OnInit {
 				school.group.groupId = this.selectedGroup.groupId;
 				school.group.code = this.selectedGroup.code;
 
-				this.schoolService.addSchool(school).subscribe();
+				this.schoolService.addSchool(school).subscribe(() => {
+					this.schoolService.getSchoolsByGroupId(this.selectedGroup.groupId).subscribe((schools) => {
+						this.schools = schools;
+						this.resetForm(false);
+					});
+				});
 			} else {
 				this.notificationService.showErrorWithTimeout('Please fill all fields', null, 2000);
 			}
@@ -56,7 +61,7 @@ export class AddSchoolComponent implements OnInit {
 					if (data) {
 						this.selectedGroup = data;
 						this.btnText = 'Add School';
-						this.schoolService.getSchoolByGroupId(this.selectedGroup.groupId).subscribe((schools) => {
+						this.schoolService.getSchoolsByGroupId(this.selectedGroup.groupId).subscribe((schools) => {
 							this.schools = schools;
 						});
 					}
@@ -67,9 +72,17 @@ export class AddSchoolComponent implements OnInit {
 		}
 	}
 
-	resetForm() {
-		this.groupCode = '';
-		this.selectedGroup = null;
-		this.btnText = 'Find Group';
+	resetForm(clearGroup: boolean) {
+		if (clearGroup) {
+			this.groupCode = '';
+			this.selectedGroup = null;
+			this.btnText = 'Find Group';
+			this.schools = [];
+		}
+		this.schoolName = '';
+		this.schoolBoard = '';
+		this.city = '';
+		this.state = '';
+		this.pinCode = '';
 	}
 }

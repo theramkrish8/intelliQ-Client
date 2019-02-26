@@ -1,7 +1,7 @@
 import { Http, Headers, Response } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { map, catchError, finalize } from 'rxjs/operators';
-import { throwError, of } from 'rxjs';
+import { throwError, of, Observable } from 'rxjs';
 import { MaskService } from './mask.service';
 import { AppResponse } from '../_models/app-response.model';
 import { ResponseStatus } from '../_models/enums';
@@ -24,11 +24,13 @@ export class RestService {
 		this.maskService.showMask = true;
 		return this.http.get(this.baseUrl + method, { headers: headers }).pipe(
 			map((response: Response) => {
+				var a = response.json();
 				return response.json();
 			}),
 			catchError((error) => {
 				console.log(error);
-				return throwError('Something went wrong!');
+				// throwError('Something went wrong!');
+				return of(new AppResponse(ResponseStatus.ERROR, 'Oops..Something went wrong!', error));
 			}),
 			finalize(() => {
 				this.maskService.showMask = false;
@@ -62,7 +64,7 @@ export class RestService {
 			}),
 			catchError((error) => {
 				console.log(error);
-				return throwError('Something went wrong!');
+				return of(new AppResponse(ResponseStatus.ERROR, 'Something went wrong!', null));
 			}),
 			finalize(() => {
 				this.maskService.showMask = false;
@@ -78,7 +80,7 @@ export class RestService {
 			}),
 			catchError((error) => {
 				console.log(error);
-				return throwError('Something went wrong!');
+				return of(new AppResponse(ResponseStatus.ERROR, 'Something went wrong!', null));
 			}),
 			finalize(() => {
 				this.maskService.showMask = false;

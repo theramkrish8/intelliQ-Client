@@ -19,7 +19,7 @@
         <button *ngIf="!selectedSchool" (click)="findSchool()" class="btn btn-primary">Find School</button>
         <div *ngIf="selectedSchool">
           <div class="form-group">
-            <input [disabled]="userSearchDone" type="text" class="form-control" placeholder="Mobile"
+            <input [disabled]="userSearchDone" type="text" class="form-control" maxlength="10" minlength="10" placeholder="Mobile"
               [(ngModel)]="mobile">
           </div>
           <button *ngIf="!userSearchDone" (click)="findUser()" class="btn btn-primary">Find User</button>
@@ -43,7 +43,7 @@
         <button *ngIf="!selectedGroup" (click)="findGroup()" class="btn btn-primary">Find Group</button>
         <div *ngIf="selectedGroup">
           <div class="form-group">
-            <input [disabled]="userSearchDone" type="text" class="form-control" placeholder="Mobile"
+            <input [disabled]="userSearchDone" type="text" class="form-control"  maxlength="10" placeholder="Mobile"
               [(ngModel)]="mobile">
           </div>
           <button *ngIf="!userSearchDone" (click)="findUser()" class="btn btn-primary">Find User</button>

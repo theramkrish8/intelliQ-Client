@@ -60,4 +60,16 @@ export class SchoolService {
 			})
 		);
 	}
+	updateSchool(school: School) {
+		return this.restService.put('school/update', school).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, true);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
 }

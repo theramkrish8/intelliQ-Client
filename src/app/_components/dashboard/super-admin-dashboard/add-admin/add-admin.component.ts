@@ -36,16 +36,24 @@ export class AddAdminComponent implements OnInit {
 		this.adminType = '';
 	}
 
-	ngOnInit() {}
+	ngOnInit() {
+		this.groupCode = 'GP_DPS';
+		this.schoolCode = 'DPS_560102';
+	}
 
 	onAdminTypeChanged(value: string) {}
 	findSchool() {
 		if (this.schoolCode) {
 			this.schoolService.getSchoolBySchoolCode(this.schoolCode).subscribe((school) => {
 				this.selectedSchool = school;
+				if (!school) {
+					this.showErrorMsg('School not found');
+				} else {
+					this.selectedGroup = this.selectedSchool.group;
+				}
 			});
 		} else {
-			this.notificationService.showErrorWithTimeout('Please enter School Code', null, 2000);
+			this.showErrorMsg('Please enter School Code');
 		}
 	}
 
@@ -55,16 +63,16 @@ export class AddAdminComponent implements OnInit {
 				this.selectedGroup = group;
 			});
 		} else {
-			this.notificationService.showErrorWithTimeout('Please enter Group Code', null, 2000);
+			this.showErrorMsg('Please enter Group Code');
 		}
 	}
+
 	findUser() {
-		if (this.mobile) {
+		if (this.mobile && this.mobile.length === 10) {
 			this.userService.getUserByMobile(this.mobile).subscribe((user: User) => {
-				var selectedGroup = this.adminType === 'groupAdmin' ? this.selectedGroup : this.selectedSchool.group;
-				if (user && user.school.group.groupId !== selectedGroup.groupId) {
+				if (user && user.school.group.groupId !== this.selectedGroup.groupId) {
 					this.notificationService.showErrorWithTimeout(
-						'User is not part of group ' + selectedGroup.code,
+						'User is not part of group ' + this.selectedGroup.code,
 						null,
 						2000
 					);
@@ -84,12 +92,12 @@ export class AddAdminComponent implements OnInit {
 				}
 			});
 		} else {
-			this.notificationService.showErrorWithTimeout('Please enter Mobile number', null, 2000);
+			this.notificationService.showErrorWithTimeout('Please enter valid Mobile number', null, 2000);
 		}
 	}
+
 	addUser() {
 		if (this.name) {
-			var group = this.adminType === 'groupAdmin' ? this.selectedGroup : this.selectedSchool.group;
 			var roleType: any, school: School;
 			if (this.adminType === 'schoolAdmin') {
 				roleType = RoleType.SCHOOLADMIN;
@@ -98,7 +106,7 @@ export class AddAdminComponent implements OnInit {
 				roleType = RoleType.GROUPADMIN;
 				school = new School();
 				school.code = 'MASTER';
-				school.group = group;
+				school.group = this.selectedGroup;
 			}
 
 			const user = new User();
@@ -106,7 +114,7 @@ export class AddAdminComponent implements OnInit {
 			user.school = school;
 			user.mobile = this.mobile;
 			user.roles = [ new Role(roleType) ];
-			this.userService.addUser(user).subscribe((response) => {
+			this.userService.addUser(user).subscribe(() => {
 				this.resetForm();
 			});
 		} else {
@@ -130,8 +138,8 @@ export class AddAdminComponent implements OnInit {
 	}
 	resetForm() {
 		this.adminType = '';
-		this.schoolCode = '';
-		this.groupCode = '';
+		this.groupCode = 'GP_DPS';
+		this.schoolCode = 'DPS_560102';
 		this.selectedSchool = null;
 		this.mobile = '';
 		this.selectedUser = null;
@@ -140,5 +148,9 @@ export class AddAdminComponent implements OnInit {
 		this.isAlreadySchoolAdmin = false;
 		this.selectedGroup = null;
 		this.isAlreadyGroupAdmin = false;
+	}
+
+	showErrorMsg(msg: string) {
+		this.notificationService.showErrorWithTimeout(msg, null, 2000);
 	}
 }

@@ -4,12 +4,12 @@ import { Group } from '../_models/group.model';
 import { map } from 'rxjs/operators';
 import { AppResponse } from '../_models/app-response.model';
 import { UtilityService } from './utility.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class GroupService {
 	constructor(private restService: RestService, private utilityService: UtilityService) {}
-
+	public groupFetched = new Subject<Group>();
 	addGroup(group: Group) {
 		return this.restService.post('group/add', group).pipe(
 			map((appResponse: AppResponse) => {
@@ -29,6 +29,7 @@ export class GroupService {
 				if (result === null) {
 					return null;
 				}
+				this.groupFetched.next(result);
 				// process result if required and return same
 				return result;
 			})
@@ -38,6 +39,19 @@ export class GroupService {
 		return this.restService.get('group/all/1', null).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
+
+	updateGroup(group: Group) {
+		return this.restService.put('group/update', group).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, true);
 				if (result === null) {
 					return null;
 				}

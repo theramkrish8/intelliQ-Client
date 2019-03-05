@@ -1,7 +1,8 @@
-.list-of-questions{
-    margin-top: 94px;
+.list-of-questions {
+	max-height: 400px;
+	overflow-y: auto;
 }
 
-.filters{
-    margin-top: 30px;
+.filters {
+	margin-top: 30px;
 }

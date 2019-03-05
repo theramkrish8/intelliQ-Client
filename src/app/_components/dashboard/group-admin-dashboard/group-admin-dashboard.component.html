@@ -1,3 +1,10 @@
-<p>
-  group-admin-dashboard works!
-</p>
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="nav nav-tabs">
+      <li role="presentation" routerLinkActive="active"><a [routerLink]="['profile']">Profile</a></li>
+      <li role="presentation" routerLinkActive="active"><a [routerLink]="['schools']">Schools</a></li>
+      <li role="presentation" routerLinkActive="active"><a [routerLink]="['subjects']">Subjects</a></li>
+    </ul>
+  </div>
+</div>
+<router-outlet></router-outlet>

@@ -1,7 +1,7 @@
 export class Contact {
-	private landline: string[];
-	private mobile: string[];
-	private email: string;
-	private website: string;
+	public landline: string[];
+	public mobile: string[];
+	public email: string;
+	public website: string;
 	constructor() {}
 }

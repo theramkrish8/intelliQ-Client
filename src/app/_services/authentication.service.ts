@@ -19,7 +19,7 @@ export class AuthenticationService implements OnInit {
 		private router: Router,
 		private notificationService: NotificationService
 	) {
-		var token = this.localStorageService.getItemFromLocalStorage('id_token');
+		var token = this.localStorageService.getItemFromLocalStorage('id_token', false);
 		var user = this.localStorageService.getCurrentUser();
 		// check session at server
 
@@ -49,7 +49,7 @@ export class AuthenticationService implements OnInit {
 
 	logout(invalidateServerSession: boolean, redirectToLogin: boolean) {
 		this.loggedIn = false;
-		this.localStorageService.removeItemsFromLocalStorage([ 'id_token', 'user' ]);
+		this.localStorageService.removeItemsFromLocalStorage([ 'id_token', 'user', 'group' ]);
 		this.userService.userDetailsUpdated.next(null);
 		if (invalidateServerSession) {
 			// rest call to logout

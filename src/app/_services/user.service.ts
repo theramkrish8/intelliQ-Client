@@ -41,6 +41,7 @@ export class UserService implements OnInit {
 			})
 		);
 	}
+
 	addUser(user: User) {
 		return this.restService.post('user/add/', user).pipe(
 			map((appResponse: AppResponse) => {

@@ -1,27 +1,22 @@
 import { Http, Headers, Response } from '@angular/http';
 import { Injectable } from '@angular/core';
 import { map, catchError, finalize } from 'rxjs/operators';
-import { throwError, of, Observable } from 'rxjs';
-import { MaskService } from './mask.service';
+import { of } from 'rxjs';
 import { AppResponse } from '../_models/app-response.model';
 import { ResponseStatus } from '../_models/enums';
-import { LocalStorageService } from './local-storage.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Injectable()
 export class RestService {
 	baseUrl: string;
 	headers;
-	constructor(
-		private http: Http,
-		private maskService: MaskService,
-		private localStorageService: LocalStorageService
-	) {
+	constructor(private http: Http, private spinner: NgxSpinnerService) {
 		this.baseUrl = 'http://localhost:8080/';
 	}
 
 	get(method: string, queryStrings: any[]) {
 		var headers = new Headers();
-		this.maskService.showMask = true;
+		this.spinner.show();
 		return this.http.get(this.baseUrl + method, { headers: headers }).pipe(
 			map((response: Response) => {
 				var a = response.json();
@@ -29,18 +24,17 @@ export class RestService {
 			}),
 			catchError((error) => {
 				console.log(error);
-				// throwError('Something went wrong!');
 				return of(new AppResponse(ResponseStatus.ERROR, 'Oops..Something went wrong!', error));
 			}),
 			finalize(() => {
-				this.maskService.showMask = false;
+				this.spinner.hide();
 			})
 		);
 	}
 
 	post(method: string, body: any) {
 		var headers = new Headers();
-		this.maskService.showMask = true;
+		this.spinner.show();
 		return this.http.post(this.baseUrl + method, body, { headers: headers }).pipe(
 			map((response: Response) => {
 				return response.json();
@@ -50,13 +44,14 @@ export class RestService {
 				return of(new AppResponse(ResponseStatus.ERROR, 'Something went wrong!', null));
 			}),
 			finalize(() => {
-				this.maskService.showMask = false;
+				this.spinner.hide();
 			})
 		);
 	}
+
 	put(method: string, body: any) {
 		var headers = new Headers();
-		this.maskService.showMask = true;
+		this.spinner.show();
 		return this.http.put(this.baseUrl + method, body, { headers: headers }).pipe(
 			map((response: Response) => {
 				const data = response.json();
@@ -67,13 +62,13 @@ export class RestService {
 				return of(new AppResponse(ResponseStatus.ERROR, 'Something went wrong!', null));
 			}),
 			finalize(() => {
-				this.maskService.showMask = false;
+				this.spinner.hide();
 			})
 		);
 	}
 	delete(method: string, body: any) {
 		var headers = new Headers();
-		this.maskService.showMask = true;
+		this.spinner.show();
 		return this.http.delete(this.baseUrl + method, { headers: headers, body: body }).pipe(
 			map((response: Response) => {
 				return response.json();
@@ -83,7 +78,7 @@ export class RestService {
 				return of(new AppResponse(ResponseStatus.ERROR, 'Something went wrong!', null));
 			}),
 			finalize(() => {
-				this.maskService.showMask = false;
+				this.spinner.hide();
 			})
 		);
 	}

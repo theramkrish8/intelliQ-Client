@@ -9,7 +9,10 @@ export class LocalStorageService {
 		return null;
 	}
 
-	addItemToLocalStorage(key: string, value: string) {
+	addItemToLocalStorage(key: string, value: any) {
+		if (typeof value !== 'string') {
+			value = JSON.stringify(value);
+		}
 		localStorage.setItem(key, value);
 	}
 
@@ -19,8 +22,12 @@ export class LocalStorageService {
 		}
 	}
 
-	getItemFromLocalStorage(key: string) {
-		return localStorage.getItem(key);
+	getItemFromLocalStorage(key: string, convertToObject: boolean): any {
+		var value = localStorage.getItem(key);
+		if (value && convertToObject) {
+			value = JSON.parse(value);
+		}
+		return value;
 	}
 
 	removeItemFromLocalStorage(key: string) {

@@ -1,0 +1,12 @@
+<div class="row" style="margin-top:60px;">
+  <div *ngIf="group$ | async as group">
+  <label class="col-xs-3">Group Code</label>
+  <div class="well well-sm col-xs-8">{{group.code}}</div>
+  <label class="col-xs-3">Create Date</label>
+  <div class="well well-sm col-xs-8">{{group.createDate |  date: dateFormat}}</div>
+  <label class="col-xs-3">Last Modified Date</label>
+  <div class="well well-sm col-xs-8">{{group.lastModifiedDate | date: dateFormat}}</div>
+  <label class="col-xs-3">Subjects</label>
+  <div class="well well-sm col-xs-8">{{group.subjects | csv:'title':'?'}}</div>
+</div>
+</div>

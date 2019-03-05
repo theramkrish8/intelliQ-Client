@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { GroupService } from 'src/app/_services/group.service';
+import { LocalStorageService } from 'src/app/_services/local-storage.service';
+import { map } from 'rxjs/operators';
+import { Group } from 'src/app/_models/group.model';
 
 @Component({
 	selector: 'app-group-admin-dashboard',
@@ -6,7 +11,14 @@ import { Component, OnInit } from '@angular/core';
 	styleUrls: [ './group-admin-dashboard.component.css' ]
 })
 export class GroupAdminDashboardComponent implements OnInit {
-	constructor() {}
+	constructor(private groupService: GroupService, private localStorageService: LocalStorageService) {}
 
-	ngOnInit() {}
+	ngOnInit() {
+		this.localStorageService.removeItemFromLocalStorage('group');
+		this.groupService
+			.getGroupByCode(this.localStorageService.getCurrentUser().school.group.code)
+			.subscribe((group: Group) => {
+				this.localStorageService.addItemToLocalStorage('group', group);
+			});
+	}
 }

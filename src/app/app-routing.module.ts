@@ -15,6 +15,10 @@ import { AddGroupComponent } from './_components/dashboard/super-admin-dashboard
 import { AddSchoolComponent } from './_components/dashboard/super-admin-dashboard/add-school/add-school.component';
 import { AddAdminComponent } from './_components/dashboard/super-admin-dashboard/add-admin/add-admin.component';
 import { UpsertMetadataComponent } from './_components/dashboard/super-admin-dashboard/upsert-metadata/upsert-metadata.component';
+import { GroupProfileComponent } from './_components/dashboard/group-admin-dashboard/group-profile/group-profile.component';
+import { GroupSchoolsComponent } from './_components/dashboard/group-admin-dashboard/group-schools/group-schools.component';
+import { GroupSubjectsComponent } from './_components/dashboard/group-admin-dashboard/group-subjects/group-subjects.component';
+import { SchoolProfileComponent } from './_components/dashboard/school-admin-dashboard/school-profile/school-profile.component';
 
 const routes: Routes = [
 	{
@@ -34,6 +38,7 @@ const routes: Routes = [
 				path: 'super-admin',
 				component: SuperAdminDashboardComponent,
 				children: [
+					{ path: '', redirectTo: 'group', pathMatch: 'full' },
 					{ path: 'group', component: AddGroupComponent },
 					{ path: 'school', component: AddSchoolComponent },
 					{ path: 'admin', component: AddAdminComponent },
@@ -44,25 +49,24 @@ const routes: Routes = [
 				path: 'group-admin',
 				component: GroupAdminDashboardComponent,
 				children: [
-					{ path: 'my-questions', component: QuestionsListComponent },
-					{ path: 'all-questions', component: QuestionsListComponent }
+					{ path: '', redirectTo: 'profile', pathMatch: 'full' },
+					{ path: 'profile', component: GroupProfileComponent },
+					{ path: 'schools', component: GroupSchoolsComponent },
+					{ path: 'subjects', component: GroupSubjectsComponent }
 				]
 			},
 			{
 				path: 'school-admin',
 				component: SchoolAdminDashboardComponent,
 				children: [
-					{ path: 'my-questions', component: QuestionsListComponent },
-					{ path: 'all-questions', component: QuestionsListComponent }
+					{ path: '', redirectTo: 'profile', pathMatch: 'full' },
+					{ path: 'profile', component: SchoolProfileComponent }
 				]
 			},
 			{
 				path: 'approver',
 				component: ApproverDashboardComponent,
-				children: [
-					{ path: 'my-questions', component: QuestionsListComponent },
-					{ path: 'all-questions', component: QuestionsListComponent }
-				]
+				children: []
 			}
 		]
 	},

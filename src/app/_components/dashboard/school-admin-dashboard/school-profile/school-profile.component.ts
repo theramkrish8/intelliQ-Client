@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 import { School } from 'src/app/_models/school.model';
 import { SchoolService } from 'src/app/_services/school.service';
 import { LocalStorageService } from 'src/app/_services/local-storage.service';
-import { FormGroup } from '@angular/forms';
 
 @Component({
 	selector: 'app-school-profile',

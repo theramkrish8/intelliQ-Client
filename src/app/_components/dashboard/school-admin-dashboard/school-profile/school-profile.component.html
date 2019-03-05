@@ -1,5 +1,5 @@
 <div style="margin-top:20px;">
-  <form *ngIf="school" #temp>
+  <form *ngIf="school" (ngSubmit)="updateSchool();">
 
     <div class="form-group form-inline row">
       <label class="col-xs-4">Full Name</label>
@@ -63,7 +63,7 @@
       <input type="text" name="pincode" class="form-control col-xs-8" [(ngModel)]="school.address.pincode ">
     </div>
 
-    <button type="button" class="btn btn-primary" (click)="updateSchool();">Save Info</button>
+    <button type="submit" class="btn btn-primary">Save Info</button>
 
   </form>
 </div>

@@ -40,6 +40,9 @@ import { CsvPipe } from './_pipes/csv.pipe';
 import { AddressPipe } from './_pipes/address.pipe';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { SchoolProfileComponent } from './_components/dashboard/school-admin-dashboard/school-profile/school-profile.component';
+import { SchoolUsersComponent } from './_components/dashboard/school-admin-dashboard/school-users/school-users.component';
+import { UserTypePipe } from './_pipes/user-type.pipe';
+import { UserProfileComponent } from './_components/user-profile/user-profile.component';
 
 @NgModule({
 	declarations: [
@@ -63,7 +66,10 @@ import { SchoolProfileComponent } from './_components/dashboard/school-admin-das
 		GroupSubjectsComponent,
 		CsvPipe,
 		AddressPipe,
-		SchoolProfileComponent
+		SchoolProfileComponent,
+		SchoolUsersComponent,
+		UserTypePipe,
+		UserProfileComponent
 	],
 	imports: [
 		BrowserModule,

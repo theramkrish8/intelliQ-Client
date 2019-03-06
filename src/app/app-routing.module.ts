@@ -19,6 +19,8 @@ import { GroupProfileComponent } from './_components/dashboard/group-admin-dashb
 import { GroupSchoolsComponent } from './_components/dashboard/group-admin-dashboard/group-schools/group-schools.component';
 import { GroupSubjectsComponent } from './_components/dashboard/group-admin-dashboard/group-subjects/group-subjects.component';
 import { SchoolProfileComponent } from './_components/dashboard/school-admin-dashboard/school-profile/school-profile.component';
+import { SchoolUsersComponent } from './_components/dashboard/school-admin-dashboard/school-users/school-users.component';
+import { UserProfileComponent } from './_components/user-profile/user-profile.component';
 
 const routes: Routes = [
 	{
@@ -60,7 +62,8 @@ const routes: Routes = [
 				component: SchoolAdminDashboardComponent,
 				children: [
 					{ path: '', redirectTo: 'profile', pathMatch: 'full' },
-					{ path: 'profile', component: SchoolProfileComponent }
+					{ path: 'profile', component: SchoolProfileComponent },
+					{ path: 'users', component: SchoolUsersComponent }
 				]
 			},
 			{
@@ -75,6 +78,7 @@ const routes: Routes = [
 
 	{ path: 'roles', component: RoleSelectionComponent, canActivate: [ AuthGuard ] },
 	{ path: 'login', component: LoginComponent },
+	{ path: 'profile', component: UserProfileComponent, canActivate: [ AuthGuard ] },
 
 	{ path: 'not-found', component: PageNotFoundComponent },
 	{ path: '**', redirectTo: 'not-found' }

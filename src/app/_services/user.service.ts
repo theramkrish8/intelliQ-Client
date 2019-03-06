@@ -66,4 +66,28 @@ export class UserService implements OnInit {
 			})
 		);
 	}
+	getUsersBySchoolId(schoolId: string) {
+		return this.restService.get('user/all/school/' + schoolId, null).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
+	removeUser(schoolId: string, userId: string) {
+		return this.restService.delete('user/remove/' + schoolId + '/' + userId, null).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, true);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
 }

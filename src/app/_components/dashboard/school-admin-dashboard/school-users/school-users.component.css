@@ -1,0 +1,7 @@
+.list-of-users {
+	max-height: 400px;
+	overflow-y: auto;
+}
+.close {
+	color: white;
+}

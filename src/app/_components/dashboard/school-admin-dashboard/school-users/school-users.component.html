@@ -1,0 +1,59 @@
+<div style="margin-top:20px;">
+  <div class="row">
+    <div class="col-xs-offset-4 col-xs-4">
+      <h3>User Type:</h3>
+      <div class="form-group">
+        <select class="form-control" [(ngModel)]="selectedRole" name="roleFilter"  (ngModelChange)="selectedUser=null;">
+          <option value="-1" selected>All</option>
+          <option value="1">Group Admin</option>
+          <option value="2">School Admin</option>
+          <option value="3">Approver</option>
+          <option value="4">Teacher</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-5">
+    <div *ngIf="users">
+      <h2>Users:</h2>
+      <div class="list-group list-of-users">
+        <a (click)="selectedUser=user;" *ngFor="let user of users | userType:selectedRole"
+          class="list-group-item">{{user.name}}
+          - {{user.mobile}}</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xs-7" *ngIf="selectedUser">
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">{{selectedUser.name | uppercase}} <span class="close"
+          (click)="removeUser(selectedUser.userId)">x</span></div>
+      <div class="panel-body">
+
+        <label class="col-xs-4">Name</label>
+        <div class="well well-sm col-xs-8">{{selectedUser.name?selectedUser.name:"?"}}</div>
+
+        <label class="col-xs-4">Gender</label>
+        <div class="well well-sm col-xs-8">{{selectedUser.gender?selectedUser.gender:"?"}}</div>
+
+        <label class="col-xs-4">Mobile</label>
+        <div class="well well-sm col-xs-8">{{selectedUser.mobile}}
+        </div>
+        <!-- <label class="col-xs-4">Landline</label>
+        <div class="well well-sm col-xs-8">{{selectedUser.contact.landline | csv:'':'?'}}
+        </div>
+        <label class="col-xs-4">Email</label>
+        <div class="well well-sm col-xs-8">{{selectedUser.contact.email | csv:'':'?'}}</div>
+
+        <label class="col-xs-4">Website</label>
+        <div class="well well-sm col-xs-8">{{selectedUser.contact.website | csv:'':'?'}}</div>
+
+        <label class="col-xs-4">Address</label>
+        <div class="well well-sm col-xs-8">{{selectedUser.address | address:'?'}}</div> -->
+
+      </div>
+    </div>
+  </div>
+
+</div>

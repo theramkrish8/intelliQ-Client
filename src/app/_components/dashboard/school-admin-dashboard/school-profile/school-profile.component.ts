@@ -21,8 +21,9 @@ export class SchoolProfileComponent implements OnInit {
 			});
 	}
 	updateSchool() {
-		this.school.contact.mobile = this.convertContactToArray(this.school.contact.mobile);
-		this.school.contact.landline = this.convertContactToArray(this.school.contact.landline);
+		this.school.contact.mobile = this.convertContactToArray(this.school.contact.mobile, false);
+		this.school.contact.landline = this.convertContactToArray(this.school.contact.landline, false);
+		this.school.stds = this.convertContactToArray(this.school.stds, true);
 		this.schoolService.updateSchool(this.school).subscribe((response) => {
 			if (response) {
 				this.localStorageService.addItemToLocalStorage('school', this.school);
@@ -30,11 +31,20 @@ export class SchoolProfileComponent implements OnInit {
 		});
 	}
 
-	convertContactToArray(contact: any) {
-		if (typeof contact === 'string') {
-			return contact.split(',');
+	convertContactToArray(data: any, toNumArray: boolean) {
+		if (toNumArray) {
+			if (typeof data === 'string') {
+				return data.split(',').map(function(item) {
+					return parseInt(item, 10);
+				});
+			} else {
+				return data;
+			}
+		}
+		if (typeof data === 'string') {
+			return data.split(',');
 		} else {
-			return contact;
+			return data;
 		}
 	}
 }

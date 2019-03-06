@@ -1,9 +1,9 @@
-<div class="container">
-  <div class="row">
-    <div *ngFor="let role of roles" class="col-xs-12" (click)="onRoleSelected(role)">
-      <div class="panel panel-success clickable">
+<div class="container" style="margin-top:60px;">
+  <div *ngFor="let role of roles" class="row">
+    <div  class="col-xs-offset-3 col-xs-6" (click)="onRoleSelected(role)">
+      <div class="panel panel-warning clickable">
         <div class="panel-body">{{role | uppercase}}</div>
       </div>
-    </div>
+    </div>  
   </div>
 </div>

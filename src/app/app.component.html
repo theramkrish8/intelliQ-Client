@@ -2,12 +2,22 @@
 
 <ngx-spinner></ngx-spinner>
 <div style="text-align:center" class="container">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-
-  <span *ngIf="loggedIn" class="pull-right lead">Hi, {{currentUser?.name | uppercase}}(<a
-      [routerLink]="['/login']">Logout</a>)</span>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" [routerLink]="['/dashboard']">Welcome to {{ title }}!</a>
+      </div>
+      <ul class="nav navbar-nav">
+        <li *ngIf="loggedIn" routerLinkActive="active"><a [routerLink]="['/roles']">
+            <span class="glyphicon glyphicon-transfer"></span>Switch Role</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li *ngIf="loggedIn"><a [routerLink]="['/profile']"><span class="glyphicon glyphicon-user"></span>Hi,
+            {{currentUser?.name | titlecase}} </a></li>
+        <li *ngIf="loggedIn"><a [routerLink]="['/login']"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
   <router-outlet></router-outlet>
-
 </div>

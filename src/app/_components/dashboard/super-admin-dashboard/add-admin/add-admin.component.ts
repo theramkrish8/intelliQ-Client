@@ -41,7 +41,6 @@ export class AddAdminComponent implements OnInit {
 		this.schoolCode = 'DPS_560102';
 	}
 
-	onAdminTypeChanged(value: string) {}
 	findSchool() {
 		if (this.schoolCode) {
 			this.schoolService.getSchoolBySchoolCode(this.schoolCode).subscribe((school) => {

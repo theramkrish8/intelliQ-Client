@@ -3,36 +3,34 @@
 
     <div class="form-group form-inline row col-xs-offset-2">
       <label class="col-xs-4">Full Name</label>
-      <input type="text" name="fullname" class="form-control col-xs-8" [(ngModel)]="user.name">
+      <input type="text" name="fullname" class="form-control col-xs-6" [(ngModel)]="user.name">
     </div>
 
     <div class="form-group form-inline row col-xs-offset-2">
       <label class="col-xs-4">Username</label>
-      <input type="text" name="username" class="form-control col-xs-8" readonly [(ngModel)]="user.userName">
+      <input type="text" name="username" class="form-control col-xs-6" readonly [(ngModel)]="user.userName">
     </div>
 
     <div class="form-group form-inline row col-xs-offset-2">
       <label class="col-xs-4">Mobile</label>
-      <input type="text" name="mobile" class="form-control col-xs-8" readonly [(ngModel)]="user.mobile ">
+      <input type="text" name="mobile" class="form-control col-xs-6" readonly [(ngModel)]="user.mobile ">
     </div>
 
     <div class="form-group form-inline row col-xs-offset-2">
       <label class="col-xs-4">Gender</label>
-      <input type="text" name="gender" class="form-control col-xs-8"  [(ngModel)]="user.gender">
+      <input type="text" name="gender" class="form-control col-xs-6"  [(ngModel)]="user.gender">
     </div>
 
     <div class="form-group form-inline row col-xs-offset-2">
-      <label class="col-xs-4">Date of Birth</label>
-      <input type="date"  class="form-control col-xs-8"
-       
-       [ngModel]="user.dob | date:'yyyy-MM-dd'" (ngModelChange)="user.dob = $event" type="date" name="dob" >
-     
+      <label class="col-xs-4">DOB</label>
+      <input type="date"  class="form-control col-xs-6"   
+       [ngModel]="user.dob | date:'yyyy-MM-dd'" (ngModelChange)="user.dob = $event" type="date" name="dob" > 
     </div>
 
 
     <div class="form-group form-inline row col-xs-offset-2">
       <label class="col-xs-4">Email</label>
-      <input type="email" name="email" class="form-control col-xs-8" [(ngModel)]="user.email">
+      <input type="email" name="email" class="form-control col-xs-6" [(ngModel)]="user.email">
     </div>
    
     <div class="form-group">

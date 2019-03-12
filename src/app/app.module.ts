@@ -43,6 +43,7 @@ import { SchoolProfileComponent } from './_components/dashboard/school-admin-das
 import { SchoolUsersComponent } from './_components/dashboard/school-admin-dashboard/school-users/school-users.component';
 import { UserTypePipe } from './_pipes/user-type.pipe';
 import { UserProfileComponent } from './_components/user-profile/user-profile.component';
+import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin-dashboard/school-upsert-users/school-upsert-users.component';
 
 @NgModule({
 	declarations: [
@@ -69,7 +70,8 @@ import { UserProfileComponent } from './_components/user-profile/user-profile.co
 		SchoolProfileComponent,
 		SchoolUsersComponent,
 		UserTypePipe,
-		UserProfileComponent
+		UserProfileComponent,
+		SchoolUpsertUsersComponent
 	],
 	imports: [
 		BrowserModule,
@@ -95,6 +97,7 @@ import { UserProfileComponent } from './_components/user-profile/user-profile.co
 		SchoolService,
 		MetaService
 	],
+
 	bootstrap: [ AppComponent ]
 })
 export class AppModule {}

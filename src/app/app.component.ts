@@ -9,7 +9,7 @@ import { UserService } from './_services/user.service';
 	styleUrls: [ './app.component.css' ]
 })
 export class AppComponent implements OnInit {
-	title = 'IntelliQue';
+	title = 'IntelliQ';
 	currentUser: User;
 	loggedIn = false;
 	constructor(private userService: UserService, private restService: RestService) {}

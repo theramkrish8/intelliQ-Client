@@ -4,12 +4,13 @@ import { Group } from '../_models/group.model';
 import { map } from 'rxjs/operators';
 import { AppResponse } from '../_models/app-response.model';
 import { UtilityService } from './utility.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { School } from '../_models/school.model';
 
 @Injectable()
 export class SchoolService {
 	constructor(private restService: RestService, private utilityService: UtilityService) {}
+	public schoolFetched = new Subject<School>();
 
 	addSchool(school: School) {
 		return this.restService.post('school/add', school).pipe(
@@ -31,6 +32,7 @@ export class SchoolService {
 				if (result === null) {
 					return null;
 				}
+				this.schoolFetched.next(result);
 				// process result if required and return same
 				return result;
 			})

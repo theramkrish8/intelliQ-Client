@@ -2,7 +2,7 @@ export enum RoleType {
 	SUPERADMIN = 0,
 	GROUPADMIN = 1,
 	SCHOOLADMIN = 2,
-	APPROVER = 3,
+	REVIEWER = 3,
 	TEACHER = 4
 }
 

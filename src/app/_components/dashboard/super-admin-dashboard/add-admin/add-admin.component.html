@@ -2,8 +2,7 @@
   <div class="col-xs-offset-3 col-xs-6">
     <h2>Add New Admin:</h2>
     <div class="form-group">
-      <select [disabled]="adminType!==''" class="form-control" [(ngModel)]="adminType" name="adminType"
-        (ngModelChange)="onAdminTypeChanged($event)">
+      <select [disabled]="adminType!==''" class="form-control" [(ngModel)]="adminType" name="adminType">
         <option value="" disabled selected>Select Admin Type</option>
         <option value="schoolAdmin">School Admin</option>
         <option value="groupAdmin">Group Admin</option>

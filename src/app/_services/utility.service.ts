@@ -18,8 +18,8 @@ export class UtilityService {
 			case RoleType.SCHOOLADMIN:
 				return 'school-admin';
 
-			case RoleType.APPROVER:
-				return 'approver';
+			case RoleType.REVIEWER:
+				return 'reviewer';
 
 			case RoleType.TEACHER:
 				return 'teacher';
@@ -28,19 +28,19 @@ export class UtilityService {
 	getRoleCode(roleDesc: String): any {
 		switch (roleDesc) {
 			case 'super-admin':
-				return 0;
+				return RoleType.SUPERADMIN;
 
 			case 'group-admin':
-				return 1;
+				return RoleType.GROUPADMIN;
 
 			case 'school-admin':
-				return 2;
+				return RoleType.SCHOOLADMIN;
 
-			case 'approver':
-				return 3;
+			case 'reviewer':
+				return RoleType.REVIEWER;
 
 			case 'teacher':
-				return 4;
+				return RoleType.TEACHER;
 			default:
 				return '';
 		}
@@ -59,5 +59,12 @@ export class UtilityService {
 			}
 			return appResponse.body;
 		}
+	}
+
+	isValidMobile(mobile: string): boolean {
+		if (mobile && mobile.length === 10 && /^\d{10}$/.test(mobile)) {
+			return true;
+		}
+		return false;
 	}
 }

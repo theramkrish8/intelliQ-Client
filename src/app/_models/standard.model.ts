@@ -1,7 +1,8 @@
 import { Subject } from './subject.model';
 
 export class Standard {
-	private std: number;
-	private subjects: Subject[];
-	constructor() {}
+	public subjects: Subject[];
+	constructor(public std: number) {
+		this.subjects = [];
+	}
 }

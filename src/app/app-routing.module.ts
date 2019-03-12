@@ -21,6 +21,7 @@ import { GroupSubjectsComponent } from './_components/dashboard/group-admin-dash
 import { SchoolProfileComponent } from './_components/dashboard/school-admin-dashboard/school-profile/school-profile.component';
 import { SchoolUsersComponent } from './_components/dashboard/school-admin-dashboard/school-users/school-users.component';
 import { UserProfileComponent } from './_components/user-profile/user-profile.component';
+import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin-dashboard/school-upsert-users/school-upsert-users.component';
 
 const routes: Routes = [
 	{
@@ -28,14 +29,6 @@ const routes: Routes = [
 		component: DashboardComponent,
 		canActivate: [ AuthGuard ],
 		children: [
-			{
-				path: 'teacher',
-				component: TeacherDashboardComponent,
-				children: [
-					{ path: 'my-questions', component: QuestionsListComponent },
-					{ path: 'all-questions', component: QuestionsListComponent }
-				]
-			},
 			{
 				path: 'super-admin',
 				component: SuperAdminDashboardComponent,
@@ -63,18 +56,27 @@ const routes: Routes = [
 				children: [
 					{ path: '', redirectTo: 'profile', pathMatch: 'full' },
 					{ path: 'profile', component: SchoolProfileComponent },
-					{ path: 'users', component: SchoolUsersComponent }
+					{ path: 'users/view', component: SchoolUsersComponent },
+					{ path: 'users/add', component: SchoolUpsertUsersComponent }
 				]
 			},
 			{
-				path: 'approver',
+				path: 'reviewer',
 				component: ApproverDashboardComponent,
 				children: []
+			},
+			{
+				path: 'teacher',
+				component: TeacherDashboardComponent,
+				children: [
+					{ path: 'my-questions', component: QuestionsListComponent },
+					{ path: 'all-questions', component: QuestionsListComponent }
+				]
 			}
 		]
 	},
 
-	{ path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+	{ path: '', redirectTo: 'roles', pathMatch: 'full' },
 
 	{ path: 'roles', component: RoleSelectionComponent, canActivate: [ AuthGuard ] },
 	{ path: 'login', component: LoginComponent },

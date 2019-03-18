@@ -16,5 +16,8 @@ export class User {
 	public prevSchools: School[];
 	public roles: Role[];
 
-	constructor() {}
+	constructor() {
+		this.roles = [];
+		this.prevSchools = [];
+	}
 }

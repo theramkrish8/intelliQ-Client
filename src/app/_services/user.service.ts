@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { AppResponse } from '../_models/app-response.model';
 import { RestService } from './rest.service';
 import { User } from '../_models/user.model';
+import { RoleType } from '../_models/enums';
 
 @Injectable()
 export class UserService implements OnInit {
@@ -68,6 +69,18 @@ export class UserService implements OnInit {
 	}
 	getUsersBySchoolId(schoolId: string) {
 		return this.restService.get('user/all/school/' + schoolId, null).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
+	getUsersBySchoolIdAndRoleType(schoolId: string, roleType: RoleType ){
+		return this.restService.get('user/all/school/' + schoolId + '/' + roleType, null).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {

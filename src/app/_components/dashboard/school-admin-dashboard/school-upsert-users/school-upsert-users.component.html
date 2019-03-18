@@ -2,20 +2,20 @@
   <div class="col-xs-offset-3">
 
     <div class="row">
-
       <div class="form-group col-xs-9">
-        <h3>Add User:</h3>
+        <h3>Select Role:</h3>
         <select [disabled]="roleType!==''" class="form-control" [(ngModel)]="roleType" name="roleType">
           <option value="" disabled selected>Select Role</option>
           <option value="reviewer">Reviewer</option>
           <option value="teacher">Teacher</option>
         </select>
       </div>
+      <button class="btn btn-link" (click)="resetForm()">Reset Form</button>
     </div>
 
     <br>
 
-    <form *ngIf="roleType" class="row"  >
+    <form *ngIf="roleType" class="row">
       <div class="form-group form-inline row">
         <label class="col-xs-3">Mobile</label>
         <input #mobileTxt type="text" name="mobile" maxlength="10" class="form-control col-xs-3"
@@ -29,24 +29,33 @@
       <div *ngIf="userSearchDone" class="form-group form-inline row">
         <label class="col-xs-3">Standards</label>
         <div class="col-xs-4">
-          <button *ngFor="let std of stds" (click)="selectedStd=std;"
-            [ngClass]="stdMap.has(std)?'btn-success':'btn-default'" class="btn form-control">{{std}}</button>
+          <button *ngFor="let std of stds" (click)="selectedStd=std;selectedSubject=''"
+            [ngClass]="getClassForStandard(std)" class="btn form-control">{{std}}</button>
         </div>
       </div>
       <div *ngIf="selectedStd!=-1">
         <div class="form-group form-inline row">
           <label class="col-xs-3">Subjects</label>
           <div class="col-xs-6">
-            <button *ngFor="let subject of subjects" (click)="addRemoveSubject(subject)"
+            <button *ngFor="let subject of subjects" (click)="selectedSubject=subject.title;addRemoveSubject(subject);"
               [ngClass]="getClassForSubject(subject)" class="btn">{{subject.title}}</button>
           </div>
         </div>
-        <div class="col-xs-offset-3 col-xs-4">
-          <button (click)="addUser()" class="btn- btn-primary form-control">Add as {{roleType}}</button>
+      </div>
+      <div *ngIf="roleType=='teacher' && selectedSubject">
+        <div class="form-group form-inline row">
+          <label class="col-xs-3">Reviewer</label>
+            <select (change)="updateReviewer()" class="form-control col-xs-3" [(ngModel)]="selectedReviewerId" name="reviewer">
+              <option value="" disabled>Select Reviewer</option>
+              <option *ngFor="let reviewer of reviewerMap.get(selectedStd)?.get(selectedSubject)" [value]="reviewer.userId">{{reviewer.name}}
+            </option>
+           </select>       
         </div>
       </div>
+      <div class="col-xs-offset-3 col-xs-4" *ngIf="stdMap.size>0">
+        <button (click)="addUser()" class="btn- btn-primary form-control">Save</button>
+      </div>
     </form>
-
   </div>
 
 </div>

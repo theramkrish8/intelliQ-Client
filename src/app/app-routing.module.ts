@@ -57,7 +57,7 @@ const routes: Routes = [
 					{ path: '', redirectTo: 'profile', pathMatch: 'full' },
 					{ path: 'profile', component: SchoolProfileComponent },
 					{ path: 'users/view', component: SchoolUsersComponent },
-					{ path: 'users/add', component: SchoolUpsertUsersComponent }
+					{ path: 'users/upsert', component: SchoolUpsertUsersComponent }
 				]
 			},
 			{

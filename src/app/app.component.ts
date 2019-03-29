@@ -1,6 +1,5 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from './_models/user.model';
-import { RestService } from './_services/rest.service';
 import { UserService } from './_services/user.service';
 
 @Component({
@@ -12,7 +11,7 @@ export class AppComponent implements OnInit {
 	title = 'IntelliQ';
 	currentUser: User;
 	loggedIn = false;
-	constructor(private userService: UserService, private restService: RestService) {}
+	constructor(private userService: UserService) {}
 
 	ngOnInit() {
 		this.userService.userDetailsUpdated.subscribe((user: User) => {

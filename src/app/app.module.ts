@@ -9,10 +9,10 @@ import { DashboardComponent } from './_components/dashboard/dashboard.component'
 import { AuthGuard } from './_guards/auth.guard';
 import { AuthenticationService } from './_services/authentication.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { QuestionsListComponent } from './_components/dashboard/questions-list/questions-list.component';
 import { UserService } from './_services/user.service';
 import { RestService } from './_services/rest.service';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { RoleSelectionComponent } from './_components/role-selection/role-selection.component';
 import { TeacherDashboardComponent } from './_components/dashboard/teacher-dashboard/teacher-dashboard.component';
 import { GroupAdminDashboardComponent } from './_components/dashboard/group-admin-dashboard/group-admin-dashboard.component';
@@ -51,7 +51,6 @@ import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin
 		LoginComponent,
 		PageNotFoundComponent,
 		DashboardComponent,
-		QuestionsListComponent,
 		RoleSelectionComponent,
 		TeacherDashboardComponent,
 		GroupAdminDashboardComponent,
@@ -79,6 +78,7 @@ import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin
 		FormsModule,
 		ReactiveFormsModule,
 		HttpModule,
+		HttpClientModule,
 		BrowserAnimationsModule,
 		ToastrModule.forRoot(),
 		AngularFontAwesomeModule,

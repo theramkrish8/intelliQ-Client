@@ -4,7 +4,6 @@ import { DashboardComponent } from './_components/dashboard/dashboard.component'
 import { PageNotFoundComponent } from './_components/page-not-found/page-not-found.component';
 import { LoginComponent } from './_components/login/login.component';
 import { AuthGuard } from './_guards/auth.guard';
-import { QuestionsListComponent } from './_components/dashboard/questions-list/questions-list.component';
 import { RoleSelectionComponent } from './_components/role-selection/role-selection.component';
 import { TeacherDashboardComponent } from './_components/dashboard/teacher-dashboard/teacher-dashboard.component';
 import { SuperAdminDashboardComponent } from './_components/dashboard/super-admin-dashboard/super-admin-dashboard.component';
@@ -68,10 +67,7 @@ const routes: Routes = [
 			{
 				path: 'teacher',
 				component: TeacherDashboardComponent,
-				children: [
-					{ path: 'my-questions', component: QuestionsListComponent },
-					{ path: 'all-questions', component: QuestionsListComponent }
-				]
+				children: []
 			}
 		]
 	},

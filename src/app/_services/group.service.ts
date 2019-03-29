@@ -23,7 +23,7 @@ export class GroupService {
 		);
 	}
 	getGroupByCode(code: String): Observable<Group> {
-		return this.restService.get('group/info/code/' + code, null).pipe(
+		return this.restService.get('group/info/code/' + code).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {
@@ -36,7 +36,7 @@ export class GroupService {
 		);
 	}
 	getAllGroups(): Observable<Group[]> {
-		return this.restService.get('group/all/1', null).pipe(
+		return this.restService.get('group/all/1').pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {

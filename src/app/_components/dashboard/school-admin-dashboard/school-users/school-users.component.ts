@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/_services/user.service';
 import { LocalStorageService } from 'src/app/_services/local-storage.service';
 import { User } from 'src/app/_models/user.model';
+import { RoleType } from 'src/app/_models/enums';
 
 @Component({
 	selector: 'app-school-users',
@@ -21,16 +22,40 @@ export class SchoolUsersComponent implements OnInit {
 				this.users = users;
 			});
 	}
-	removeUser(userID) {
-		this.userService
-			.removeUser(this.localStorageService.getCurrentUser().school.schoolId, userID)
-			.subscribe((response) => {
+	removeUser(user: User) {
+		if (this.isAdmin(user)) {
+			user.roles = user.roles.filter(
+				(role) => role.roleType === RoleType.GROUPADMIN || role.roleType === RoleType.SCHOOLADMIN
+			);
+			this.userService.updateUser(user).subscribe((response) => {
 				if (response) {
-					this.users = this.users.filter(function(user: User) {
-						return user.userId !== userID;
+					this.users = this.users.filter(function(_user: User) {
+						return _user.userId !== user.userId;
 					});
 					this.selectedUser = null;
 				}
 			});
+		} else {
+			this.userService
+				.removeUser(this.localStorageService.getCurrentUser().school.schoolId, user.userId)
+				.subscribe((response) => {
+					if (response) {
+						this.users = this.users.filter(function(_user: User) {
+							return _user.userId !== user.userId;
+						});
+						this.selectedUser = null;
+					}
+				});
+		}
+	}
+	isAdmin(user: User) {
+		if (
+			user.roles.findIndex(
+				(role) => role.roleType === RoleType.GROUPADMIN || role.roleType === RoleType.SCHOOLADMIN
+			) > -1
+		) {
+			return true;
+		}
+		return false;
 	}
 }

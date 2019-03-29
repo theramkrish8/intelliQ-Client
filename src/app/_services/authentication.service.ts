@@ -60,12 +60,16 @@ export class AuthenticationService implements OnInit {
 	}
 
 	refreshDetails(userId: String) {
-		this.restService.get('user/info/_id/' + userId, []).subscribe((appResponse: AppResponse) => {
+		this.restService.get('user/info/_id/' + userId).subscribe((appResponse: AppResponse) => {
 			if (appResponse.status === ResponseStatus.ERROR) {
 				this.notificationService.showErrorWithTimeout(appResponse.msg, null, 2000);
 				this.logout(false, true);
 			} else if (appResponse.status === ResponseStatus.SUCCESS) {
-				this.persistUser(appResponse.body);
+				if (appResponse.body) {
+					this.persistUser(appResponse.body);
+				} else {
+					this.logout(true, true);
+				}
 			}
 		});
 	}

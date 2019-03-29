@@ -12,7 +12,6 @@ import { School } from 'src/app/_models/school.model';
 import { Role } from 'src/app/_models/role.model';
 import { RoleType } from 'src/app/_models/enums';
 import { Standard } from 'src/app/_models/standard.model';
-import { retryWhen } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-school-upsert-users',
@@ -30,12 +29,11 @@ export class SchoolUpsertUsersComponent implements OnInit {
 	stdMap = new Map<number, Map<string, Subject>>();
 	reviewerMap: Map<number, Map<string, User[]>>;
 	prevMobile = '';
-	reviewers: User[];
 	selectedSubject = '';
-	reviewer = '';
 	selectedReviewerId = '';
 	lastClickedStd = -1;
 	lastClickedSub = '';
+	isTeacher: boolean;
 	constructor(
 		private utilityService: UtilityService,
 		private userService: UserService,
@@ -47,6 +45,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 		this.user = new User();
 	}
 	@ViewChild('mobileTxt') mobileElem: ElementRef;
+	@ViewChild('nameTxt') nameElem: ElementRef;
 	ngOnInit() {
 		this.loggedUser = this.localStorageService.getCurrentUser();
 
@@ -65,8 +64,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 		this.userService
 			.getUsersBySchoolIdAndRoleType(this.loggedUser.school.schoolId, RoleType.REVIEWER)
 			.subscribe((reviewers: User[]) => {
-				this.reviewers = reviewers;
-				this.createReviewerMap(this.reviewers);
+				this.createReviewerMap(reviewers);
 			});
 	}
 
@@ -77,11 +75,9 @@ export class SchoolUpsertUsersComponent implements OnInit {
 		this.prevMobile = this.user.mobile;
 		if (this.utilityService.isValidMobile(this.user.mobile)) {
 			this.userService.getUserByMobile(this.user.mobile).subscribe((user: User) => {
-				this.stdMap = new Map();
-				this.selectedStd = -1;
-
+				this.resetForm(false);
 				if (user) {
-					if (user.school.schoolId !== this.loggedUser.school.schoolId) {
+					if (user.school.code && user.school.schoolId !== this.loggedUser.school.schoolId) {
 						this.notificationService.showErrorWithTimeout(
 							'User is not part of school ' + this.loggedUser.school.shortName,
 							null,
@@ -100,6 +96,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 					this.user = new User();
 					this.user.mobile = this.mobileElem.nativeElement.value;
 					this.userSearchDone = true;
+					this.nameElem.nativeElement.focus();
 				}
 			});
 		} else {
@@ -119,13 +116,15 @@ export class SchoolUpsertUsersComponent implements OnInit {
 		});
 	}
 	addRemoveSubject(subject: Subject) {
-		this.verifyLastClickedReviewer();
+		if (this.isTeacher) {
+			this.verifyLastClickedReviewer();
+		}
 		var subjectMap: Map<string, Subject>;
 		if (this.stdMap.has(this.selectedStd)) {
 			subjectMap = this.stdMap.get(this.selectedStd);
 			if (subjectMap.has(subject.title)) {
 				if (
-					this.roleType === 'teacher' &&
+					this.isTeacher &&
 					!(this.lastClickedStd === this.selectedStd && this.lastClickedSub === subject.title)
 				) {
 					// clicked on previously added subject 1st time to select
@@ -143,7 +142,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 			} else {
 				this.lastClickedStd = this.selectedStd;
 				this.lastClickedSub = subject.title;
-				if (this.roleType === 'teacher' && !this.reviewersExist(subject)) {
+				if (this.isTeacher && !this.reviewersExist(subject)) {
 					return;
 				}
 				this.setReviewer();
@@ -152,7 +151,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 		} else {
 			this.lastClickedStd = this.selectedStd;
 			this.lastClickedSub = subject.title;
-			if (this.roleType === 'teacher' && !this.reviewersExist(subject)) {
+			if (this.isTeacher && !this.reviewersExist(subject)) {
 				return;
 			}
 			this.setReviewer();
@@ -184,7 +183,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 		} else {
 			cls = 'btn-default';
 		}
-		if (this.roleType === 'teacher' && this.selectedSubject === subject.title) {
+		if (this.isTeacher && this.selectedSubject === subject.title) {
 			cls += ' active btn-boundary-subject';
 		}
 		return cls;
@@ -203,15 +202,18 @@ export class SchoolUpsertUsersComponent implements OnInit {
 			return;
 		}
 
-		var roleType = this.roleType === 'teacher' ? RoleType.TEACHER : RoleType.REVIEWER;
+		var roleType = this.isTeacher ? RoleType.TEACHER : RoleType.REVIEWER;
 		var newRole = new Role(roleType);
 		this.stdMap.forEach((subjects: Map<string, Subject>, key: number) => {
 			var standard = new Standard(key);
 			subjects.forEach((subject: Subject) => {
-				standard.subjects.push(subject);
+				if (!this.isTeacher || subject.reviewerId) {
+					standard.subjects.push(subject);
+				}
 			});
-
-			newRole.stds.push(standard);
+			if (standard.subjects.length > 0) {
+				newRole.stds.push(standard);
+			}
 		});
 		var selectedRoleIndex = this.findRoleIndex();
 
@@ -234,7 +236,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 	}
 
 	findRoleIndex() {
-		var roleType = this.roleType === 'teacher' ? RoleType.TEACHER : RoleType.REVIEWER;
+		var roleType = this.isTeacher ? RoleType.TEACHER : RoleType.REVIEWER;
 		return this.user.roles.findIndex((x) => x.roleType === roleType);
 	}
 
@@ -296,18 +298,18 @@ export class SchoolUpsertUsersComponent implements OnInit {
 	updateReviewer() {
 		this.stdMap.get(this.selectedStd).get(this.selectedSubject).reviewerId = this.selectedReviewerId;
 	}
-	resetForm() {
-		this.user = new User();
-		this.userSearchDone = false;
+	resetForm(resetAll: boolean) {
+		if (resetAll) {
+			this.user = new User();
+			this.userSearchDone = false;
+			this.roleType = '';
+			this.prevMobile = '';
+		}
 		this.stdMap = new Map();
 		this.selectedStd = -1;
-		this.roleType = '';
 		this.selectedSubject = '';
-		this.prevMobile = '';
-		this.reviewer = '';
 		this.selectedReviewerId = '';
 		this.lastClickedStd = -1;
 		this.lastClickedSub = '';
-		this.createReviewerMap(this.reviewers);
 	}
 }

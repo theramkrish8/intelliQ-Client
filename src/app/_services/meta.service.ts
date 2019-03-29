@@ -12,7 +12,7 @@ export class MetaService {
 	constructor(private restService: RestService, private utilityService: UtilityService) {}
 
 	getMeta(): Observable<Meta> {
-		return this.restService.get('meta/read', null).pipe(
+		return this.restService.get('meta/read').pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, false, false);
 				if (result === null) {

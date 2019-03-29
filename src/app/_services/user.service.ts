@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 import { UtilityService } from './utility.service';
 import { map } from 'rxjs/operators';
@@ -10,7 +10,7 @@ import { RoleType } from '../_models/enums';
 
 @Injectable()
 export class UserService implements OnInit {
-	userDetailsUpdated = new Subject();
+	userDetailsUpdated = new BehaviorSubject<User>(null);
 	constructor(
 		private localStorageService: LocalStorageService,
 		private utilityService: UtilityService,
@@ -31,7 +31,7 @@ export class UserService implements OnInit {
 	}
 
 	getUserByMobile(mobile: string) {
-		return this.restService.get('user/info/mobile/' + mobile, null).pipe(
+		return this.restService.get('user/info/mobile/' + mobile).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {
@@ -68,7 +68,7 @@ export class UserService implements OnInit {
 		);
 	}
 	getUsersBySchoolId(schoolId: string) {
-		return this.restService.get('user/all/school/' + schoolId, null).pipe(
+		return this.restService.get('user/all/school/' + schoolId).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {
@@ -79,8 +79,8 @@ export class UserService implements OnInit {
 			})
 		);
 	}
-	getUsersBySchoolIdAndRoleType(schoolId: string, roleType: RoleType ){
-		return this.restService.get('user/all/school/' + schoolId + '/' + roleType, null).pipe(
+	getUsersBySchoolIdAndRoleType(schoolId: string, roleType: RoleType) {
+		return this.restService.get('user/all/school/' + schoolId + '/' + roleType).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {

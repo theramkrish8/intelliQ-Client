@@ -4,13 +4,14 @@
     <div class="row">
       <div class="form-group col-xs-9">
         <h3>Select Role:</h3>
-        <select [disabled]="roleType!==''" class="form-control" [(ngModel)]="roleType" name="roleType">
+        <select [disabled]="roleType!==''" class="form-control"
+         [(ngModel)]="roleType" name="roleType" (ngModelChange)="isTeacher=roleType==='teacher'"> 
           <option value="" disabled selected>Select Role</option>
           <option value="reviewer">Reviewer</option>
           <option value="teacher">Teacher</option>
         </select>
       </div>
-      <button class="btn btn-link" (click)="resetForm()">Reset Form</button>
+      <button class="btn btn-link" (click)="resetForm(true)">Reset Form</button>
     </div>
 
     <br>
@@ -23,7 +24,7 @@
       </div>
       <div class="form-group form-inline row">
         <label class="col-xs-3">Full Name</label>
-        <input [disabled]="user.userId" type="text" name="fullname" class="form-control col-xs-3"
+        <input #nameTxt  [disabled]="user.userId" type="text" name="fullname" class="form-control col-xs-3"
           [(ngModel)]="user.name">
       </div>
       <div *ngIf="userSearchDone" class="form-group form-inline row">
@@ -45,7 +46,7 @@
       <div *ngIf="roleType=='teacher' && selectedSubject">
         <div class="form-group form-inline row">
           <label class="col-xs-3">Reviewer</label>
-            <select (change)="updateReviewer()" class="form-control col-xs-3" [(ngModel)]="selectedReviewerId" name="reviewer">
+            <select (change)="updateReviewer()"class="form-control col-xs-3" [(ngModel)]="selectedReviewerId" name="reviewer">
               <option value="" disabled>Select Reviewer</option>
               <option *ngFor="let reviewer of reviewerMap.get(selectedStd)?.get(selectedSubject)" [value]="reviewer.userId">{{reviewer.name}}
             </option>

@@ -26,7 +26,7 @@ export class SchoolService {
 	}
 
 	getSchoolBySchoolCode(schoolCode: string) {
-		return this.restService.get('school/info/code/' + schoolCode, null).pipe(
+		return this.restService.get('school/info/code/' + schoolCode).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {
@@ -39,7 +39,7 @@ export class SchoolService {
 		);
 	}
 	getSchoolByGroupCode(groupCode: string) {
-		return this.restService.get('school/all/code/' + groupCode, null).pipe(
+		return this.restService.get('school/all/code/' + groupCode).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {
@@ -51,7 +51,7 @@ export class SchoolService {
 		);
 	}
 	getSchoolsByGroupId(groupId: string) {
-		return this.restService.get('school/all/_id/' + groupId, null).pipe(
+		return this.restService.get('school/all/_id/' + groupId).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {

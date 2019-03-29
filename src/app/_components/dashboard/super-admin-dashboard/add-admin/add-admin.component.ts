@@ -3,7 +3,6 @@ import { NotificationService } from 'src/app/_services/notification.service';
 import { SchoolService } from 'src/app/_services/school.service';
 import { GroupService } from 'src/app/_services/group.service';
 import { School } from 'src/app/_models/school.model';
-import { Observable } from 'rxjs';
 import { UserService } from 'src/app/_services/user.service';
 import { User } from 'src/app/_models/user.model';
 import { Role } from 'src/app/_models/role.model';
@@ -36,10 +35,7 @@ export class AddAdminComponent implements OnInit {
 		this.adminType = '';
 	}
 
-	ngOnInit() {
-		this.groupCode = 'GP_DPS';
-		this.schoolCode = 'DPS_560102';
-	}
+	ngOnInit() {}
 
 	findSchool() {
 		if (this.schoolCode) {
@@ -69,7 +65,7 @@ export class AddAdminComponent implements OnInit {
 	findUser() {
 		if (this.mobile && this.mobile.length === 10) {
 			this.userService.getUserByMobile(this.mobile).subscribe((user: User) => {
-				if (user && user.school.group.groupId !== this.selectedGroup.groupId) {
+				if (user && user.school.schoolId && user.school.group.groupId !== this.selectedGroup.groupId) {
 					this.notificationService.showErrorWithTimeout(
 						'User is not part of group ' + this.selectedGroup.code,
 						null,
@@ -122,7 +118,20 @@ export class AddAdminComponent implements OnInit {
 	}
 
 	assignRoleToUser() {
-		var roleType: any;
+		var roleType: any, school: School;
+
+		if (!this.selectedUser.school.code) {
+			// for deleted user
+			if (this.adminType === 'schoolAdmin') {
+				school = this.selectedSchool;
+			} else {
+				school = new School();
+				school.code = 'MASTER';
+				school.group = this.selectedGroup;
+			}
+			this.selectedUser.school = school;
+		}
+
 		if (this.adminType === 'schoolAdmin') {
 			roleType = RoleType.SCHOOLADMIN;
 			this.selectedUser.school = this.selectedSchool;
@@ -137,8 +146,8 @@ export class AddAdminComponent implements OnInit {
 	}
 	resetForm() {
 		this.adminType = '';
-		this.groupCode = 'GP_DPS';
-		this.schoolCode = 'DPS_560102';
+		this.groupCode = '';
+		this.schoolCode = '';
 		this.selectedSchool = null;
 		this.mobile = '';
 		this.selectedUser = null;

@@ -15,15 +15,9 @@ import { UtilityService } from 'src/app/_services/utility.service';
 export class RoleSelectionComponent implements OnInit, OnDestroy {
 	userSubscription: Subscription;
 	roles: string[];
-	constructor(
-		private userService: UserService,
-		private router: Router,
-		private localStorageService: LocalStorageService,
-		private utilityService: UtilityService
-	) {}
+	constructor(private userService: UserService, private router: Router) {}
 
 	ngOnInit() {
-		this.roles = this.userService.getUserRoles();
 		this.initiateSubscriptions();
 	}
 

@@ -12,7 +12,7 @@ export class NotificationService {
 		});
 	}
 
-	showErrorWithTimeout(message, title, timespan) {
+	showErrorWithTimeout(message: string, title: string, timespan: number) {
 		this.toastr.error(message, title, {
 			timeOut: timespan,
 			positionClass: 'toast-top-center'

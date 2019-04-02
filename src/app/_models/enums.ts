@@ -21,7 +21,8 @@ export enum DifficultyType {
 
 export enum ResponseStatus {
 	SUCCESS = 204,
-	ERROR = 402
+	ERROR = 402,
+	FORBIDDEN = 403
 }
 export enum QuestionStatus {
 	NEW = 0,

@@ -2,10 +2,16 @@ import { RoleType, ResponseStatus } from '../_models/enums';
 import { AppResponse } from '../_models/app-response.model';
 import { NotificationService } from './notification.service';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable()
 export class UtilityService {
-	constructor(private notificationService: NotificationService) {}
+	constructor(
+		private notificationService: NotificationService,
+		private localStorageService: LocalStorageService,
+		private router: Router
+	) {}
 
 	getRoleDescription(roleType: RoleType) {
 		switch (roleType) {
@@ -48,7 +54,13 @@ export class UtilityService {
 
 	getAppResponse(appResponse: AppResponse, showError: boolean, showSuccess: boolean) {
 		var timeOut = 3000;
-		if (appResponse.status === ResponseStatus.ERROR) {
+		if (appResponse.status === ResponseStatus.FORBIDDEN) {
+			this.notificationService.showErrorWithTimeout(appResponse.msg, null, timeOut);
+			this.localStorageService.removeItemsFromLocalStorage([ 'user', 'group', 'school' ]);
+			this.router.navigate([ '/login' ]);
+
+			return null;
+		} else if (appResponse.status === ResponseStatus.ERROR) {
 			if (showError) {
 				this.notificationService.showErrorWithTimeout(appResponse.msg, null, timeOut);
 			}

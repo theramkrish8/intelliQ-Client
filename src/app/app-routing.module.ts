@@ -21,6 +21,8 @@ import { SchoolProfileComponent } from './_components/dashboard/school-admin-das
 import { SchoolUsersComponent } from './_components/dashboard/school-admin-dashboard/school-users/school-users.component';
 import { UserProfileComponent } from './_components/user-profile/user-profile.component';
 import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin-dashboard/school-upsert-users/school-upsert-users.component';
+import { AddQuestionComponent } from './_components/dashboard/teacher-dashboard/add-question/add-question.component';
+import { ViewQuestionsComponent } from './_components/dashboard/teacher-dashboard/view-questions/view-questions.component';
 
 const routes: Routes = [
 	{
@@ -31,43 +33,52 @@ const routes: Routes = [
 			{
 				path: 'super-admin',
 				component: SuperAdminDashboardComponent,
+				canActivate: [ AuthGuard ],
 				children: [
 					{ path: '', redirectTo: 'group', pathMatch: 'full' },
-					{ path: 'group', component: AddGroupComponent },
-					{ path: 'school', component: AddSchoolComponent },
-					{ path: 'admin', component: AddAdminComponent },
-					{ path: 'metadata', component: UpsertMetadataComponent }
+					{ path: 'group', component: AddGroupComponent, canActivate: [ AuthGuard ] },
+					{ path: 'school', component: AddSchoolComponent, canActivate: [ AuthGuard ] },
+					{ path: 'admin', component: AddAdminComponent, canActivate: [ AuthGuard ] },
+					{ path: 'metadata', component: UpsertMetadataComponent, canActivate: [ AuthGuard ] }
 				]
 			},
 			{
 				path: 'group-admin',
 				component: GroupAdminDashboardComponent,
+				canActivate: [ AuthGuard ],
 				children: [
 					{ path: '', redirectTo: 'profile', pathMatch: 'full' },
-					{ path: 'profile', component: GroupProfileComponent },
-					{ path: 'schools', component: GroupSchoolsComponent },
-					{ path: 'subjects', component: GroupSubjectsComponent }
+					{ path: 'profile', component: GroupProfileComponent, canActivate: [ AuthGuard ] },
+					{ path: 'schools', component: GroupSchoolsComponent, canActivate: [ AuthGuard ] },
+					{ path: 'subjects', component: GroupSubjectsComponent, canActivate: [ AuthGuard ] }
 				]
 			},
 			{
 				path: 'school-admin',
 				component: SchoolAdminDashboardComponent,
+				canActivate: [ AuthGuard ],
 				children: [
 					{ path: '', redirectTo: 'profile', pathMatch: 'full' },
-					{ path: 'profile', component: SchoolProfileComponent },
-					{ path: 'users/view', component: SchoolUsersComponent },
-					{ path: 'users/upsert', component: SchoolUpsertUsersComponent }
+					{ path: 'profile', component: SchoolProfileComponent, canActivate: [ AuthGuard ] },
+					{ path: 'users/view', component: SchoolUsersComponent, canActivate: [ AuthGuard ] },
+					{ path: 'users/upsert', component: SchoolUpsertUsersComponent, canActivate: [ AuthGuard ] }
 				]
 			},
 			{
 				path: 'reviewer',
 				component: ApproverDashboardComponent,
+				canActivate: [ AuthGuard ],
 				children: []
 			},
 			{
 				path: 'teacher',
 				component: TeacherDashboardComponent,
-				children: []
+				canActivate: [ AuthGuard ],
+				children: [
+					{ path: '', redirectTo: 'add-question', pathMatch: 'full' },
+					{ path: 'add-question', component: AddQuestionComponent, canActivate: [AuthGuard] },
+					{ path: 'view-questions', component: ViewQuestionsComponent, canActivate: [AuthGuard] },
+				]
 			}
 		]
 	},

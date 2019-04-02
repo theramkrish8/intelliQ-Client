@@ -5,6 +5,7 @@ import { AuthenticationService } from 'src/app/_services/authentication.service'
 import { User } from 'src/app/_models/user.model';
 import { AppResponse } from 'src/app/_models/app-response.model';
 import { ResponseStatus } from 'src/app/_models/enums';
+import { UserService } from 'src/app/_services/user.service';
 
 @Component({
 	selector: 'app-login',
@@ -19,16 +20,17 @@ export class LoginComponent implements OnInit {
 		private formBuilder: FormBuilder,
 		private authenticationService: AuthenticationService,
 		private router: Router,
-		private route: ActivatedRoute
+		private route: ActivatedRoute,
+		private userService: UserService
 	) {}
 
 	ngOnInit() {
 		this.loginForm = this.formBuilder.group({
-			mobile: [ '', Validators.required ],
-			password: [ '', Validators.required ]
+			mobile: [ '8888888888', Validators.required ],
+			password: [ 'TP_8888888888', Validators.required ]
 		});
 		this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/roles';
-		this.authenticationService.logout(this.returnUrl !== '/roles', false);
+		this.userService.userDetailsUpdated.next(null);
 	}
 
 	onSubmit() {

@@ -44,6 +44,9 @@ import { SchoolUsersComponent } from './_components/dashboard/school-admin-dashb
 import { UserTypePipe } from './_pipes/user-type.pipe';
 import { UserProfileComponent } from './_components/user-profile/user-profile.component';
 import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin-dashboard/school-upsert-users/school-upsert-users.component';
+import { CookieService } from 'ngx-cookie-service';
+import { AddQuestionComponent } from './_components/dashboard/teacher-dashboard/add-question/add-question.component';
+import { ViewQuestionsComponent } from './_components/dashboard/teacher-dashboard/view-questions/view-questions.component';
 
 @NgModule({
 	declarations: [
@@ -70,7 +73,9 @@ import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin
 		SchoolUsersComponent,
 		UserTypePipe,
 		UserProfileComponent,
-		SchoolUpsertUsersComponent
+		SchoolUpsertUsersComponent,
+		AddQuestionComponent,
+		ViewQuestionsComponent
 	],
 	imports: [
 		BrowserModule,
@@ -95,7 +100,8 @@ import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin
 		NotificationService,
 		UtilityService,
 		SchoolService,
-		MetaService
+		MetaService,
+		CookieService
 	],
 
 	bootstrap: [ AppComponent ]

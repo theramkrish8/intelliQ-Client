@@ -14,7 +14,9 @@
       <ul class="nav navbar-nav navbar-right">
         <li *ngIf="loggedIn"><a [routerLink]="['/profile']"><span class="glyphicon glyphicon-user"></span>Hi,
             {{currentUser?.name | titlecase}} </a></li>
-        <li *ngIf="loggedIn"><a [routerLink]="['/login']"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+        <li *ngIf="loggedIn">
+          <button class="btn btn-link"  (click)="logout()">Logout</button>
+          <!-- <a (click)="logout()"><span class="glyphicon glyphicon-log-out"></span> Logout</a> -->
         </li>
       </ul>
     </div>

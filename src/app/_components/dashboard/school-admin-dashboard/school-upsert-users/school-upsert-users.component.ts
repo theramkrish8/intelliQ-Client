@@ -12,6 +12,7 @@ import { School } from 'src/app/_models/school.model';
 import { Role } from 'src/app/_models/role.model';
 import { RoleType } from 'src/app/_models/enums';
 import { Standard } from 'src/app/_models/standard.model';
+import { Contributer } from 'src/app/_models/question.model';
 
 @Component({
 	selector: 'app-school-upsert-users',
@@ -166,7 +167,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 			var subjectMap = this.stdMap.get(this.lastClickedStd);
 			if (subjectMap) {
 				var subject = subjectMap.get(this.lastClickedSub);
-				if (subject && !subject.reviewerId) {
+				if (subject && !subject.reviewer.userId) {
 					subjectMap.delete(this.lastClickedSub);
 					if (subjectMap.size === 0) {
 						this.stdMap.delete(this.lastClickedStd);
@@ -207,7 +208,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 		this.stdMap.forEach((subjects: Map<string, Subject>, key: number) => {
 			var standard = new Standard(key);
 			subjects.forEach((subject: Subject) => {
-				if (!this.isTeacher || subject.reviewerId) {
+				if (!this.isTeacher || subject.reviewer.userId) {
 					standard.subjects.push(subject);
 				}
 			});
@@ -272,15 +273,14 @@ export class SchoolUpsertUsersComponent implements OnInit {
 	}
 
 	setReviewer() {
-		if (this.user.userId) {
-			if (this.stdMap.has(this.selectedStd)) {
-				var subjectMap = this.stdMap.get(this.selectedStd);
-				if (subjectMap.has(this.selectedSubject)) {
-					this.selectedReviewerId = subjectMap.get(this.selectedSubject).reviewerId;
-					return;
-				}
+		if (this.stdMap.has(this.selectedStd)) {
+			var subjectMap = this.stdMap.get(this.selectedStd);
+			if (subjectMap.has(this.selectedSubject)) {
+				this.selectedReviewerId = subjectMap.get(this.selectedSubject).reviewer.userId;
+				return;
 			}
 		}
+
 		this.selectedReviewerId = '';
 	}
 
@@ -296,7 +296,15 @@ export class SchoolUpsertUsersComponent implements OnInit {
 		return false;
 	}
 	updateReviewer() {
-		this.stdMap.get(this.selectedStd).get(this.selectedSubject).reviewerId = this.selectedReviewerId;
+		var selectedRev = this.reviewerMap
+			.get(this.selectedStd)
+			.get(this.selectedSubject)
+			.find((x) => x.userId === this.selectedReviewerId);
+
+		this.stdMap.get(this.selectedStd).get(this.selectedSubject).reviewer = new Contributer(
+			selectedRev.userId,
+			selectedRev.userName
+		);
 	}
 	resetForm(resetAll: boolean) {
 		if (resetAll) {

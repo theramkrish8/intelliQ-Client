@@ -6,7 +6,8 @@ import { map } from 'rxjs/operators';
 import { AppResponse } from '../_models/app-response.model';
 import { RestService } from './rest.service';
 import { User } from '../_models/user.model';
-import { RoleType } from '../_models/enums';
+import { RoleType, ResponseStatus } from '../_models/enums';
+import { NotificationService } from './notification.service';
 
 @Injectable()
 export class UserService implements OnInit {
@@ -14,7 +15,8 @@ export class UserService implements OnInit {
 	constructor(
 		private localStorageService: LocalStorageService,
 		private utilityService: UtilityService,
-		private restService: RestService
+		private restService: RestService,
+		private notificationService: NotificationService
 	) {}
 
 	ngOnInit(): void {}
@@ -43,8 +45,12 @@ export class UserService implements OnInit {
 		);
 	}
 
+	getUserById(userId: String) {
+		return this.restService.get('user/info/_id/' + userId);
+	}
+
 	addUser(user: User) {
-		return this.restService.post('user/add/', user).pipe(
+		return this.restService.post('user/add', user).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, true);
 				if (result === null) {
@@ -56,7 +62,7 @@ export class UserService implements OnInit {
 		);
 	}
 	updateUser(user: User) {
-		return this.restService.put('user/update/', user).pipe(
+		return this.restService.put('user/update', user).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, true);
 				if (result === null) {
@@ -102,5 +108,17 @@ export class UserService implements OnInit {
 				return result;
 			})
 		);
+	}
+	login(user: User) {
+		return this.restService.post('user/login', user);
+	}
+	logout() {
+		this.restService.get('user/logout').subscribe((appResponse: AppResponse) => {
+			if (appResponse.status === ResponseStatus.FORBIDDEN) {
+				this.notificationService.showSuccessWithTimeout('Logged out successfully!', null, 2000);
+			} else if (appResponse.status === ResponseStatus.SUCCESS) {
+				this.notificationService.showSuccessWithTimeout(appResponse.body, null, 2000);
+			}
+		});
 	}
 }

@@ -1,27 +1,27 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/_models/user.model';
-import { Observable } from 'rxjs';
-import { Question } from 'src/app/_models/question.model';
 import { LocalStorageService } from 'src/app/_services/local-storage.service';
 import { QuestionRequestService } from 'src/app/_services/questionRequest.service';
-import { UtilityService } from 'src/app/_services/utility.service';
-import { QuestionStatus, RoleType } from 'src/app/_models/enums';
 import { QuesRequest } from 'src/app/_dto/ques-request.dto';
+import { UtilityService } from 'src/app/_services/utility.service';
+import { RoleType, QuestionStatus } from 'src/app/_models/enums';
+import { Question } from 'src/app/_models/question.model';
+import { Observable } from 'rxjs';
 
 @Component({
-	selector: 'app-view-questions',
-	templateUrl: './view-questions.component.html',
-	styleUrls: [ './view-questions.component.css' ]
+	selector: 'app-view-requests',
+	templateUrl: './view-requests.component.html',
+	styleUrls: [ './view-requests.component.css' ]
 })
-export class ViewQuestionsComponent implements OnInit {
-	isAllQuestions = false;
+export class ViewRequestsComponent implements OnInit {
+	isRejected = false;
 	loggedInUser: User;
-	userQuestions$: Observable<Question[]>;
-	allQuestions$: Observable<Question[]>;
+	pendingQuestions$: Observable<Question[]>;
+	rejectedQuestions$: Observable<Question[]>;
 	selectedQuestion: Question;
 	tempSelectedQuestion: Question;
-	userPageIndex = 0;
-	allPageIndex = 0;
+	rejectedPageIndex = 0;
+	pendingPageIndex = 0;
 	editMode = false;
 	tags: string;
 	constructor(
@@ -32,11 +32,11 @@ export class ViewQuestionsComponent implements OnInit {
 
 	ngOnInit() {
 		this.loggedInUser = this.localStorageService.getCurrentUser();
-		this.userQuestions$ = this.quesRequestService.viewQuestionRequests(
-			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.userPageIndex)
+		this.pendingQuestions$ = this.quesRequestService.viewQuestionRequests(
+			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.PENDING, this.pendingPageIndex)
 		);
-		this.allQuestions$ = this.quesRequestService.viewAllApprovedQuestion(
-			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.allPageIndex)
+		this.rejectedQuestions$ = this.quesRequestService.viewQuestionRequests(
+			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.REJECTED, this.rejectedPageIndex)
 		);
 	}
 	createQuesRequestDto(user: User, status: QuestionStatus, pageIndex: number): QuesRequest {
@@ -49,11 +49,22 @@ export class ViewQuestionsComponent implements OnInit {
 		quesRequest.status = status;
 		return quesRequest;
 	}
-
-	onAllTabClick() {
+	getClassForStatus(status: QuestionStatus) {
+		switch (status) {
+			case QuestionStatus.NEW:
+				return 'panel panel-info';
+			case QuestionStatus.TRANSIT:
+				return 'panel panel-warning';
+			case QuestionStatus.REMOVE:
+				return 'panel panel-danger';
+			case QuestionStatus.REJECTED:
+				return 'panel panel-danger';
+		}
+	}
+	onRejectedTabClick() {
 		this.editMode = false;
 		this.selectedQuestion = null;
-		this.isAllQuestions = true;
+		this.isRejected = true;
 	}
 	deleteQuestion() {
 		this.quesRequestService.deleteQuestionRequest(this.selectedQuestion).subscribe((response) => {
@@ -72,6 +83,7 @@ export class ViewQuestionsComponent implements OnInit {
 		this.tempSelectedQuestion.tags = this.tags.split(',');
 		this.quesRequestService.updateQuestion(this.tempSelectedQuestion).subscribe((response) => {
 			if (response) {
+				document.getElementById(this.selectedQuestion.quesId).hidden = true;
 				this.selectedQuestion = null;
 				this.editMode = false;
 			}

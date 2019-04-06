@@ -8,7 +8,8 @@ import { Standard } from 'src/app/_models/standard.model';
 import { NotificationService } from 'src/app/_services/notification.service';
 import { Question, Contributer } from 'src/app/_models/question.model';
 import { School } from 'src/app/_models/school.model';
-import { QuestionService } from 'src/app/_services/question.service';
+import { QuestionRequestService } from 'src/app/_services/questionRequest.service';
+import { UtilityService } from 'src/app/_services/utility.service';
 
 @Component({
 	selector: 'app-add-question',
@@ -26,12 +27,15 @@ export class AddQuestionComponent implements OnInit {
 	constructor(
 		private localStorageService: LocalStorageService,
 		private notificationService: NotificationService,
-		private quesService: QuestionService
+		private quesRequestService: QuestionRequestService,
+		private utilityService: UtilityService
 	) {}
 
 	ngOnInit() {
 		this.loggedInUser = this.localStorageService.getCurrentUser();
-		var teacherRole = this.loggedInUser.roles[this.findRoleIndex(this.loggedInUser.roles, RoleType.TEACHER)];
+		var teacherRole = this.loggedInUser.roles[
+			this.utilityService.findRoleIndex(this.loggedInUser.roles, RoleType.TEACHER)
+		];
 		this.createSubjectReviewerMap(teacherRole.stds);
 	}
 
@@ -42,9 +46,6 @@ export class AddQuestionComponent implements OnInit {
 		});
 	}
 
-	findRoleIndex(roles: Role[], roleType: RoleType) {
-		return roles.findIndex((x) => x.roleType === roleType);
-	}
 	checkReviewer() {
 		if (!this.selectedSubject.reviewer.userId) {
 			this.notificationService.showErrorWithTimeout(
@@ -67,7 +68,7 @@ export class AddQuestionComponent implements OnInit {
 		this.question.tags = this.tags ? this.tags.split(',').map((x) => x.toLowerCase()) : [];
 		this.question.std = this.selectedStd;
 		this.question.subject = this.selectedSubject.title;
-		this.quesService.addQuestion(this.question).subscribe((response) => {
+		this.quesRequestService.addQuestion(this.question).subscribe((response) => {
 			this.resetForm();
 		});
 	}

@@ -3,9 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/_services/authentication.service';
 import { User } from 'src/app/_models/user.model';
-import { AppResponse } from 'src/app/_models/app-response.model';
 import { ResponseStatus } from 'src/app/_models/enums';
 import { UserService } from 'src/app/_services/user.service';
+import { AppResponse } from 'src/app/_dto/app-response.model';
 
 @Component({
 	selector: 'app-login',

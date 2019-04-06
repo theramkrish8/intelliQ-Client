@@ -13,7 +13,6 @@ import { map } from 'rxjs/operators';
 })
 export class GroupProfileComponent implements OnInit, OnDestroy {
 	group$: Observable<Group>;
-	dateFormat = Constants.DATE_FORMAT;
 	groupSubscription: Subscription;
 	constructor(private groupService: GroupService, private localStorageService: LocalStorageService) {}
 

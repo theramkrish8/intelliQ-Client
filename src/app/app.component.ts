@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { User } from './_models/user.model';
 import { UserService } from './_services/user.service';
 import { AuthenticationService } from './_services/authentication.service';
+import { Constants } from './_common/constants';
 
 @Component({
 	selector: 'app-root',
@@ -12,6 +13,7 @@ export class AppComponent implements OnInit {
 	title = 'IntelliQ';
 	currentUser: User;
 	loggedIn = false;
+	dateFormat = Constants.DATE_FORMAT;
 	constructor(private userService: UserService, private authService: AuthenticationService) {}
 
 	ngOnInit() {

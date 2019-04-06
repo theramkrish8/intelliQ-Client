@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GroupService } from 'src/app/_services/group.service';
 import { Group } from 'src/app/_models/group.model';
-import { AppResponse } from 'src/app/_models/app-response.model';
-import { ResponseStatus } from 'src/app/_models/enums';
-import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Component({

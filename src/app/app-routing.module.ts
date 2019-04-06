@@ -9,7 +9,6 @@ import { TeacherDashboardComponent } from './_components/dashboard/teacher-dashb
 import { SuperAdminDashboardComponent } from './_components/dashboard/super-admin-dashboard/super-admin-dashboard.component';
 import { GroupAdminDashboardComponent } from './_components/dashboard/group-admin-dashboard/group-admin-dashboard.component';
 import { SchoolAdminDashboardComponent } from './_components/dashboard/school-admin-dashboard/school-admin-dashboard.component';
-import { ApproverDashboardComponent } from './_components/dashboard/approver-dashboard/approver-dashboard.component';
 import { AddGroupComponent } from './_components/dashboard/super-admin-dashboard/add-group/add-group.component';
 import { AddSchoolComponent } from './_components/dashboard/super-admin-dashboard/add-school/add-school.component';
 import { AddAdminComponent } from './_components/dashboard/super-admin-dashboard/add-admin/add-admin.component';
@@ -23,6 +22,10 @@ import { UserProfileComponent } from './_components/user-profile/user-profile.co
 import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin-dashboard/school-upsert-users/school-upsert-users.component';
 import { AddQuestionComponent } from './_components/dashboard/teacher-dashboard/add-question/add-question.component';
 import { ViewQuestionsComponent } from './_components/dashboard/teacher-dashboard/view-questions/view-questions.component';
+import { ViewRequestsComponent } from './_components/dashboard/teacher-dashboard/view-requests/view-requests.component';
+import { GeneratePaperComponent } from './_components/dashboard/teacher-dashboard/generate-paper/generate-paper.component';
+import { ReviewerDashboardComponent } from './_components/dashboard/reviewer-dashboard/reviewer-dashboard.component';
+import { ReviewRequestsComponent } from './_components/dashboard/reviewer-dashboard/review-requests/review-requests.component';
 
 const routes: Routes = [
 	{
@@ -66,9 +69,12 @@ const routes: Routes = [
 			},
 			{
 				path: 'reviewer',
-				component: ApproverDashboardComponent,
+				component: ReviewerDashboardComponent,
 				canActivate: [ AuthGuard ],
-				children: []
+				children: [
+					{ path: '', redirectTo: 'review-requests', pathMatch: 'full' },
+					{ path: 'review-requests', component: ReviewRequestsComponent, canActivate: [ AuthGuard ] }
+				]
 			},
 			{
 				path: 'teacher',
@@ -76,8 +82,10 @@ const routes: Routes = [
 				canActivate: [ AuthGuard ],
 				children: [
 					{ path: '', redirectTo: 'add-question', pathMatch: 'full' },
-					{ path: 'add-question', component: AddQuestionComponent, canActivate: [AuthGuard] },
-					{ path: 'view-questions', component: ViewQuestionsComponent, canActivate: [AuthGuard] },
+					{ path: 'add-question', component: AddQuestionComponent, canActivate: [ AuthGuard ] },
+					{ path: 'view-questions', component: ViewQuestionsComponent, canActivate: [ AuthGuard ] },
+					{ path: 'view-requests', component: ViewRequestsComponent, canActivate: [ AuthGuard ] },
+					{ path: 'generate-paper', component: GeneratePaperComponent, canActivate: [ AuthGuard ] }
 				]
 			}
 		]

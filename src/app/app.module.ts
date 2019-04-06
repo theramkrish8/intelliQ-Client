@@ -18,7 +18,6 @@ import { TeacherDashboardComponent } from './_components/dashboard/teacher-dashb
 import { GroupAdminDashboardComponent } from './_components/dashboard/group-admin-dashboard/group-admin-dashboard.component';
 import { SchoolAdminDashboardComponent } from './_components/dashboard/school-admin-dashboard/school-admin-dashboard.component';
 import { SuperAdminDashboardComponent } from './_components/dashboard/super-admin-dashboard/super-admin-dashboard.component';
-import { ApproverDashboardComponent } from './_components/dashboard/approver-dashboard/approver-dashboard.component';
 import { LocalStorageService } from './_services/local-storage.service';
 import { QuestionService } from './_services/question.service';
 import { AddGroupComponent } from './_components/dashboard/super-admin-dashboard/add-group/add-group.component';
@@ -47,6 +46,14 @@ import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin
 import { CookieService } from 'ngx-cookie-service';
 import { AddQuestionComponent } from './_components/dashboard/teacher-dashboard/add-question/add-question.component';
 import { ViewQuestionsComponent } from './_components/dashboard/teacher-dashboard/view-questions/view-questions.component';
+import { ViewRequestsComponent } from './_components/dashboard/teacher-dashboard/view-requests/view-requests.component';
+import { GeneratePaperComponent } from './_components/dashboard/teacher-dashboard/generate-paper/generate-paper.component';
+import { QuestionRequestService } from './_services/questionRequest.service';
+import { EnumPipe } from './_pipes/enum.pipe';
+import { TrimPipe } from './_pipes/trim.pipe';
+import { ReviewerDashboardComponent } from './_components/dashboard/reviewer-dashboard/reviewer-dashboard.component';
+import { ReviewRequestsComponent } from './_components/dashboard/reviewer-dashboard/review-requests/review-requests.component';
+import { QuestionDisplayComponent } from './_components/dashboard/question-display/question-display.component';
 
 @NgModule({
 	declarations: [
@@ -59,7 +66,7 @@ import { ViewQuestionsComponent } from './_components/dashboard/teacher-dashboar
 		GroupAdminDashboardComponent,
 		SchoolAdminDashboardComponent,
 		SuperAdminDashboardComponent,
-		ApproverDashboardComponent,
+		ReviewerDashboardComponent,
 		AddGroupComponent,
 		AddSchoolComponent,
 		AddAdminComponent,
@@ -75,7 +82,13 @@ import { ViewQuestionsComponent } from './_components/dashboard/teacher-dashboar
 		UserProfileComponent,
 		SchoolUpsertUsersComponent,
 		AddQuestionComponent,
-		ViewQuestionsComponent
+		ViewQuestionsComponent,
+		ViewRequestsComponent,
+		GeneratePaperComponent,
+		EnumPipe,
+		TrimPipe,
+		ReviewRequestsComponent,
+		QuestionDisplayComponent
 	],
 	imports: [
 		BrowserModule,
@@ -96,6 +109,7 @@ import { ViewQuestionsComponent } from './_components/dashboard/teacher-dashboar
 		RestService,
 		LocalStorageService,
 		QuestionService,
+		QuestionRequestService,
 		GroupService,
 		NotificationService,
 		UtilityService,

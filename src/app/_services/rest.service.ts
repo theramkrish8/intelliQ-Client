@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { AppResponse } from '../_models/app-response.model';
+import { AppResponse } from '../_dto/app-response.model';
 import { ResponseStatus } from '../_models/enums';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
@@ -16,15 +16,15 @@ export class RestService {
 		this.baseUrl = 'https://localhost:8080/';
 	}
 
-	createOptions() {
+	createOptions(body?: any) {
 		var xsrf = this.cookieService.get('XSRF-TOKEN');
 		if (!xsrf) {
 			xsrf = '';
 		}
-		console.log('XSRF =>', xsrf);
 		this.httpOptions = {
 			headers: new HttpHeaders({ 'X-Xsrf-Token': xsrf }),
-			withCredentials: true
+			withCredentials: true,
+			body: body
 		};
 	}
 
@@ -70,9 +70,9 @@ export class RestService {
 		);
 	}
 
-	delete(method: string, body: any) {
+	delete(method: string, body?: any) {
 		this.spinner.show();
-		this.createOptions();
+		this.createOptions(body);
 		return this.http.delete(this.baseUrl + method, this.httpOptions).pipe(
 			catchError((error: HttpErrorResponse) => {
 				console.log(error);

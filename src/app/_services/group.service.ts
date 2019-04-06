@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { RestService } from './rest.service';
 import { Group } from '../_models/group.model';
 import { map } from 'rxjs/operators';
-import { AppResponse } from '../_models/app-response.model';
+import { AppResponse } from '../_dto/app-response.model';
 import { UtilityService } from './utility.service';
 import { Observable, Subject } from 'rxjs';
 

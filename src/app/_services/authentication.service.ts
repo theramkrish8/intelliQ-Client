@@ -2,7 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { UserService } from './user.service';
 import { LocalStorageService } from './local-storage.service';
 import { User } from '../_models/user.model';
-import { AppResponse } from '../_models/app-response.model';
+import { AppResponse } from '../_dto/app-response.model';
 import { ResponseStatus } from '../_models/enums';
 import { Router } from '@angular/router';
 import { NotificationService } from './notification.service';

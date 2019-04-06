@@ -1,7 +1,10 @@
 .clickable {
 	cursor: pointer;
 }
-
+.reject-reason {
+	color: red;
+	font-weight: bold;
+}
 .questionsList {
 	margin-top: 40px;
 }

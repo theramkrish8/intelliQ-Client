@@ -3,7 +3,7 @@ import { Subject, BehaviorSubject } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 import { UtilityService } from './utility.service';
 import { map } from 'rxjs/operators';
-import { AppResponse } from '../_models/app-response.model';
+import { AppResponse } from '../_dto/app-response.model';
 import { RestService } from './rest.service';
 import { User } from '../_models/user.model';
 import { RoleType, ResponseStatus } from '../_models/enums';

@@ -1,4 +1,4 @@
-import { ResponseStatus } from './enums';
+import { ResponseStatus } from '../_models/enums';
 
 export class AppResponse {
 	

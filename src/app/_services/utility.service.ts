@@ -1,9 +1,10 @@
 import { RoleType, ResponseStatus } from '../_models/enums';
-import { AppResponse } from '../_models/app-response.model';
+import { AppResponse } from '../_dto/app-response.model';
 import { NotificationService } from './notification.service';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocalStorageService } from './local-storage.service';
+import { Role } from '../_models/role.model';
 
 @Injectable()
 export class UtilityService {
@@ -78,5 +79,9 @@ export class UtilityService {
 			return true;
 		}
 		return false;
+	}
+
+	findRoleIndex(roles: Role[], roleType: RoleType) {
+		return roles.findIndex((x) => x.roleType === roleType);
 	}
 }

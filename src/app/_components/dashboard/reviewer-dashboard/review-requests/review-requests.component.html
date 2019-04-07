@@ -17,54 +17,20 @@
     <div class="col-xs-7" *ngIf="selectedQuestion">
 
       <div [ngClass]="getClassForStatus(selectedQuestion.status)">
-
         <div class="panel-heading">{{selectedQuestion.status | enum:"status"}} Request</div>
         <div class="panel-body">
-
-
-          <label class="col-xs-4">Description</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.title}}</div>
-
-          <label class="col-xs-4">Standard</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.std}}</div>
-
-          <label class="col-xs-4">Subject</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.subject}}
-          </div>
-
-          <label class="col-xs-4">Topic</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.topic}}
-          </div>
-
-          <label class="col-xs-4">Difficulty</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.difficulty | enum:'difficulty'}}</div>
-
-          <label class="col-xs-4">Type</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.length | enum:'length'}}</div>
-
-          <label class="col-xs-4">Tags</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.tags | csv:'':'?'}}</div>
-
-          <label class="col-xs-4">Teacher</label>
-          <div class="well well-sm col-xs-8">
-            {{selectedQuestion.owner?selectedQuestion.owner.userName:"Not Assigned"}}</div>
-
-          <label class="col-xs-4">Created On</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.createDate | date: dateFormat}}</div>
-
+            <app-question-display [selectedQues]="selectedQuestion"></app-question-display>
+        </div>
+        <div class="panel-footer">
           <div class="row">
-            <div *ngIf="selectedQuestion.imageUrl" class="col-xs-offset-4 col-xs-4"><img
-                [src]="selectedQuestion.imageUrl" class="img-rounded img-thumbnail" alt="">
-            </div>
+              <button class="btn btn-success col-xs-offset-1 col-xs-3" (click)="approveRequest()">Approve</button>
+              <button *ngIf="selectedQuestion.status===1" class="btn btn-primary col-xs-offset-1 col-xs-3"
+                  (click)="compareRequest()">Compare</button>
+              <button class="btn btn-danger col-xs-offset-1 col-xs-3" (click)="rejectRequest()">Reject</button>
           </div>
-          <button class="btn btn-success col-xs-offset-1 col-xs-3" (click)="approveRequest()">Approve</button>
-          <button *ngIf="selectedQuestion.status===1" class="btn btn-primary col-xs-offset-1 col-xs-3"
-            (click)="compareMode=true;">Compare</button>
-          <button class="btn btn-danger col-xs-offset-1 col-xs-3" (click)="rejectRequest()">Reject</button>
-
-
         </div>
       </div>
+
     </div>
     <!-- Modal Rejection -->
     <div [ngClass]="{'fade':!showRejectReason,'show':showRejectReason}" class="modal" id="rejectModal" role="dialog">
@@ -80,8 +46,7 @@
           </div>
           <div class="modal-footer">
             <button [disabled]="!rejectReason" class="btn btn-danger" data-dismiss="modal"
-              (click)="rejectRequest()">Reject
-              Question</button>
+              (click)="rejectRequest()">Reject Question</button>
           </div>
         </div>
       </div>
@@ -93,15 +58,26 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" (click)="compareMode=false;">&times;</button>
-            <h4 class="modal-title">View Differences</h4>
+            <h4 class="modal-title">View Changes</h4>
           </div>
           <div class="modal-body" *ngIf="compareMode">
             <div class="row">
               <div class="col-xs-6">
-                <app-question-display [selectedQues]="selectedQuestion" header="Original" ></app-question-display>
+                  <div [ngClass]="getClassForStatus(originalQuestion.status)">
+                      <div class="panel-heading">Original</div>
+                      <div class="panel-body">
+                          <app-question-display [selectedQues]="originalQuestion" [showOwner]="false"></app-question-display>
+                      </div>
+                  </div>
               </div>
               <div class="col-xs-6">
-                <app-question-display [selectedQues]="selectedQuestion" header="Modified"></app-question-display>
+                      <div [ngClass]="getClassForStatus(selectedQuestion.status)">
+                         <div class="panel-heading">Modified</div>
+                          <div class="panel-body">
+                              <app-question-display [selectedQues]="selectedQuestion" [showOwner]="false"></app-question-display>
+                          </div>
+                      </div>
+                </div>
               </div>
             </div>
           </div>
@@ -109,4 +85,3 @@
       </div>
     </div>
   </div>
-</div>

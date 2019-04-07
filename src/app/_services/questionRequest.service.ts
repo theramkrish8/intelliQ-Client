@@ -79,4 +79,12 @@ export class QuestionRequestService {
 			})
 		);
 	}
+	fetchQuestion(groupCode: string, quesId: string) {
+		return this.restService.get('question/' + groupCode + '/' + quesId).pipe(
+			map((appResponse: AppResponse) => {
+				return this.utilityService.getAppResponse(appResponse, false, false);
+			})
+		);
+	}
+
 }

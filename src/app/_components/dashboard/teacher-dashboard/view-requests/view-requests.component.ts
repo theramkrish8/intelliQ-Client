@@ -7,6 +7,8 @@ import { UtilityService } from 'src/app/_services/utility.service';
 import { RoleType, QuestionStatus } from 'src/app/_models/enums';
 import { Question } from 'src/app/_models/question.model';
 import { Observable } from 'rxjs';
+import { Standard } from 'src/app/_models/standard.model';
+import { Subject } from 'src/app/_models/subject.model';
 
 @Component({
 	selector: 'app-view-requests',
@@ -32,6 +34,7 @@ export class ViewRequestsComponent implements OnInit {
 
 	ngOnInit() {
 		this.loggedInUser = this.localStorageService.getCurrentUser();
+		console.log(this.loggedInUser);
 		this.pendingQuestions$ = this.quesRequestService.viewQuestionRequests(
 			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.PENDING, this.pendingPageIndex)
 		);
@@ -46,6 +49,13 @@ export class ViewRequestsComponent implements OnInit {
 		quesRequest.page = pageIndex;
 		quesRequest.schoolID = user.school.schoolId;
 		quesRequest.standards = user.roles[this.utilityService.findRoleIndex(user.roles, RoleType.TEACHER)].stds;
+		quesRequest.standards.forEach((std: Standard) => 	{
+			std.subjects.forEach((subject: Subject) => {
+				subject.tags = null;
+				subject.topics = null;
+				subject.reviewer = null;
+			});
+		});
 		quesRequest.status = status;
 		return quesRequest;
 	}

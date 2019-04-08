@@ -20,7 +20,7 @@ export class ReviewRequestsComponent implements OnInit {
 	loggedInUser: User;
 	pendingRequests$: Observable<Question[]>;
 	selectedQuestion: Question;
-	tempSelectedQuestion: Question;
+	originalQuestion: Question;
 	pageIndex = 0;
 	compareMode = false;
 	constructor(
@@ -53,6 +53,10 @@ export class ReviewRequestsComponent implements OnInit {
 				return 'panel panel-warning';
 			case QuestionStatus.REMOVE:
 				return 'panel panel-danger';
+			case QuestionStatus.REJECTED:
+				return 'panel panel-danger';
+			case QuestionStatus.APPROVED:
+				return 'panel panel-success';
 		}
 	}
 
@@ -64,6 +68,7 @@ export class ReviewRequestsComponent implements OnInit {
 			}
 		});
 	}
+
 	rejectRequest() {
 		this.showRejectReason = true;
 		if (!this.rejectReason) {
@@ -80,10 +85,19 @@ export class ReviewRequestsComponent implements OnInit {
 		});
 	}
 
-	onCompareClicked() {
-		this.compareMode = true;
-		this.tempSelectedQuestion = this.selectedQuestion;
+	compareRequest() {
+		this.quesRequestService.fetchQuestion(this.selectedQuestion.groupCode,
+			this.selectedQuestion.originId).subscribe((response) => {
+			if (response) {
+				this.compareMode = true;
+				this.originalQuestion = response;
+			}else{
+				alert("Original Question has been removed !!");
+			}
+		});
 	}
+	
+
 	onQuestionChanged(question: Question) {
 		this.selectedQuestion = question;
 		this.compareMode = false;

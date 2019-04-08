@@ -54,6 +54,7 @@ import { TrimPipe } from './_pipes/trim.pipe';
 import { ReviewerDashboardComponent } from './_components/dashboard/reviewer-dashboard/reviewer-dashboard.component';
 import { ReviewRequestsComponent } from './_components/dashboard/reviewer-dashboard/review-requests/review-requests.component';
 import { QuestionDisplayComponent } from './_components/dashboard/question-display/question-display.component';
+import { QuestionListItemComponent } from './_components/dashboard/question-list-item/question-list-item.component';
 
 @NgModule({
 	declarations: [
@@ -88,7 +89,8 @@ import { QuestionDisplayComponent } from './_components/dashboard/question-displ
 		EnumPipe,
 		TrimPipe,
 		ReviewRequestsComponent,
-		QuestionDisplayComponent
+		QuestionDisplayComponent,
+		QuestionListItemComponent
 	],
 	imports: [
 		BrowserModule,

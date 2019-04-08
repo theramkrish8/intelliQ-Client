@@ -1,0 +1,9 @@
+<div [ngClass]="getClassForStatus(status)">
+<div class="panel-heading">
+  <span class="pull-left">Std hhlo:{{standard}}</span>
+  <span class="">{{subject}}</span>
+  <span class="pull-right">{{lastModifiedDate | date: dateFormat}}</span>
+</div>
+<div class="panel-body">{{title | trim:40}}</div>
+
+</div>

@@ -12,14 +12,12 @@
   <div class="col-xs-12">
     <div class="col-xs-5">
       <div *ngIf="userQuestions$ | async as userQuestions">
-        <div [id]="question.quesId" (click)="selectedQuestion=question;editMode=false;" *ngFor="let question of userQuestions"
-          class="clickable panel panel-success" >
-          <div class="panel-heading">
-            <span class="pull-left">Std:{{question.std}}</span>
-            <span class="">{{question.subject}}</span>
-            <span class="pull-right">Approved</span>
-          </div>
-          <div class="panel-body">{{question.title | trim:40}}</div>
+        <div [id]="question.quesId" (click)="selectedQuestion=question;editMode=false;"
+         *ngFor="let question of userQuestions" class="clickable" >
+          <app-question-list-item [standard]="question.std"
+          [subject]="question.subject" [title]="question.title"
+          [status]="question.status"  [lastModifiedDate]="question.lastModifiedDate">
+        </app-question-list-item>
         </div>
       </div>
     </div>
@@ -30,44 +28,8 @@
         <div class="panel-heading">{{selectedQuestion.status | enum:"status"}}</div>
         <div class="panel-body">
           <div *ngIf="!editMode">
-
-          <label class="col-xs-4">Description</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.title}}</div>
-
-          <label class="col-xs-4">Standard</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.std}}</div>
-
-          <label class="col-xs-4">Subject</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.subject}}
-          </div>
-
-          <label class="col-xs-4">Topic</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.topic}}
-          </div>
-
-          <label class="col-xs-4">Difficulty</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.difficulty | enum:'difficulty'}}</div>
-
-          <label class="col-xs-4">Type</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.length | enum:'length'}}</div>
-
-          <label class="col-xs-4">Tags</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.tags | csv:'':'?'}}</div>
-
-          <label class="col-xs-4">Reviewer</label>
-          <div class="well well-sm col-xs-8">
-            {{selectedQuestion.reviewer?selectedQuestion.reviewer.userName:"Not Assigned"}}</div>
-
-          <label class="col-xs-4">Created On</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.createDate | date: dateFormat}}</div>
-
-          <label class="col-xs-4">Last Modified On</label>
-          <div class="well well-sm col-xs-8">{{selectedQuestion.lastModifiedDate | date: dateFormat}}</div>
-
-          <div *ngIf="selectedQuestion.imageUrl" class="col-xs-offset-4 col-xs-4"><img [src]="selectedQuestion.imageUrl"
-              class="img-rounded img-thumbnail" alt=""></div>
-          <button class="btn btn-default" (click)="onEditClicked()">Edit</button>
-          <button class="btn btn-default" (click)="deleteQuestion()">Delete</button>
+              <app-question-display [selectedQues]="selectedQuestion" [showCreatedDate]="true"
+              [showReviewer]="true" [showLastModifiedDate]="true"></app-question-display>
           </div>
           <div *ngIf="editMode">
             <form>
@@ -120,12 +82,21 @@
                 <input type="text" name="image" [(ngModel)]="tempSelectedQuestion.imageUrl"
                   class="form-control col-xs-8">
               </div>
-              <button class="btn btn-default" (click)="editMode=false;tempSelectedQuestion=null">Cancel</button>
-              <button class="btn btn-default" (click)='updateQuestion()'>Save</button>
-            </form>
+             </form>
 
           </div>
 
+        </div>
+
+        <div class="panel-footer">
+            <div *ngIf="!editMode">
+                <button class="btn btn-default" (click)="onEditClicked()">Edit</button>
+                <button class="btn btn-default" (click)="deleteQuestion()">Delete</button>
+            </div>
+            <div *ngIf="editMode">
+                <button class="btn btn-default" (click)="editMode=false;tempSelectedQuestion=null">Cancel</button>
+                <button class="btn btn-default" (click)='updateQuestion()'>Save</button>
+            </div>
         </div>
       </div>
     </div>
@@ -137,13 +108,11 @@
     <div class="col-xs-5">
       <div *ngIf="allQuestions$ | async as allQuestions">
         <div  (click)="selectedQuestion=question;"
-          *ngFor="let question of allQuestions" class="clickable panel panel-success">
-          <div class="panel-heading">
-            <span class="pull-left">Std:{{question.std}}</span>
-            <span class="">{{question.subject}}</span>
-            <span class="pull-right">{{question.lastModifiedDate | date: dateFormat}}</span>
-          </div>
-          <div class="panel-body">{{question.title | trim:40}}</div>
+          *ngFor="let question of allQuestions" class="clickable">
+            <app-question-list-item [standard]="question.std"
+            [subject]="question.subject" [title]="question.title"
+            [status]="question.status"  [lastModifiedDate]="question.lastModifiedDate">
+           </app-question-list-item>
         </div>
       </div>
     </div>
@@ -152,43 +121,11 @@
 
       <div class="panel panel-success">
         <div class="panel-heading">Approved</div>
-
         <div class="panel-body">
-
-            <label class="col-xs-4">Description</label>
-            <div class="well well-sm col-xs-8">{{selectedQuestion.title}}</div>
-
-            <label class="col-xs-4">Standard</label>
-            <div class="well well-sm col-xs-8">{{selectedQuestion.std}}</div>
-
-            <label class="col-xs-4">Subject</label>
-            <div class="well well-sm col-xs-8">{{selectedQuestion.subject}}
-            </div>
-
-            <label class="col-xs-4">Topic</label>
-            <div class="well well-sm col-xs-8">{{selectedQuestion.topic}}
-            </div>
-
-            <label class="col-xs-4">Difficulty</label>
-            <div class="well well-sm col-xs-8">{{selectedQuestion.difficulty | enum:'difficulty'}}</div>
-
-            <label class="col-xs-4">Type</label>
-            <div class="well well-sm col-xs-8">{{selectedQuestion.length | enum:'length'}}</div>
-
-            <label class="col-xs-4">Tags</label>
-            <div class="well well-sm col-xs-8">{{selectedQuestion.tags | csv:'':'?'}}</div>
-
-            <label class="col-xs-4">Teacher</label>
-            <div class="well well-sm col-xs-8">
-              {{selectedQuestion.owner?selectedQuestion.owner.userName:"Not Assigned"}}</div>
-
-            <label class="col-xs-4">Created On</label>
-            <div class="well well-sm col-xs-8">{{selectedQuestion.createDate | date: dateFormat}}</div>
-
-            <div *ngIf="selectedQuestion.imageUrl" class="col-xs-offset-4 col-xs-4"><img
-                [src]="selectedQuestion.imageUrl" class="img-rounded img-thumbnail" alt=""></div>
-          
-
+            <app-question-display [selectedQues]="selectedQuestion" [showCreatedDate]="true"
+            [showOwner]="loggedInUser.school.code === selectedQuestion.school.code"
+            [showSchool]="loggedInUser.school.code !== selectedQuestion.school.code">
+          </app-question-display>
         </div>
       </div>
     </div>

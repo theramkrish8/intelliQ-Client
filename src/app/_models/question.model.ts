@@ -3,18 +3,18 @@ import { School } from './school.model';
 
 export class Question {
 	public quesId: string;
-	public title: string; // chahiye
-	public std: number; // chahiye
-	public subject: string; // chahiye
-	public topic: string; // chahiye
-	public difficulty: DifficultyType; // chahiye
-	public length: LengthType; // chahiye
+	public title: string; 
+	public std: number; 
+	public subject: string; 
+	public topic: string; 
+	public difficulty: DifficultyType; 
+	public length: LengthType; 
 	public status: QuestionStatus;
-	public tags: string[]; // chahiye
+	public tags: string[]; 
 	public category: string;
-	public imageUrl: string; // chahiye
+	public imageUrl: string; 
 	public owner: Contributer;
-	public reviewer: Contributer; // chahiye ro
+	public reviewer: Contributer;  
 	public school: School;
 	public groupCode: string;
 	public createDate: Date;

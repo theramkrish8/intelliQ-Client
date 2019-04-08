@@ -1,8 +1,7 @@
-<div [ngClass]="getClassForStatus(selectedQuestion.status)">
-
-  <div class="panel-heading">{{header}}</div>
-  <div class="panel-body">
-
+  <div *ngIf="showRejectReason">
+        <label class="col-xs-4">Reject Reason</label>
+        <div class="well well-sm col-xs-8 reject-reason">{{selectedQuestion.rejectDesc}}</div>
+    </div>
 
     <label class="col-xs-4">Description</label>
     <div class="well well-sm col-xs-8">{{selectedQuestion.title}}</div>
@@ -27,12 +26,34 @@
     <label class="col-xs-4">Tags</label>
     <div class="well well-sm col-xs-8">{{selectedQuestion.tags | csv:'':'?'}}</div>
 
-    <label class="col-xs-4">Teacher</label>
-    <div class="well well-sm col-xs-8">
-      {{selectedQuestion.owner?selectedQuestion.owner.userName:"Not Assigned"}}</div>
+    <div *ngIf="showOwner">
+      <label class="col-xs-4">Teacher</label>
+      <div class="well well-sm col-xs-8">
+        {{selectedQuestion.owner?selectedQuestion.owner.userName:"Not Assigned"}}</div>
+    </div>
 
-    <label class="col-xs-4">Created On</label>
-    <div class="well well-sm col-xs-8">{{selectedQuestion.createDate | date: dateFormat}}</div>
+    <div *ngIf="showReviewer">
+      <label class="col-xs-4">Reviewer</label>
+      <div class="well well-sm col-xs-8">
+        {{selectedQuestion.reviewer?selectedQuestion.reviewer.userName:"Not Assigned"}}</div>
+    </div>
+
+    <div *ngIf="showSchool">
+        <label class="col-xs-4">School</label>
+        <div class="well well-sm col-xs-8">
+          {{selectedQuestion.school?selectedQuestion.school.shortName:"Not Assigned"}}
+          , {{selectedQuestion.school?selectedQuestion.school.address.city:""}}</div>
+      </div>
+
+    <div *ngIf="showCreatedDate">
+      <label class="col-xs-4">Created On</label>
+      <div class="well well-sm col-xs-8">{{selectedQuestion.createDate | date: dateFormat}}</div>
+    </div>
+
+    <div *ngIf="showLastModifiedDate">
+      <label class="col-xs-4">Last Modified On</label>
+      <div class="well well-sm col-xs-8">{{selectedQuestion.lastModifiedDate | date: dateFormat}}</div>
+   </div>
 
     <div class="row">
       <div *ngIf="selectedQuestion.imageUrl" class="col-xs-offset-4 col-xs-4"><img [src]="selectedQuestion.imageUrl"
@@ -40,5 +61,4 @@
       </div>
     </div>
 
-  </div>
-</div>
+

@@ -12,14 +12,12 @@
   <div class="col-xs-12">
     <div class="col-xs-5">
       <div *ngIf="userQuestions$ | async as userQuestions">
-        <div [id]="question.quesId" (click)="selectedQuestion=question;editMode=false;" *ngFor="let question of userQuestions"
-          class="clickable panel panel-success" >
-          <div class="panel-heading">
-            <span class="pull-left">Std:{{question.std}}</span>
-            <span class="">{{question.subject}}</span>
-            <span class="pull-right">{{question.lastModifiedDate | date: dateFormat}}</span>
-          </div>
-          <div class="panel-body">{{question.title | trim:40}}</div>
+        <div [id]="question.quesId" (click)="selectedQuestion=question;editMode=false;"
+         *ngFor="let question of userQuestions" class="clickable" >
+          <app-question-list-item [standard]="question.std"
+          [subject]="question.subject" [title]="question.title"
+          [status]="question.status"  [lastModifiedDate]="question.lastModifiedDate">
+        </app-question-list-item>
         </div>
       </div>
     </div>
@@ -110,13 +108,11 @@
     <div class="col-xs-5">
       <div *ngIf="allQuestions$ | async as allQuestions">
         <div  (click)="selectedQuestion=question;"
-          *ngFor="let question of allQuestions" class="clickable panel panel-success">
-          <div class="panel-heading">
-            <span class="pull-left">Std:{{question.std}}</span>
-            <span class="">{{question.subject}}</span>
-            <span class="pull-right">{{question.lastModifiedDate | date: dateFormat}}</span>
-          </div>
-          <div class="panel-body">{{question.title | trim:40}}</div>
+          *ngFor="let question of allQuestions" class="clickable">
+            <app-question-list-item [standard]="question.std"
+            [subject]="question.subject" [title]="question.title"
+            [status]="question.status"  [lastModifiedDate]="question.lastModifiedDate">
+           </app-question-list-item>
         </div>
       </div>
     </div>

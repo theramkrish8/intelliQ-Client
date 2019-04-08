@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { QuestionStatus } from 'src/app/_models/enums';
 import { Question } from 'src/app/_models/question.model';
 
 @Component({

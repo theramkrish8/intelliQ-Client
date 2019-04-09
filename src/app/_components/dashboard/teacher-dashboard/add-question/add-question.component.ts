@@ -2,14 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { LocalStorageService } from 'src/app/_services/local-storage.service';
 import { User } from 'src/app/_models/user.model';
 import { Subject } from 'src/app/_models/subject.model';
-import { RoleType, LengthType } from 'src/app/_models/enums';
-import { Role } from 'src/app/_models/role.model';
+import { RoleType } from 'src/app/_models/enums';
 import { Standard } from 'src/app/_models/standard.model';
 import { NotificationService } from 'src/app/_services/notification.service';
 import { Question, Contributer } from 'src/app/_models/question.model';
 import { School } from 'src/app/_models/school.model';
 import { QuestionRequestService } from 'src/app/_services/questionRequest.service';
 import { UtilityService } from 'src/app/_services/utility.service';
+import { QuestionCriteria } from 'src/app/_dto/question-criteria.dto';
+import { QuestionService } from 'src/app/_services/question.service';
 
 @Component({
 	selector: 'app-add-question',
@@ -17,6 +18,7 @@ import { UtilityService } from 'src/app/_services/utility.service';
 	styleUrls: [ './add-question.component.css' ]
 })
 export class AddQuestionComponent implements OnInit {
+	lastSearchTerm: string;
 	loggedInUser: User;
 	stdSubjectMap = new Map<number, Subject[]>();
 	standards: Standard[];
@@ -24,11 +26,13 @@ export class AddQuestionComponent implements OnInit {
 	selectedStd = -1;
 	selectedSubject: Subject = null;
 	tags = '';
+	suggestedQuestions: Question[];
 	constructor(
 		private localStorageService: LocalStorageService,
 		private notificationService: NotificationService,
 		private quesRequestService: QuestionRequestService,
-		private utilityService: UtilityService
+		private utilityService: UtilityService,
+		private quesService: QuestionService
 	) {}
 
 	ngOnInit() {
@@ -86,5 +90,28 @@ export class AddQuestionComponent implements OnInit {
 		this.selectedStd = -1;
 		this.selectedSubject = null;
 		this.tags = '';
+	}
+	getSuggestions(event) {
+		var searchTerm = this.question.title ? this.question.title.trim() : '';
+		if (event.keyCode !== 32) {
+			if (searchTerm.length < 3) {
+				this.suggestedQuestions = [];
+				this.lastSearchTerm = '';
+			}
+			return;
+		}
+
+		if (searchTerm.length > 2 && this.lastSearchTerm !== searchTerm) {
+			var questionCriteria = new QuestionCriteria(
+				this.loggedInUser.school.group.code,
+				this.selectedStd,
+				this.selectedSubject.title,
+				searchTerm
+			);
+			this.quesService.getSuggestions(questionCriteria).subscribe((questions: Question[]) => {
+				this.suggestedQuestions = questions;
+				this.lastSearchTerm = searchTerm;
+			});
+		}
 	}
 }

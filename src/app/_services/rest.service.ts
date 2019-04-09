@@ -42,8 +42,10 @@ export class RestService {
 		);
 	}
 
-	post(method: string, body: any) {
-		this.spinner.show();
+	post(method: string, body: any, hideSpinner?: boolean) {
+		if (hideSpinner !== true) {
+			this.spinner.show();
+		}
 		this.createOptions();
 		return this.http.post(this.baseUrl + method, body, this.httpOptions).pipe(
 			catchError((error: HttpErrorResponse) => {

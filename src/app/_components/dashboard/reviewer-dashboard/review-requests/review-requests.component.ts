@@ -8,6 +8,7 @@ import { RoleType, QuestionStatus } from 'src/app/_models/enums';
 import { Question } from 'src/app/_models/question.model';
 import { Observable } from 'rxjs';
 import { NotificationService } from 'src/app/_services/notification.service';
+import { QuestionService } from 'src/app/_services/question.service';
 
 @Component({
 	selector: 'app-review-requests',
@@ -26,7 +27,8 @@ export class ReviewRequestsComponent implements OnInit {
 	constructor(
 		private localStorageService: LocalStorageService,
 		private quesRequestService: QuestionRequestService,
-		private utilityService: UtilityService
+		private utilityService: UtilityService,
+		private quesService: QuestionService
 	) {}
 
 	ngOnInit() {
@@ -41,7 +43,7 @@ export class ReviewRequestsComponent implements OnInit {
 		quesRequest.groupCode = user.school.group.code;
 		quesRequest.page = pageIndex;
 		quesRequest.schoolID = user.school.schoolId;
-		quesRequest.standards = user.roles[this.utilityService.findRoleIndex(user.roles, RoleType.TEACHER)].stds;
+		quesRequest.standards = user.roles[this.utilityService.findRoleIndex(user.roles, RoleType.REVIEWER)].stds;
 		quesRequest.status = status;
 		return quesRequest;
 	}
@@ -86,17 +88,17 @@ export class ReviewRequestsComponent implements OnInit {
 	}
 
 	compareRequest() {
-		this.quesRequestService.fetchQuestion(this.selectedQuestion.groupCode,
-			this.selectedQuestion.originId).subscribe((response) => {
-			if (response) {
-				this.compareMode = true;
-				this.originalQuestion = response;
-			}else{
-				alert("Original Question has been removed !!");
-			}
-		});
+		this.quesService
+			.fetchQuestion(this.selectedQuestion.groupCode, this.selectedQuestion.originId)
+			.subscribe((response) => {
+				if (response) {
+					this.compareMode = true;
+					this.originalQuestion = response;
+				} else {
+					alert('Original Question has been removed !!');
+				}
+			});
 	}
-	
 
 	onQuestionChanged(question: Question) {
 		this.selectedQuestion = question;

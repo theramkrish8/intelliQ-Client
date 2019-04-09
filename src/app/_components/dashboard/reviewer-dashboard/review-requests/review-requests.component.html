@@ -17,7 +17,7 @@
       <div [ngClass]="getClassForStatus(selectedQuestion.status)">
         <div class="panel-heading">{{selectedQuestion.status | enum:"status"}} Request</div>
         <div class="panel-body">
-            <app-question-display [selectedQues]="selectedQuestion"></app-question-display>
+            <app-question-display [selectedQues]="selectedQuestion" [showOwner]="true"></app-question-display>
         </div>
         <div class="panel-footer">
           <div class="row">

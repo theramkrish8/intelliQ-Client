@@ -55,7 +55,7 @@ import { ReviewerDashboardComponent } from './_components/dashboard/reviewer-das
 import { ReviewRequestsComponent } from './_components/dashboard/reviewer-dashboard/review-requests/review-requests.component';
 import { QuestionDisplayComponent } from './_components/dashboard/question-display/question-display.component';
 import { QuestionListItemComponent } from './_components/dashboard/question-list-item/question-list-item.component';
-
+import { QuestionPaperService } from './_services/question-paper.service';
 @NgModule({
 	declarations: [
 		AppComponent,
@@ -117,7 +117,8 @@ import { QuestionListItemComponent } from './_components/dashboard/question-list
 		UtilityService,
 		SchoolService,
 		MetaService,
-		CookieService
+		CookieService,
+		QuestionPaperService
 	],
 
 	bootstrap: [ AppComponent ]

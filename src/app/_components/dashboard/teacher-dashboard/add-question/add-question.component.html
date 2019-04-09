@@ -1,35 +1,37 @@
 <div class="row" style="margin-top:60px;">
-  <div class="col-xs-offset-3">
-         <button class="btn btn-link pull-right" (click)="resetForm(true)">Reset Form</button>
-      <div class="form-group form-inline row">
-        <label class="col-xs-3">Standard</label>
-        <select (change)="selectedSubject=null" class="form-control col-xs-3" [(ngModel)]="selectedStd"
-          name="selectedStd">
-          <option [ngValue]="-1" disabled selected>Select Standard</option>
-          <option *ngFor="let standard of standards" [ngValue]="standard.std">{{standard.std}}</option>
-        </select>
-      </div>
+  <div class="col-xs-offset-3 col-xs-5">
+    <div class="form-group form-inline row">
+      <label class="col-xs-3">Standard</label>
+      <select (change)="selectedSubject=null" class="form-control col-xs-3" [(ngModel)]="selectedStd"
+        name="selectedStd">
+        <option [ngValue]="-1" disabled selected>Select Standard</option>
+        <option *ngFor="let standard of standards" [ngValue]="standard.std">{{standard.std}}</option>
+      </select>
+    </div>
 
-      <div class="form-group form-inline row">
-        <label class="col-xs-3">Subject</label>
-        <select (change)="checkReviewer();" [disabled]="selectedStd===-1"
-          class="form-control col-xs-3"
-          [(ngModel)]="selectedSubject" name="selectedSubject">
-          <option [ngValue]="null" disabled selected>Select Subject</option>
-          <option *ngFor="let subject of stdSubjectMap.get(selectedStd)" [ngValue]="subject">{{subject.title}}</option>
-        </select>
-      </div>
+    <div class="form-group form-inline row">
+      <label class="col-xs-3">Subject</label>
+      <select (change)="checkReviewer();" [disabled]="selectedStd===-1" class="form-control col-xs-3"
+        [(ngModel)]="selectedSubject" name="selectedSubject">
+        <option [ngValue]="null" disabled selected>Select Subject</option>
+        <option *ngFor="let subject of stdSubjectMap.get(selectedStd)" [ngValue]="subject">{{subject.title}}</option>
+      </select>
+    </div>
 
-    
+    <div *ngIf="selectedSubject!==null" class="form-group form-inline row">
+      <label class="col-xs-3">Reviewer</label>
+      <input disabled type="text" [(ngModel)]="selectedSubject.reviewer.userName" class="form-control col-xs-3">
+    </div>
+
     <form *ngIf="selectedSubject!==null">
       <div class="form-group form-inline row">
         <label class="col-xs-3">Type</label>
         <select class="form-control col-xs-3" [(ngModel)]="question.length" name="questionLength">
           <option [ngValue]="undefined" disabled selected>Select Type</option>
-          <option [ngValue]="0" selected>OBJECTIVE</option>
-          <option [ngValue]="1" selected>SHORT</option>
-          <option [ngValue]="2" selected>BRIEF</option>
-          <option [ngValue]="3" selected>LONG</option>
+          <option [ngValue]="0">OBJECTIVE</option>
+          <option [ngValue]="1">SHORT</option>
+          <option [ngValue]="2">BRIEF</option>
+          <option [ngValue]="3">LONG</option>
         </select>
       </div>
 
@@ -37,9 +39,9 @@
         <label class="col-xs-3">Difficulty</label>
         <select class="form-control col-xs-3" [(ngModel)]="question.difficulty" name="questionDifficulty">
           <option [ngValue]="undefined" disabled selected>Select Difficulty</option>
-          <option [ngValue]="0" selected>EASY</option>
-          <option [ngValue]="1" selected>MEDIUM</option>
-          <option [ngValue]="2" selected>HARD</option>
+          <option [ngValue]="0">EASY</option>
+          <option [ngValue]="1">MEDIUM</option>
+          <option [ngValue]="2">HARD</option>
         </select>
       </div>
 
@@ -48,9 +50,10 @@
         <input type="text" name="topic" [(ngModel)]="question.topic" class="form-control col-xs-3">
       </div>
 
-      <div class="form-group form-inline row">
+      <div class="form-group form-inline row search-results style-3">
         <label class="col-xs-3">Description</label>
-        <input type="text" name="title" [(ngModel)]="question.title" class="form-control col-xs-3">
+        <input type="text" name="title" (keyup)="getSuggestions($event)" [(ngModel)]="question.title"
+          class="form-control col-xs-3">
       </div>
 
       <div class="form-group form-inline row">
@@ -62,10 +65,16 @@
         <label class="col-xs-3">Image</label>
         <input type="text" name="image" [(ngModel)]="question.imageUrl" class="form-control col-xs-3">
       </div>
-      <div class="col-xs-offset-2 col-xs-3">
-        <button (click)="addQuestion()" class="btn btn-primary form-control">Add Question</button>
+      <div class="row">
+        <button (click)="addQuestion()" class="btn btn-primary">Add Question</button>
+        <button class="col-xs-offset-1 btn btn-warning" (click)="resetForm(true)">Reset</button>
       </div>
+
     </form>
   </div>
-
+  <div class="col-xs-4">
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let ques of suggestedQuestions">{{ques.title}}</li>
+    </ul>
+  </div>
 </div>

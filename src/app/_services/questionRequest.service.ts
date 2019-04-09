@@ -46,17 +46,6 @@ export class QuestionRequestService {
 			})
 		);
 	}
-	viewAllApprovedQuestion(quesRequest: QuesRequest) {
-		return this.restService.post('question/all', quesRequest).pipe(
-			map((appResponse: AppResponse) => {
-				var result = this.utilityService.getAppResponse(appResponse, true, false);
-				if (result === null) {
-					return [];
-				}
-				return result;
-			})
-		);
-	}
 
 	deleteQuestionRequest(question: Question) {
 		return this.restService.delete('question/request/remove', question).pipe(
@@ -79,12 +68,4 @@ export class QuestionRequestService {
 			})
 		);
 	}
-	fetchQuestion(groupCode: string, quesId: string) {
-		return this.restService.get('question/' + groupCode + '/' + quesId).pipe(
-			map((appResponse: AppResponse) => {
-				return this.utilityService.getAppResponse(appResponse, false, false);
-			})
-		);
-	}
-
 }

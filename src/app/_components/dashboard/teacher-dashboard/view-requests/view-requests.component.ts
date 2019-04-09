@@ -34,7 +34,6 @@ export class ViewRequestsComponent implements OnInit {
 
 	ngOnInit() {
 		this.loggedInUser = this.localStorageService.getCurrentUser();
-		console.log(this.loggedInUser);
 		this.pendingQuestions$ = this.quesRequestService.viewQuestionRequests(
 			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.PENDING, this.pendingPageIndex)
 		);
@@ -49,7 +48,7 @@ export class ViewRequestsComponent implements OnInit {
 		quesRequest.page = pageIndex;
 		quesRequest.schoolID = user.school.schoolId;
 		quesRequest.standards = user.roles[this.utilityService.findRoleIndex(user.roles, RoleType.TEACHER)].stds;
-		quesRequest.standards.forEach((std: Standard) => 	{
+		quesRequest.standards.forEach((std: Standard) => {
 			std.subjects.forEach((subject: Subject) => {
 				subject.tags = null;
 				subject.topics = null;

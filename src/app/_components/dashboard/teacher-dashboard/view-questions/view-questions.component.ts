@@ -7,6 +7,7 @@ import { QuestionRequestService } from 'src/app/_services/questionRequest.servic
 import { UtilityService } from 'src/app/_services/utility.service';
 import { QuestionStatus, RoleType } from 'src/app/_models/enums';
 import { QuesRequest } from 'src/app/_dto/ques-request.dto';
+import { QuestionService } from 'src/app/_services/question.service';
 
 @Component({
 	selector: 'app-view-questions',
@@ -27,7 +28,8 @@ export class ViewQuestionsComponent implements OnInit {
 	constructor(
 		private localStorageService: LocalStorageService,
 		private quesRequestService: QuestionRequestService,
-		private utilityService: UtilityService
+		private utilityService: UtilityService,
+		private quesService: QuestionService
 	) {}
 
 	ngOnInit() {
@@ -35,7 +37,7 @@ export class ViewQuestionsComponent implements OnInit {
 		this.userQuestions$ = this.quesRequestService.viewQuestionRequests(
 			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.userPageIndex)
 		);
-		this.allQuestions$ = this.quesRequestService.viewAllApprovedQuestion(
+		this.allQuestions$ = this.quesService.viewAllApprovedQuestion(
 			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.allPageIndex)
 		);
 	}

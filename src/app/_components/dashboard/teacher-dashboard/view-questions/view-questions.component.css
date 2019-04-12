@@ -5,3 +5,7 @@
 .questionsList {
 	margin-top: 40px;
 }
+.list-of-questions {
+	max-height: 600px;
+	overflow-y: auto;
+}

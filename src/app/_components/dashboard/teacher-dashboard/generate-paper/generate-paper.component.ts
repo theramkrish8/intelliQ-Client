@@ -4,12 +4,13 @@ import { Standard } from 'src/app/_models/standard.model';
 import { Subject } from 'src/app/_models/subject.model';
 import { LocalStorageService } from 'src/app/_services/local-storage.service';
 import { UtilityService } from 'src/app/_services/utility.service';
-import { QuestionService } from 'src/app/_services/question.service';
 import { RoleType, LengthType, DifficultyType } from 'src/app/_models/enums';
 import { GroupService } from 'src/app/_services/group.service';
 import { Group } from 'src/app/_models/group.model';
 import { QuesLength, QuestionCriteria, QuesDifficulty } from 'src/app/_dto/question-criteria.dto';
 import { QuestionPaperService } from 'src/app/_services/question-paper.service';
+import { QuestionPaperDto } from 'src/app/_dto/question-paper.dto';
+import { NotificationService } from 'src/app/_services/notification.service';
 
 @Component({
 	selector: 'app-generate-paper',
@@ -17,6 +18,8 @@ import { QuestionPaperService } from 'src/app/_services/question-paper.service';
 	styleUrls: [ './generate-paper.component.css' ]
 })
 export class GeneratePaperComponent implements OnInit {
+	showCriteria = true;
+	questionPapers: QuestionPaperDto[];
 	userGroup: Group;
 	loggedInUser: User;
 	stdSubjectMap = new Map<number, Subject[]>();
@@ -27,9 +30,13 @@ export class GeneratePaperComponent implements OnInit {
 	sets = 1;
 	totalMarks: number;
 	sections: string[];
+	activeSet = 1;
 	difficultyLevels = [ 'EASY', 'MEDIUM', 'HARD' ];
 	topics: string[];
+	currSet: QuestionPaperDto;
+
 	constructor(
+		private notificationService: NotificationService,
 		private localStorageService: LocalStorageService,
 		private groupService: GroupService,
 		private utilityService: UtilityService,
@@ -58,11 +65,19 @@ export class GeneratePaperComponent implements OnInit {
 				this.userGroup = group;
 				if (this.userGroup) {
 					this.createSubjectTopicMap(group);
+					this.createSample();
 				}
 			});
 		}
 	}
-
+	createSample() {
+		this.selectedStd = 4;
+		this.selectedSubject = this.stdSubjectMap.get(this.selectedStd)[0];
+		this.sets = 3;
+		this.totalMarks = 100;
+		this.topics = this.subjectMap.get(this.selectedSubject.title).topics;
+		this.sections = [ 'OBJECTIVE', 'SHORT', 'BRIEF', 'LONG' ];
+	}
 	createSubjectTopicMap(group: Group) {
 		group.subjects.forEach((subject: Subject) => {
 			this.subjectMap.set(subject.title, subject);
@@ -77,7 +92,7 @@ export class GeneratePaperComponent implements OnInit {
 			null
 		);
 		queCriteria.sets = Number(this.sets);
-		queCriteria.topics = this.topics;
+		queCriteria.topics = this.topics.sort();
 		queCriteria.length = [];
 		this.sections.forEach((section: string) => {
 			var sec = new QuesLength();
@@ -95,7 +110,27 @@ export class GeneratePaperComponent implements OnInit {
 				queCriteria.difficulty.push(lvl);
 			}
 		});
-		this.questionPaperService.generateQuestionPaper(queCriteria).subscribe();
+		this.questionPaperService.generateQuestionPaper(queCriteria).subscribe((questionPapers: QuestionPaperDto[]) => {
+			if (!questionPapers) {
+				this.notificationService.showErrorWithTimeout(
+					'Oops! No Questions found matching your criteria.',
+					null,
+					2000
+				);
+			} else {
+				this.showCriteria = false;
+				this.activeSet = 1;
+				this.questionPapers = questionPapers.sort((a, b) => {
+					return a.set - b.set;
+				});
+				this.questionPapers.forEach((set: QuestionPaperDto) => {
+					set.sections = set.sections.sort((a, b) => {
+						return a.type - b.type;
+					});
+				});
+				this.currSet = this.questionPapers[0];
+			}
+		});
 	}
 
 	getLengthEnum(section: string) {
@@ -132,10 +167,42 @@ export class GeneratePaperComponent implements OnInit {
 				return 'panel panel-success';
 		}
 	}
+
+	getSectionDesc(section: LengthType) {
+		switch (section) {
+			case LengthType.OBJECTIVE:
+				return 'OBJECTIVE';
+			case LengthType.SHORT:
+				return 'SHORT';
+			case LengthType.BRIEF:
+				return 'BRIEF';
+			case LengthType.LONG:
+				return 'LONG';
+		}
+	}
+
+	getDifficultyDesc(level: DifficultyType) {
+		switch (level) {
+			case DifficultyType.EASY:
+				return 'EASY';
+			case DifficultyType.MEDIUM:
+				return 'MEDIUM';
+			case DifficultyType.HARD:
+				return 'HARD';
+		}
+	}
 	onLevelChanged(level: string) {
 		var cb = (document.getElementById('cb_' + level) as HTMLInputElement).checked;
 		var cbVal = document.getElementById('cbVal_' + level) as HTMLInputElement;
 		cbVal.disabled = !cb;
 		cbVal.value = '';
+	}
+	getActiveTabClass(set: number) {
+		return set === this.activeSet;
+	}
+
+	onSetSelected(set: number) {
+		this.activeSet = set;
+		this.currSet = this.questionPapers[set - 1];
 	}
 }

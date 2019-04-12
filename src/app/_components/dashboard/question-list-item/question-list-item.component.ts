@@ -2,23 +2,21 @@ import { Component, OnInit, Input } from '@angular/core';
 import { QuestionStatus } from 'src/app/_models/enums';
 
 @Component({
-  selector: 'app-question-list-item',
-  templateUrl: './question-list-item.component.html',
-  styleUrls: ['./question-list-item.component.css']
+	selector: 'app-question-list-item',
+	templateUrl: './question-list-item.component.html',
+	styleUrls: [ './question-list-item.component.css' ]
 })
 export class QuestionListItemComponent implements OnInit {
-
-  @Input() standard: string;
+	@Input() standard: string;
 	@Input() subject: string;
-  @Input() title: string;
-  @Input() lastModifiedDate: Date;
-  @Input() status: QuestionStatus;
-  constructor() { }
+	@Input() title: string;
+	@Input() lastModifiedDate: Date;
+	@Input() status: QuestionStatus;
+	constructor() {}
 
-  ngOnInit() {
-  }
+	ngOnInit() {}
 
-  getClassForStatus(status: QuestionStatus) {
+	getClassForStatus(status: QuestionStatus) {
 		switch (status) {
 			case QuestionStatus.NEW:
 				return 'panel panel-info';
@@ -29,7 +27,7 @@ export class QuestionListItemComponent implements OnInit {
 			case QuestionStatus.REJECTED:
 				return 'panel panel-danger';
 			case QuestionStatus.APPROVED:
-				return 'panel panel-success';
+				return 'panel panel-default';
 		}
 	}
 }

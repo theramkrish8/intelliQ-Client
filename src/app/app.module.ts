@@ -56,6 +56,8 @@ import { ReviewRequestsComponent } from './_components/dashboard/reviewer-dashbo
 import { QuestionDisplayComponent } from './_components/dashboard/question-display/question-display.component';
 import { QuestionListItemComponent } from './_components/dashboard/question-list-item/question-list-item.component';
 import { QuestionPaperService } from './_services/question-paper.service';
+import { QuillModule } from 'ngx-quill';
+
 @NgModule({
 	declarations: [
 		AppComponent,
@@ -102,7 +104,8 @@ import { QuestionPaperService } from './_services/question-paper.service';
 		BrowserAnimationsModule,
 		ToastrModule.forRoot(),
 		AngularFontAwesomeModule,
-		NgxSpinnerModule
+		NgxSpinnerModule,
+		QuillModule
 	],
 	providers: [
 		AuthGuard,

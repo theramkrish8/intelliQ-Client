@@ -1,90 +1,144 @@
 <div class="row" style="margin-top:60px;">
-  <div class="col-xs-offset-3">
 
-    <form>
-      <div class="form-group form-inline row">
-        <label class="col-xs-3">Standard</label>
-        <select (change)="selectedSubject=null" class="form-control col-xs-3" [(ngModel)]="selectedStd"
-          name="selectedStd">
-          <option [ngValue]="-1" disabled selected>Select Standard</option>
-          <option *ngFor="let standard of standards" [ngValue]="standard.std">{{standard.std}}</option>
-        </select>
+  <div class="panel-group" [ngClass]="{'col-xs-10': showCriteria,'col-xs-2': !showCriteria}">
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" (click)="showCriteria=!showCriteria">Question Criteria
+            <span class="caret"></span>
+          </a>
+        </h4>
       </div>
-
-      <div class="form-group form-inline row">
-        <label class="col-xs-3">Subject</label>
-        <select [disabled]="selectedStd===-1" class="form-control col-xs-3" [(ngModel)]="selectedSubject"
-          name="selectedSubject">
-          <option [ngValue]="null" disabled selected>Select Subject</option>
-          <option *ngFor="let subject of stdSubjectMap.get(selectedStd)" [ngValue]="subject">{{subject.title}}
-          </option>
-        </select>
-      </div>
-      <div *ngIf="selectedSubject">
-        <div class="form-group form-inline row">
-          <label class="col-xs-3">Sets</label>
-          <select class="form-control col-xs-3" [(ngModel)]="sets" name="sets">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-
-        <div class="form-group form-inline row">
-          <label class="col-xs-3">Total Marks</label>
-          <input type="number" name="totalMarks" [(ngModel)]="totalMarks" class="form-control col-xs-3">
-        </div>
-
-        <div class="form-group form-inline row">
-          <label class="col-xs-3">Topics</label>
-          <select multiple class="form-control col-xs-3" [(ngModel)]="topics" name="topics">
-            <option *ngFor="let topic of subjectMap.get(selectedSubject.title).topics" [ngValue]="topic">{{topic}}
-            </option>
-          </select>
-        </div>
-
-        <div class="row">
-          <label class="col-xs-3">Difficulty %</label>
-          <div class="col-xs-3">         
-            <div class="form-group form-inline row" *ngFor="let level of difficultyLevels">
-              <div class="col-xs-2">
-                <label>{{level}}</label>
-                <input type="checkbox" (change)="onLevelChanged(level)" id="{{'cb_'+level}}" name="{{'cb_'+level}}">
+      <div class="panel-collapse collapse" [ngClass]="{'in': showCriteria}">
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <form>
+              <div class="form-group form-inline row">
+                <label class="col-xs-3">Standard</label>
+                <select (change)="selectedSubject=null" class="form-control col-xs-3" [(ngModel)]="selectedStd"
+                  name="selectedStd">
+                  <option [ngValue]="-1" disabled selected>Select Standard</option>
+                  <option *ngFor="let standard of standards" [ngValue]="standard.std">{{standard.std}}</option>
+                </select>
               </div>
-              <div class="col-xs-10">
-                <input type="number" min="0" max="100" placeholder="0 - 100%" disabled  id="{{'cbVal_'+level}}"  name="{{'cbVal_'+level}}"
-                  class="form-control">
+
+              <div class="form-group form-inline row">
+                <label class="col-xs-3">Subject</label>
+                <select [disabled]="selectedStd===-1" class="form-control col-xs-3" [(ngModel)]="selectedSubject"
+                  name="selectedSubject">
+                  <option [ngValue]="null" disabled selected>Select Subject</option>
+                  <option *ngFor="let subject of stdSubjectMap.get(selectedStd)" [ngValue]="subject">{{subject.title}}
+                  </option>
+                </select>
               </div>
-            </div>
+              <div *ngIf="selectedSubject">
+                <div class="form-group form-inline row">
+                  <label class="col-xs-3">Sets</label>
+                  <select class="form-control col-xs-3" [(ngModel)]="sets" name="sets">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                  </select>
+                </div>
+
+                <div class="form-group form-inline row">
+                  <label class="col-xs-3">Total Marks</label>
+                  <input type="number" name="totalMarks" [(ngModel)]="totalMarks" class="form-control col-xs-3">
+                </div>
+
+                <div class="form-group form-inline row">
+                  <label class="col-xs-3">Topics</label>
+                  <select multiple class="form-control col-xs-3" [(ngModel)]="topics" name="topics">
+                    <option *ngFor="let topic of subjectMap.get(selectedSubject.title).topics" [ngValue]="topic">
+                      {{topic}}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="row">
+                  <label class="col-xs-3">Difficulty %</label>
+                  <div class="col-xs-3">
+                    <div class="form-group form-inline row" *ngFor="let level of difficultyLevels">
+                      <div class="col-xs-2">
+                        <label>{{level}}</label>
+                        <input type="checkbox" checked (change)="onLevelChanged(level)" id="{{'cb_'+level}}"
+                          name="{{'cb_'+level}}">
+                      </div>
+                      <div class="col-xs-10">
+                        <input type="number" min="0" max="100" placeholder="0 - 100%" disabled id="{{'cbVal_'+level}}"
+                          name="{{'cbVal_'+level}}" class="form-control" value="30">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group form-inline row">
+                  <label class="col-xs-3">Sections</label>
+                  <select multiple class="form-control col-xs-3" [(ngModel)]="sections" name="sections">
+                    <option value="OBJECTIVE">OBJECTIVE</option>
+                    <option value="SHORT">SHORT</option>
+                    <option value="BRIEF">BRIEF</option>
+                    <option value="LONG">LONG</option>
+                  </select>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-3" *ngFor="let section of sections">
+                    <div [ngClass]="getClassForSection(section)">
+                      <div class="panel-heading">{{section}}</div>
+                      <div class="panel-body">
+                        <input placeholder="Total Questions" id="{{'count_' + section}}" type="number"
+                          name="{{'count_' + section}}" class="form-control" value="5">
+                        <input placeholder="Total Marks" id="{{'marks_' + section}}" type="number"
+                          name="{{'marks_' + section}}" class="form-control" value="1">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row"><button (click)="generatePaper()" class="btn btn-primary">Generate Paper</button></div>
+
+              </div>
+            </form>
           </div>
         </div>
-
-        <div class="form-group form-inline row">
-          <label class="col-xs-3">Sections</label>
-          <select multiple class="form-control col-xs-3" [(ngModel)]="sections" name="sections">
-            <option value="OBJECTIVE">OBJECTIVE</option>
-            <option value="SHORT">SHORT</option>
-            <option value="BRIEF">BRIEF</option>
-            <option value="LONG">LONG</option>
-          </select>
-        </div>
-
-        <div class="row">
-          <div class="col-xs-3" *ngFor="let section of sections">
-            <div [ngClass]="getClassForSection(section)">
-              <div class="panel-heading">{{section}}</div>
-              <div class="panel-body">
-                <input placeholder="Total Questions" id="{{'count_' + section}}" type="number" name="{{'count_' + section}}"
-                  class="form-control">
-                <input placeholder="Total Marks" id="{{'marks_' + section}}" type="number" name="{{'marks_' + section}}"
-                  class="form-control">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button (click)="generatePaper()" class="btn btn-primary">Generate Paper</button>
       </div>
-    </form>
+    </div>
   </div>
+
+  <div class="panel panel-primary" [ngClass]="{'col-xs-10': !showCriteria,'col-xs-2': showCriteria}"
+    *ngIf="questionPapers">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        Question Paper
+      </h4>
+    </div>
+    <div class="panel-body">
+      <div class="row">
+           <ul class="nav nav-tabs">
+            <li role="presentation" *ngFor="let queSet of questionPapers"
+              [ngClass]="{active:getActiveTabClass(queSet.set)}">
+              <a (click)="onSetSelected(queSet.set)">Set {{queSet.set}}</a>
+            </li>
+          </ul>
+
+         <div [ngClass]="getClassForSection(getSectionDesc(section.type))"
+          class="col-xs-10 col-xs-offset-1" *ngFor="let section of currSet.sections">
+           <div class="panel-heading" >
+             <h3 class="panel-title" >{{getSectionDesc(section.type)}}</h3>
+           </div>
+           <div class="panel-body">
+               
+            <ul class="list-group">
+              <li *ngFor="let question of section.questions" class="list-group-item">{{question.title}}
+                 <span class="badge">{{getDifficultyDesc(question.difficulty)}}</span></li>
+            </ul>
+
+           </div>
+         </div>
+        
+      </div>
+    </div>
+  </div>
+
+
 </div>

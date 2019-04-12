@@ -12,11 +12,7 @@ export class QuestionPaperService {
 	generateQuestionPaper(queCriteria: QuestionCriteria) {
 		return this.restService.post('paper/generate', queCriteria).pipe(
 			map((appResponse: AppResponse) => {
-				var result = this.utilityService.getAppResponse(appResponse, true, false);
-				if (result === null) {
-					return [];
-				}
-				return result;
+				return this.utilityService.getAppResponse(appResponse, true, false);
 			})
 		);
 	}

@@ -23,10 +23,10 @@
       <input disabled type="text" [(ngModel)]="selectedSubject.reviewer.userName" class="form-control col-xs-3">
     </div>
 
-    <form *ngIf="selectedSubject!==null">
+    <form [formGroup]="addQuestionForm" *ngIf="selectedSubject!==null">
       <div class="form-group form-inline row">
         <label class="col-xs-3">Type</label>
-        <select class="form-control col-xs-3" [(ngModel)]="question.length" name="questionLength">
+        <select class="form-control col-xs-3" [(ngModel)]="question.length" [ngModelOptions]="{standalone: true}" name="questionLength">
           <option [ngValue]="undefined" disabled selected>Select Type</option>
           <option [ngValue]="0">OBJECTIVE</option>
           <option [ngValue]="1">SHORT</option>
@@ -37,7 +37,7 @@
 
       <div class="form-group form-inline row">
         <label class="col-xs-3">Difficulty</label>
-        <select class="form-control col-xs-3" [(ngModel)]="question.difficulty" name="questionDifficulty">
+        <select class="form-control col-xs-3" [(ngModel)]="question.difficulty" [ngModelOptions]="{standalone: true}" name="questionDifficulty">
           <option [ngValue]="undefined" disabled selected>Select Difficulty</option>
           <option [ngValue]="0">EASY</option>
           <option [ngValue]="1">MEDIUM</option>
@@ -47,23 +47,24 @@
 
       <div class="form-group form-inline row">
         <label class="col-xs-3">Topic</label>
-        <input type="text" name="topic" [(ngModel)]="question.topic" class="form-control col-xs-3">
+        <input type="text" name="topic" [(ngModel)]="question.topic" [ngModelOptions]="{standalone: true}" class="form-control col-xs-3">
       </div>
 
       <div class="form-group form-inline row search-results style-3">
         <label class="col-xs-3">Description</label>
-        <input type="text" name="title" (keyup)="getSuggestions($event)" [(ngModel)]="question.title"
+        <input type="text" name="title" (keyup)="getSuggestions($event)" [(ngModel)]="question.title" [ngModelOptions]="{standalone: true}" 
           class="form-control col-xs-3">
       </div>
-
+      <!-- <quill-editor formControlName="description"></quill-editor> -->
+    
       <div class="form-group form-inline row">
         <label class="col-xs-3">Tags</label>
-        <input type="text" name="tags" [(ngModel)]="tags" class="form-control col-xs-3">
+        <input type="text" name="tags" [(ngModel)]="tags" [ngModelOptions]="{standalone: true}"  class="form-control col-xs-3">
       </div>
 
       <div class="form-group form-inline row">
         <label class="col-xs-3">Image</label>
-        <input type="text" name="image" [(ngModel)]="question.imageUrl" class="form-control col-xs-3">
+        <input type="text" name="image" [(ngModel)]="question.imageUrl" [ngModelOptions]="{standalone: true}"  class="form-control col-xs-3">
       </div>
       <div class="row">
         <button (click)="addQuestion()" class="btn btn-primary">Add Question</button>

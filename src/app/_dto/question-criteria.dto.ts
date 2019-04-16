@@ -7,7 +7,7 @@ export class QuestionCriteria {
 	public length: QuesLength[];
 	public difficulty: QuesDifficulty[];
 	public page: number;
-
+	public totalMarks: number;
 	constructor(public groupCode: string, public std: number, public subject: string, public searchTerm: string) {}
 }
 

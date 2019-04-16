@@ -8,5 +8,6 @@ export class QuestionPaperDto {
 
 export class Section {
 	public type: LengthType;
+	public marks: number;
 	public questions: Question[];
 }

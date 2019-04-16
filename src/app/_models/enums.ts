@@ -33,3 +33,8 @@ export enum QuestionStatus {
 	PENDING = 5,
 	OBSOLETE = 6
 }
+
+export enum TestPaperStatus {
+	DRAFT = 0,
+	RELEASE = 1
+}

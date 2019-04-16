@@ -1,4 +1,4 @@
-import { RoleType, ResponseStatus } from '../_models/enums';
+import { RoleType, ResponseStatus, LengthType, DifficultyType } from '../_models/enums';
 import { AppResponse } from '../_dto/app-response.model';
 import { NotificationService } from './notification.service';
 import { Injectable } from '@angular/core';
@@ -52,7 +52,64 @@ export class UtilityService {
 				return '';
 		}
 	}
+	getLengthEnum(section: string) {
+		switch (section) {
+			case 'OBJECTIVE':
+				return LengthType.OBJECTIVE;
+			case 'SHORT':
+				return LengthType.SHORT;
+			case 'BRIEF':
+				return LengthType.BRIEF;
+			case 'LONG':
+				return LengthType.LONG;
+		}
+	}
+	getDifficultyEnum(difficultyLevel: string) {
+		switch (difficultyLevel) {
+			case 'EASY':
+				return DifficultyType.EASY;
+			case 'MEDIUM':
+				return DifficultyType.MEDIUM;
+			case 'HARD':
+				return DifficultyType.HARD;
+		}
+	}
+	getClassForSection(section: string) {
+		switch (section) {
+			case 'OBJECTIVE':
+				return 'panel panel-info';
+			case 'SHORT':
+				return 'panel panel-warning';
+			case 'BRIEF':
+				return 'panel panel-danger';
+			case 'LONG':
+				return 'panel panel-success';
+		}
+	}
 
+	getSectionDesc(section: LengthType) {
+		switch (section) {
+			case LengthType.OBJECTIVE:
+				return 'OBJECTIVE';
+			case LengthType.SHORT:
+				return 'SHORT';
+			case LengthType.BRIEF:
+				return 'BRIEF';
+			case LengthType.LONG:
+				return 'LONG';
+		}
+	}
+
+	getDifficultyDesc(level: DifficultyType) {
+		switch (level) {
+			case DifficultyType.EASY:
+				return 'EASY';
+			case DifficultyType.MEDIUM:
+				return 'MEDIUM';
+			case DifficultyType.HARD:
+				return 'HARD';
+		}
+	}
 	getAppResponse(appResponse: AppResponse, showError: boolean, showSuccess: boolean) {
 		var timeOut = 3000;
 		if (appResponse.status === ResponseStatus.FORBIDDEN) {

@@ -38,4 +38,16 @@ export class QuestionService {
 			})
 		);
 	}
+
+	getFilteredQuestion(quesCriteria: QuestionCriteria) {
+		return this.restService.post('question/filter', quesCriteria, true).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return [];
+				}
+				return result;
+			})
+		);
+	}
 }

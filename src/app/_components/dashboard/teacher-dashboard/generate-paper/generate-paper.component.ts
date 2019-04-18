@@ -47,6 +47,7 @@ export class GeneratePaperComponent implements OnInit {
 	selectedSections: { type: string; totalQues: number; marks: number }[];
 	activeSet = 1;
 	questionToReplace: {
+		quesId: string;
 		std: number;
 		subject: string;
 		topic: string;
@@ -55,7 +56,19 @@ export class GeneratePaperComponent implements OnInit {
 		tags: string[];
 		sectionIndex: number;
 		questionIndex: number;
-	} = { std: 0, subject: '', topic: '', difficulty: null, length: [], tags: [], sectionIndex: 0, questionIndex: 0 };
+	} = {
+		quesId: '',
+		std: 0,
+		subject: '',
+		topic: '',
+		difficulty: null,
+		length: [],
+		tags: [],
+		sectionIndex: 0,
+		questionIndex: 0
+	};
+	questions: Question[] = [];
+	selectedReplacement: Question = null;
 	difficultyLevels = [
 		{ type: 'EASY', checked: false, diffPercent: null },
 		{ type: 'MEDIUM', checked: false, diffPercent: null },
@@ -142,7 +155,7 @@ export class GeneratePaperComponent implements OnInit {
 				}
 				this.loadedTemplate = null;
 				this.loadedDraft = null;
-				this.modalTag = '';
+				this.selectedDraft = '';
 				this.activeSet = 1;
 			});
 	}
@@ -157,13 +170,15 @@ export class GeneratePaperComponent implements OnInit {
 		this.queCriteria.totalMarks = this.totalMarks;
 		this.queCriteria.topics = this.topics.sort();
 		this.queCriteria.length = [];
-		this.selectedSections.forEach((section) => {
-			var sec = new QuesLength();
-			sec.type = this.utilityService.getLengthEnum(section.type);
-			sec.count = section.totalQues;
-			sec.marks = section.marks;
-			this.queCriteria.length.push(sec);
-		});
+		if (this.selectedSections) {
+			this.selectedSections.forEach((section) => {
+				var sec = new QuesLength();
+				sec.type = this.utilityService.getLengthEnum(section.type);
+				sec.count = section.totalQues;
+				sec.marks = section.marks;
+				this.queCriteria.length.push(sec);
+			});
+		}
 		this.queCriteria.difficulty = [];
 		this.difficultyLevels.forEach((level) => {
 			if (level.checked) {
@@ -174,9 +189,7 @@ export class GeneratePaperComponent implements OnInit {
 			}
 		});
 	}
-	onLevelChanged(level) {
-		level[1].checked = !level[1].checked;
-	}
+
 	getActiveTabClass(set: number) {
 		return set === this.activeSet;
 	}
@@ -196,7 +209,11 @@ export class GeneratePaperComponent implements OnInit {
 		this.createQuestionCriteria();
 		var template = null;
 		if (this.queCriteria) {
-			template = new Template(this.loggedInUser);
+			if (this.loadedTemplate) {
+				template = this.loadedDraft;
+			} else {
+				template = new Template(this.loggedInUser);
+			}
 			template.criteria = this.queCriteria;
 			template.tag = this.modalTag;
 		}
@@ -208,10 +225,10 @@ export class GeneratePaperComponent implements OnInit {
 					this.notificationService.showErrorWithTimeout('Template already exists!', null, 2000);
 				} else {
 					this.notificationService.showSuccessWithTimeout(msgs[0], null, 2000);
+					this.fetchAllTemplates();
 				}
 			}
 			this.showModal = false;
-			this.modalTag = '';
 		});
 	}
 
@@ -235,17 +252,23 @@ export class GeneratePaperComponent implements OnInit {
 			if (response) {
 				var msgs = response.split(':');
 				this.notificationService.showSuccessWithTimeout(msgs[1], null, 2000);
+				this.fetchAllDrafts();
 			}
 			this.showModal = false;
-			this.modalTag = '';
 		});
 	}
 	fetchDraftsAndTemplates() {
+		this.fetchAllTemplates();
+		this.fetchAllDrafts();
+	}
+	fetchAllTemplates() {
 		this.questionPaperService
 			.fetchTemplates(this.loggedInUser.school.group.code, this.loggedInUser.userId)
 			.subscribe((templates) => {
 				this.templatesArray = templates;
 			});
+	}
+	fetchAllDrafts() {
 		this.questionPaperService
 			.fetchDrafts(this.loggedInUser.school.group.code, this.loggedInUser.userId)
 			.subscribe((templates) => {
@@ -267,7 +290,6 @@ export class GeneratePaperComponent implements OnInit {
 						});
 					});
 					this.currSet = this.questionPapers[0];
-					this.modalTag = draft.tag;
 					this.activeSet = 1;
 				}
 			});
@@ -357,34 +379,49 @@ export class GeneratePaperComponent implements OnInit {
 		this.questionToReplace.length = [ queLength ];
 		this.questionToReplace.sectionIndex = pIndex;
 		this.questionToReplace.questionIndex = cIndex;
+		this.questionToReplace.quesId = question.quesId;
+		this.questions = [];
+		this.selectedReplacement = null;
 		this.showReplaceModal = true;
 	}
 	replaceQuestion() {
-		var queCriteria = new QuestionCriteria(
-			this.loggedInUser.school.group.code,
-			this.questionToReplace.std,
-			this.questionToReplace.subject,
-			null
-		);
-		queCriteria.difficulty = [ this.questionToReplace.difficulty ];
-		queCriteria.length = this.questionToReplace.length;
-		queCriteria.tags = this.questionToReplace.tags;
-		queCriteria.topics = [ this.questionToReplace.topic ];
-		this.questionService.getFilteredQuestion(queCriteria).subscribe((questions: Question[]) => {
-			if (questions.length > 0) {
-				this.questionPapers[this.activeSet - 1].sections[this.questionToReplace.sectionIndex].questions[
-					this.questionToReplace.questionIndex
-				] =
-					questions[0];
-				this.notificationService.showSuccessWithTimeout('Question replaced!', null, 2000);
-				this.showReplaceModal = false;
-			} else {
-				this.notificationService.showErrorWithTimeout(
-					'Oops! No Questions found matching your criteria.',
-					null,
-					2000
-				);
-			}
-		});
+		if (!this.selectedReplacement) {
+			var queCriteria = new QuestionCriteria(
+				this.loggedInUser.school.group.code,
+				this.questionToReplace.std,
+				this.questionToReplace.subject,
+				null
+			);
+			queCriteria.difficulty = [ this.questionToReplace.difficulty ];
+			queCriteria.length = this.questionToReplace.length;
+			queCriteria.tags = this.questionToReplace.tags;
+			queCriteria.topics = [ this.questionToReplace.topic ];
+			this.questionService.getFilteredQuestion(queCriteria).subscribe((questions: Question[]) => {
+				questions = questions.filter((x) => x.quesId !== this.questionToReplace.quesId);
+				if (questions.length > 0) {
+					this.questions = questions;
+				} else {
+					this.notificationService.showErrorWithTimeout(
+						'Oops! No Questions found matching your criteria.',
+						null,
+						2000
+					);
+				}
+			});
+		} else {
+			this.questionPapers[this.activeSet - 1].sections[this.questionToReplace.sectionIndex].questions[
+				this.questionToReplace.questionIndex
+			] = this.selectedReplacement;
+			this.notificationService.showSuccessWithTimeout('Question replaced!', null, 2000);
+			this.showReplaceModal = false;
+		}
+	}
+	showModalForm(type: string) {
+		if (type === 'template') {
+			this.modalTag = this.loadedTemplate ? this.loadedTemplate.tag : '';
+		} else {
+			this.modalTag = this.loadedDraft ? this.loadedDraft.tag : '';
+		}
+		this.showModal = true;
 	}
 }

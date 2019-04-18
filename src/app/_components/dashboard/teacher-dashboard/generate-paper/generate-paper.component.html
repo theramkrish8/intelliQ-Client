@@ -29,7 +29,7 @@
     <div class="panel panel-primary" *ngIf="activeTab=='criteria'">
       <div class="panel-heading">
         <i (click)="resetTemplateForm()" class="fa fa-undo pull-left clickable" aria-hidden="true"></i>
-        <i (click)="showModal=true" class="fa fa-floppy-o pull-right clickable" aria-hidden="true"></i>
+        <i (click)="showModalForm('template')" class="fa fa-floppy-o pull-right clickable" aria-hidden="true"></i>
         <h4 class="panel-title">Question Criteria</h4>
       </div>
       <div class="panel-body col-xs-offset-4">
@@ -165,8 +165,8 @@
         </div>
       </div>
       <div class="panel-footer" *ngIf="questionPapers">
-        <button (click)="showModal=true;testPaperStatus='draft'" class="btn btn-warning">Save as Draft</button>
-        <button (click)="showModal=true;testPaperStatus='save'" class="btn btn-success col-xs-offset-1">Finalize
+        <button (click)="showModalForm('draft');testPaperStatus='draft'" class="btn btn-warning">Save as Draft</button>
+        <button (click)="showModalForm('draft');testPaperStatus='save'" class="btn btn-success col-xs-offset-1">Finalize
           Paper</button>
       </div>
     </div>
@@ -224,10 +224,20 @@
               {{level.type}}
             </option>
           </select>  
-          </div>       
+          </div>   
+          <div class="form-group form-inline row" *ngIf="questions.length>0">
+            <label class="col-xs-6">Questions</label>
+            <select class="form-control col-xs-6" [(ngModel)]="selectedReplacement">
+              <option disabled value="null">Select Question</option>
+              <option *ngFor="let question of questions" [ngValue]="question">
+                {{question.title}}
+              </option>
+            </select>
+          </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-success" data-dismiss="modal" (click)="replaceQuestion()">Replace Question</button>
+          <button class="btn btn-success" data-dismiss="modal" (click)="replaceQuestion()">
+            {{selectedReplacement?'Replace Question':'Find Questions'}}</button>
         </div>
       </div>
     </div>

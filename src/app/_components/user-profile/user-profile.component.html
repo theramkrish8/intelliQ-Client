@@ -1,9 +1,26 @@
-<div class="container" style="margin-top:40px;">
-  <form (ngSubmit)="updateUser();">
+<div class="container" style="margin-top:30px;">
+  <div class="col-xs-12">
+    <ul class="nav nav-tabs">
+      <li role="presentation" [ngClass]="{active:activeTab==='profile',clickable:true}"><a
+          (click)="activeTab='profile'">Profile</a>
+      </li>
+      <li role="presentation" [ngClass]="{active:activeTab==='password',clickable:true}"><a
+          (click)="activeTab='password';reset()">Change Password</a></li>
+      <li role="presentation" [ngClass]="{active:activeTab==='mobile',clickable:true}"><a
+          (click)="activeTab='mobile';reset()">Change Mobile</a></li>
+    </ul>
+  </div>
+  
+  <div *ngIf="activeTab==='profile'">
+  <form (ngSubmit)="updateUser();" style="margin-top:60px;">
 
     <div class="form-group form-inline row col-xs-offset-2">
-      <label class="col-xs-4">Full Name</label>
-      <input type="text" name="fullname" class="form-control col-xs-6" [(ngModel)]="user.name">
+      <label class="col-xs-4">First Name</label>
+      <input type="text" name="firstName" class="form-control col-xs-6" [(ngModel)]="firstName">
+    </div>
+    <div class="form-group form-inline row col-xs-offset-2">
+      <label class="col-xs-4">Last Name</label>
+      <input type="text" name="lastName" class="form-control col-xs-6" [(ngModel)]="lastName">
     </div>
 
     <div class="form-group form-inline row col-xs-offset-2">
@@ -18,13 +35,17 @@
 
     <div class="form-group form-inline row col-xs-offset-2">
       <label class="col-xs-4">Gender</label>
-      <input type="text" name="gender" class="form-control col-xs-6"  [(ngModel)]="user.gender">
+      <select class="form-control col-xs-6" [(ngModel)]="user.gender" name="gender">
+      <option disabled value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
     </div>
 
     <div class="form-group form-inline row col-xs-offset-2">
       <label class="col-xs-4">DOB</label>
-      <input type="date"  class="form-control col-xs-6"   
-       [ngModel]="user.dob | date:'yyyy-MM-dd'" (ngModelChange)="user.dob = $event" type="date" name="dob" > 
+      <input type="date" class="form-control col-xs-6" [ngModel]="user.dob | date:'yyyy-MM-dd'"
+        (ngModelChange)="user.dob = $event" type="date" name="dob">
     </div>
 
 
@@ -32,10 +53,65 @@
       <label class="col-xs-4">Email</label>
       <input type="email" name="email" class="form-control col-xs-6" [(ngModel)]="user.email">
     </div>
-   
+
     <div class="form-group">
       <button type="submit" class="btn btn-primary">Update Profile</button>
     </div>
 
   </form>
+  </div>
+
+  <div *ngIf="activeTab==='password'">
+    <form (ngSubmit)="updatePassword();" style="margin-top:60px;">
+  
+      <div class="form-group form-inline row col-xs-offset-2">
+        <label class="col-xs-4">Old Password</label>
+        <input type="password" name="oldPassword" placeholder="Old Password" class="form-control col-xs-6" [(ngModel)]="oldPassword">
+      </div>
+  
+      <div class="form-group form-inline row col-xs-offset-2">
+        <label class="col-xs-4">New Password</label>
+        <input type="password" name="newPassword" placeholder="New Password" class="form-control col-xs-6"
+          [(ngModel)]="newPassword">
+      </div>
+
+      <div class="form-group form-inline row col-xs-offset-2">
+        <label class="col-xs-4">Confirm Password</label>
+        <input type="password" name="confirmPassword" placeholder="Confirm Password" class="form-control col-xs-6"
+          [(ngModel)]="confirmPassword">
+      </div>
+
+      <div class="form-group">
+        <button [disabled]="!newPassword || newPassword!==confirmPassword" type="submit" class="btn btn-primary">Update Password</button>
+      </div>
+  
+    </form>
+  </div>
+
+  <div *ngIf="activeTab==='mobile'">
+    <form (ngSubmit)="updateMobile();" style="margin-top:60px;">
+  
+      <div class="form-group form-inline row col-xs-offset-2">
+        <label class="col-xs-4">Current Mobile</label>
+        <input type="text" name="currentMobile"  class="form-control col-xs-6" readonly [(ngModel)]="user.mobile ">
+      </div>
+  
+        <div class="form-group form-inline row col-xs-offset-2">
+          <label class="col-xs-4">New Mobile</label>
+          <input [disabled]="otpGenerated" type="text" name="newMobile" maxlength="10" placeholder="New Number" class="form-control col-xs-6"
+           [(ngModel)]="newMobile ">
+        </div>
+
+        <div class="form-group form-inline row col-xs-offset-2" *ngIf="otpGenerated">
+          <label class="col-xs-4">OTP</label>
+          <input type="text" name="otp" maxlength="6"  placeholder="Enter OTP" class="form-control col-xs-6" [(ngModel)]="otp ">
+        </div>
+    
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">{{otpGenerated?'Verify OTP':'Generate OTP'}}</button>
+      </div>
+  
+    </form>
+      <button (click)="reset()" class="btn btn-warning">Reset</button>
+  </div>
 </div>

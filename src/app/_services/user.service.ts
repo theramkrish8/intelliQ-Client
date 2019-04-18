@@ -8,6 +8,8 @@ import { RestService } from './rest.service';
 import { User } from '../_models/user.model';
 import { RoleType, ResponseStatus } from '../_models/enums';
 import { NotificationService } from './notification.service';
+import { Profile } from '../_dto/profile.dto';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class UserService implements OnInit {
@@ -109,9 +111,38 @@ export class UserService implements OnInit {
 			})
 		);
 	}
+	resetPassword(profile: Profile) {
+		return this.restService.post('user/reset/pwd', profile).pipe(
+			map((appResponse: AppResponse) => {
+				return this.utilityService.getAppResponse(appResponse, true, true);
+			})
+		);
+	}
+	updateMobile(profile: Profile) {
+		return this.restService.post('user/update/mobile', profile).pipe(
+			map((appResponse: AppResponse) => {
+				return this.utilityService.getAppResponse(appResponse, true, true);
+			})
+		);
+	}
+	generateMobileOtp(mobile: string) {
+		return this.restService.get('user/new/mobile/' + mobile).pipe(
+			map((appResponse: AppResponse) => {
+				return this.utilityService.getAppResponse(appResponse, true, false);
+			})
+		);
+	}
+	verifyOtp(otp: string, otpSessionId: string) {
+		return this.restService.get('user/otp/verify/' + otp, otpSessionId).pipe(
+			map((appResponse: AppResponse) => {
+				return this.utilityService.getAppResponse(appResponse, true, false);
+			})
+		);
+	}
 	login(user: User) {
 		return this.restService.post('user/login', user);
 	}
+
 	logout() {
 		this.restService.get('user/logout').subscribe((appResponse: AppResponse) => {
 			if (appResponse.status === ResponseStatus.FORBIDDEN) {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, finalize } from 'rxjs/operators';
+import { catchError, finalize, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AppResponse } from '../_dto/app-response.model';
 import { ResponseStatus } from '../_models/enums';
@@ -16,21 +16,29 @@ export class RestService {
 		this.baseUrl = 'https://localhost:8080/';
 	}
 
-	createOptions(body?: any) {
+	createOptions(body?: any, customHeader?: string) {
 		var xsrf = this.cookieService.get('XSRF-TOKEN');
 		if (!xsrf) {
 			xsrf = '';
 		}
-		this.httpOptions = {
-			headers: new HttpHeaders({ 'X-Xsrf-Token': xsrf }),
-			withCredentials: true,
-			body: body
-		};
+		if (!customHeader) {
+			this.httpOptions = {
+				headers: new HttpHeaders({ 'X-Xsrf-Token': xsrf }),
+				withCredentials: true,
+				body: body
+			};
+		} else {
+			this.httpOptions = {
+				headers: new HttpHeaders({ 'X-Xsrf-Token': xsrf, rqst_otp_sess_id: customHeader }),
+				withCredentials: true,
+				body: body
+			};
+		}
 	}
 
-	get(method: string) {
+	get(method: string, customHeader?: string) {
 		this.spinner.show();
-		this.createOptions();
+		this.createOptions(null, customHeader);
 		return this.http.get(this.baseUrl + method, this.httpOptions).pipe(
 			catchError((error: HttpErrorResponse) => {
 				console.log(error);
@@ -85,10 +93,12 @@ export class RestService {
 			})
 		);
 	}
+
 	prepareAppResponse(error: HttpErrorResponse) {
 		if (error.status === ResponseStatus.FORBIDDEN) {
 			return new AppResponse(ResponseStatus.FORBIDDEN, error.error, null);
 		}
-		return new AppResponse(ResponseStatus.ERROR, 'Something went wrong!', null);
+		var msg = error.error.msg ? error.error.msg : 'Something went wrong!';
+		return new AppResponse(ResponseStatus.ERROR, msg, null);
 	}
 }

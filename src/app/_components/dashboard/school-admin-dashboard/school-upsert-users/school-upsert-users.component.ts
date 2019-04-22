@@ -101,6 +101,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 				}
 			});
 		} else {
+			alert("Enter a valid mobile number");
 			this.mobileElem.nativeElement.focus();
 		}
 	}

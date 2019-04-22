@@ -18,7 +18,7 @@ export class AddSchoolComponent implements OnInit {
 	schools: School[];
 	schoolMsg: string;
 	selectedGroup: Group;
-	groupCode = '';
+	groupCode = 'GP_';
 	schoolName = '';
 	schoolBoard = '';
 	city = '';
@@ -74,7 +74,7 @@ export class AddSchoolComponent implements OnInit {
 
 	resetForm(clearGroup: boolean) {
 		if (clearGroup) {
-			this.groupCode = '';
+			this.groupCode = 'GP_';
 			this.selectedGroup = null;
 			this.btnText = 'Find Group';
 			this.schools = [];

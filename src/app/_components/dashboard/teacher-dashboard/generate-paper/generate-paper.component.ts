@@ -130,7 +130,9 @@ export class GeneratePaperComponent implements OnInit {
 	}
 
 	generatePaper() {
-		this.createQuestionCriteria();
+		if (!this.createQuestionCriteria(true)){
+			return;
+		}
 		this.questionPaperService
 			.generateQuestionPaper(this.queCriteria)
 			.subscribe((questionPapers: QuestionPaperDto[]) => {
@@ -159,7 +161,9 @@ export class GeneratePaperComponent implements OnInit {
 				this.activeSet = 1;
 			});
 	}
-	createQuestionCriteria() {
+	createQuestionCriteria(generatePaper: boolean) {
+		var errorMsg = '';
+
 		this.queCriteria = new QuestionCriteria(
 			this.loggedInUser.school.group.code,
 			this.selectedStd,
@@ -168,26 +172,58 @@ export class GeneratePaperComponent implements OnInit {
 		);
 		this.queCriteria.sets = Number(this.sets);
 		this.queCriteria.totalMarks = this.totalMarks;
-		this.queCriteria.topics = this.topics.sort();
+		this.queCriteria.topics = this.topics ? this.topics.sort() : [];
 		this.queCriteria.length = [];
 		if (this.selectedSections) {
 			this.selectedSections.forEach((section) => {
+
+				if (generatePaper){
+					if (section.totalQues === null || section.totalQues < 1){
+						errorMsg = "Question count should be atleast 1 for " + section.type;
+						return;
+					}
+					if (section.marks === null || section.marks < 1){
+						errorMsg = "Marks should be atleast 1 for " + section.type;
+						return;
+					}
+				}
 				var sec = new QuesLength();
-				sec.type = this.utilityService.getLengthEnum(section.type);
-				sec.count = section.totalQues;
-				sec.marks = section.marks;
-				this.queCriteria.length.push(sec);
+					sec.type = this.utilityService.getLengthEnum(section.type);
+					sec.count = section.totalQues;
+					sec.marks = section.marks;
+					this.queCriteria.length.push(sec);
 			});
+		}
+		if (errorMsg.length > 0){
+			alert(errorMsg);
+			return false;
 		}
 		this.queCriteria.difficulty = [];
 		this.difficultyLevels.forEach((level) => {
 			if (level.checked) {
+				if (generatePaper){
+					if (level.diffPercent === null || level.diffPercent < 10){
+						errorMsg = "Diffculty percent must be atleast 10% for " + level.type;
+						return;
+					}
+				}
 				var lvl = new QuesDifficulty();
 				lvl.level = this.utilityService.getDifficultyEnum(level.type);
 				lvl.percent = level.diffPercent;
 				this.queCriteria.difficulty.push(lvl);
 			}
 		});
+		if (errorMsg.length > 0){
+			alert(errorMsg);
+			return false;
+		}
+		if (generatePaper){
+			if (this.queCriteria.difficulty.length === 0){
+				alert("Select atleast 1 Difficulty Level");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	getActiveTabClass(set: number) {
@@ -206,11 +242,10 @@ export class GeneratePaperComponent implements OnInit {
 		}
 	}
 	saveTemplate() {
-		this.createQuestionCriteria();
 		var template = null;
 		if (this.queCriteria) {
 			if (this.loadedTemplate) {
-				template = this.loadedDraft;
+				template = this.loadedTemplate;
 			} else {
 				template = new Template(this.loggedInUser);
 			}
@@ -386,6 +421,10 @@ export class GeneratePaperComponent implements OnInit {
 	}
 	replaceQuestion() {
 		if (!this.selectedReplacement) {
+			if (this.questionToReplace.topic.length === 0){
+				alert("Please Select Topic");
+				return;
+			}
 			var queCriteria = new QuestionCriteria(
 				this.loggedInUser.school.group.code,
 				this.questionToReplace.std,

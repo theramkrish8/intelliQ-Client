@@ -17,7 +17,7 @@ import { Group } from 'src/app/_models/group.model';
 export class AddAdminComponent implements OnInit {
 	adminType: string;
 	schoolCode: string;
-	groupCode: string;
+	groupCode = 'GP_';
 	selectedSchool: School;
 	mobile: string;
 	selectedUser: User;
@@ -146,7 +146,7 @@ export class AddAdminComponent implements OnInit {
 	}
 	resetForm() {
 		this.adminType = '';
-		this.groupCode = '';
+		this.groupCode = 'GP_';
 		this.schoolCode = '';
 		this.selectedSchool = null;
 		this.mobile = '';

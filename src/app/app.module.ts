@@ -57,6 +57,7 @@ import { QuestionDisplayComponent } from './_components/dashboard/question-displ
 import { QuestionListItemComponent } from './_components/dashboard/question-list-item/question-list-item.component';
 import { QuestionPaperService } from './_services/question-paper.service';
 import { QuillModule } from 'ngx-quill';
+import { MustMatchDirective } from './directives/match-field.directive';
 
 @NgModule({
 	declarations: [
@@ -92,7 +93,8 @@ import { QuillModule } from 'ngx-quill';
 		TrimPipe,
 		ReviewRequestsComponent,
 		QuestionDisplayComponent,
-		QuestionListItemComponent
+		QuestionListItemComponent,
+		MustMatchDirective
 	],
 	imports: [
 		BrowserModule,

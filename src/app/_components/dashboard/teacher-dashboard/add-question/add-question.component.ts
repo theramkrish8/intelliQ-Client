@@ -29,7 +29,6 @@ export class AddQuestionComponent implements OnInit {
 	selectedSubject: Subject = null;
 	tags = '';
 	suggestedQuestions: Question[];
-	addQuestionForm: FormGroup;
 	constructor(
 		private localStorageService: LocalStorageService,
 		private notificationService: NotificationService,
@@ -42,7 +41,6 @@ export class AddQuestionComponent implements OnInit {
 	ngOnInit() {
 		// var cbVal = document.getElementById('testing');
 		// var quill = new Quill(cbVal);
-		this.addQuestionForm = new FormGroup({ description: new FormControl(null) });
 		this.loggedInUser = this.localStorageService.getCurrentUser();
 		var teacherRole = this.loggedInUser.roles[
 			this.utilityService.findRoleIndex(this.loggedInUser.roles, RoleType.TEACHER)
@@ -80,6 +78,8 @@ export class AddQuestionComponent implements OnInit {
 		this.question.std = this.selectedStd;
 		this.question.subject = this.selectedSubject.title;
 		this.quesRequestService.addQuestion(this.question).subscribe((response) => {
+			this.question.title = '';
+			this.question.imageUrl = '';
 			// this.resetForm();
 		});
 	}

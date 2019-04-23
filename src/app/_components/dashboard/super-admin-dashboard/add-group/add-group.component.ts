@@ -10,26 +10,19 @@ import { Observable } from 'rxjs';
 	styleUrls: [ './add-group.component.css' ]
 })
 export class AddGroupComponent implements OnInit {
-	createGroupForm: FormGroup;
+	groupCode = '';
 	responseMsg: Observable<string>;
 	groups: Observable<Group[]>;
-	constructor(private formBuilder: FormBuilder, private groupService: GroupService) {}
+	constructor(private groupService: GroupService) {}
 
 	ngOnInit() {
-		this.createGroupForm = this.formBuilder.group({
-			groupCode: [ '', Validators.required ]
-		});
 		this.groups = this.groupService.getAllGroups();
 	}
 
 	onSubmit() {
-		// stop here if form is invalid
-		if (this.createGroupForm.invalid) {
-			return;
-		}
-		var groupCode = this.createGroupForm.get('groupCode').value;
-		this.groupService.addGroup(new Group(groupCode)).subscribe(() => {
+		this.groupService.addGroup(new Group(this.groupCode)).subscribe(() => {
 			this.groups = this.groupService.getAllGroups();
+			this.groupCode = '';
 		});
 	}
 }

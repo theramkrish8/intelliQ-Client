@@ -81,7 +81,7 @@ export class UserProfileComponent implements OnInit {
 		} else {
 			this.userService.generateMobileOtp(this.newMobile).subscribe((response) => {
 				if (response) {
-					this.notificationService.showSuccessWithTimeout(response, null, 2000);
+					this.notificationService.showSuccessWithTimeout("OTP sent successfully !!", null, 2000);
 					this.otpSessionId = response;
 					this.otpGenerated = true;
 				}

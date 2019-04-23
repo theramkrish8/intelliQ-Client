@@ -9,44 +9,15 @@
   </div>
 </div>
 
+<!-- peding requests -->
 <div class="row" *ngIf="!isRejected" class="questionsList">
   <div class="col-xs-12">
     <div class="col-xs-5">
       <div *ngIf="pendingQuestions$ | async as pendingQuestions">
-        <div (click)="selectedQuestion=question;" class="clickable"
-         *ngFor="let question of pendingQuestions">
-          <app-question-list-item [standard]="question.std"
-            [subject]="question.subject" [title]="question.title"
-            [status]="question.status"  [lastModifiedDate]="question.lastModifiedDate">
-           </app-question-list-item>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xs-7" *ngIf="selectedQuestion">
-
-        <div [ngClass]="getClassForStatus(selectedQuestion.status)">
-            <div class="panel-heading">{{selectedQuestion.status | enum:"status"}} Request</div>
-            <div class="panel-body">
-                <app-question-display [selectedQues]="selectedQuestion" [showCreatedDate]="true"
-                [showReviewer]="true" [showLastModifiedDate]="true"></app-question-display>
-             </div>
-          </div>
-    
-    </div>
-  </div>
-</div>
-
-<div class="row" *ngIf="isRejected" class="questionsList">
-  <div class="col-xs-12">
-    <div class="col-xs-5">
-      <div *ngIf="rejectedQuestions$ | async as rejectedQuestions">
-        <div [id]="question.quesId" (click)="selectedQuestion=question;editMode=false;"
-          *ngFor="let question of rejectedQuestions" class="clickable">
-            <app-question-list-item [standard]="question.std"
-              [subject]="question.subject" [title]="question.title"
-              [status]="question.status"  [lastModifiedDate]="question.lastModifiedDate">
-            </app-question-list-item>
+        <div (click)="selectedQuestion=question;" class="clickable" *ngFor="let question of pendingQuestions">
+          <app-question-list-item [standard]="question.std" [subject]="question.subject" [title]="question.title"
+            [status]="question.status" [lastModifiedDate]="question.lastModifiedDate">
+          </app-question-list-item>
         </div>
       </div>
     </div>
@@ -55,15 +26,56 @@
 
       <div [ngClass]="getClassForStatus(selectedQuestion.status)">
         <div class="panel-heading">{{selectedQuestion.status | enum:"status"}} Request</div>
-
         <div class="panel-body">
+          <app-question-display [selectedQues]="selectedQuestion" [showCreatedDate]="true" [showReviewer]="true"
+            [showLastModifiedDate]="true"></app-question-display>
+        </div>
+      </div>
 
-          <div *ngIf="!editMode">
-              <app-question-display [selectedQues]="selectedQuestion" [showCreatedDate]="true"
-              [showReviewer]="true" [showLastModifiedDate]="true" [showRejectReason]="true"></app-question-display>
+    </div>
+  </div>
+</div>
+
+<!-- rejected requests -->
+<div class="row" *ngIf="isRejected" class="questionsList">
+  <div class="col-xs-12">
+    <div class="col-xs-5">
+      <div *ngIf="rejectedQuestions$ | async as rejectedQuestions">
+        <div [id]="question.quesId" (click)="selectedQuestion=question;editMode=false;"
+          *ngFor="let question of rejectedQuestions" class="clickable">
+          <app-question-list-item [standard]="question.std" [subject]="question.subject" [title]="question.title"
+            [status]="question.status" [lastModifiedDate]="question.lastModifiedDate">
+          </app-question-list-item>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xs-7" *ngIf="selectedQuestion">
+
+      <div [ngClass]="getClassForStatus(selectedQuestion.status)">
+
+        <div class="panel-heading">{{selectedQuestion.status | enum:"status"}} Request</div>
+
+        <!-- read mode -->
+        <div *ngIf="!editMode">
+
+          <div class="panel-body">
+            <app-question-display [selectedQues]="selectedQuestion" [showCreatedDate]="true" [showReviewer]="true"
+              [showLastModifiedDate]="true" [showRejectReason]="true"></app-question-display>
           </div>
-          <div *ngIf="editMode">
-            <form>
+          <div class="panel-footer">
+            <button class="btn btn-default" (click)="onEditClicked()">Edit</button>
+            <button class="btn btn-default" (click)="deleteQuestion()">Delete</button>
+
+          </div>
+
+
+        </div>
+
+        <!-- edit mode -->
+        <div *ngIf="editMode">
+          <form #editForm="ngForm">
+            <div class="panel-body">
               <label class="col-xs-3">Standard</label>
               <div class="well well-sm col-xs-8">{{tempSelectedQuestion.std}}</div>
 
@@ -99,40 +111,55 @@
 
               <div class="form-group form-inline row">
                 <label class="col-xs-3">Topic</label>
-                <input type="text" name="topic" [(ngModel)]="tempSelectedQuestion.topic" class="form-control col-xs-8">
+                <input type="text" name="topic" [(ngModel)]="tempSelectedQuestion.topic" class="form-control col-xs-8 text-title"
+                  #topic="ngModel" required minlength="3">
+                <div *ngIf="topic.invalid && (topic.dirty || topic.touched)" class="invalid-feedback">
+                  <div *ngIf="topic.errors.required">
+                    Topic is required.
+                  </div>
+                  <div *ngIf="topic.errors.minlength">
+                    Topic must be atleast 3 characters .
+                  </div>
+                </div>
               </div>
 
               <div class="form-group form-inline row">
                 <label class="col-xs-3">Description</label>
-                <input type="text" name="title" [(ngModel)]="tempSelectedQuestion.title" class="form-control col-xs-8">
+                <input type="text" name="title" [(ngModel)]="tempSelectedQuestion.title" class="form-control col-xs-8"
+                #title="ngModel" required minlength="5">
+                <div *ngIf="title.invalid && (title.dirty || title.touched)" class="invalid-feedback">
+                    <div *ngIf="title.errors.required">
+                      Description is required.
+                    </div>
+                    <div *ngIf="title.errors.minlength">
+                      Description must be atleast 5 characters .
+                    </div>
+                  </div>
               </div>
 
               <div class="form-group form-inline row">
                 <label class="col-xs-3">Tags</label>
-                <input type="text" name="tags" [(ngModel)]="tags" class="form-control col-xs-8">
+                <input type="text" name="tags" [(ngModel)]="tags" class="form-control col-xs-8 text-title">
               </div>
 
               <div class="form-group form-inline row">
                 <label class="col-xs-3">Image</label>
-                <input type="text" name="image" [(ngModel)]="tempSelectedQuestion.imageUrl" class="form-control col-xs-8">
+                <input type="text" name="image" [(ngModel)]="tempSelectedQuestion.imageUrl"
+                  class="form-control col-xs-8">
               </div>
-             
-            </form>
 
+            </div>
+          </form>
+
+          <div class="panel-footer">
+            <button class="btn btn-default" (click)="editMode=false;tempSelectedQuestion=null">Cancel</button>
+            <button [disabled]="!editForm.form.valid" class="btn btn-default" (click)='updateQuestion()'>Save</button>
           </div>
 
         </div>
-        <div class="panel-footer">
-            <div *ngIf="!editMode">
-                <button class="btn btn-default" (click)="onEditClicked()">Edit</button>
-                <button class="btn btn-default" (click)="deleteQuestion()">Delete</button>
-            </div>
-            <div *ngIf="editMode">
-                <button class="btn btn-default" (click)="editMode=false;tempSelectedQuestion=null">Cancel</button>
-                <button class="btn btn-default" (click)='updateQuestion()'>Save</button>
-            </div>
-        </div>
       </div>
+      <!-- ngclass ends above -->
+
     </div>
   </div>
 </div>

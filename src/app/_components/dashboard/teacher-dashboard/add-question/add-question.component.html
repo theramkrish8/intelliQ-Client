@@ -9,6 +9,7 @@
       </select>
     </div>
 
+    <!-- select std & subject  -->
     <div class="form-group form-inline row">
       <label class="col-xs-3">Subject</label>
       <select (change)="checkReviewer();" [disabled]="selectedStd===-1" class="form-control col-xs-3"
@@ -23,55 +24,83 @@
       <input disabled type="text" [(ngModel)]="selectedSubject.reviewer.userName" class="form-control col-xs-3">
     </div>
 
-    <form [formGroup]="addQuestionForm" *ngIf="selectedSubject!==null">
+    <!-- add new question form  -->
+    <form #addQuesForm="ngForm" *ngIf="selectedSubject!==null">
+
       <div class="form-group form-inline row">
         <label class="col-xs-3">Type</label>
-        <select class="form-control col-xs-3" [(ngModel)]="question.length" [ngModelOptions]="{standalone: true}" name="questionLength">
+        <select class="form-control col-xs-3" [(ngModel)]="question.length" name="questionLength"
+          #questionLength="ngModel" required>
           <option [ngValue]="undefined" disabled selected>Select Type</option>
           <option [ngValue]="0">OBJECTIVE</option>
           <option [ngValue]="1">SHORT</option>
           <option [ngValue]="2">BRIEF</option>
           <option [ngValue]="3">LONG</option>
         </select>
+        <div *ngIf="questionLength.touched && questionLength.pristine" class="invalid-feedback">
+          Select Type
+        </div>
       </div>
 
       <div class="form-group form-inline row">
         <label class="col-xs-3">Difficulty</label>
-        <select class="form-control col-xs-3" [(ngModel)]="question.difficulty" [ngModelOptions]="{standalone: true}" name="questionDifficulty">
+        <select class="form-control col-xs-3" [(ngModel)]="question.difficulty" name="questionDifficulty"
+          #questionDifficulty="ngModel" required>
           <option [ngValue]="undefined" disabled selected>Select Difficulty</option>
           <option [ngValue]="0">EASY</option>
           <option [ngValue]="1">MEDIUM</option>
           <option [ngValue]="2">HARD</option>
         </select>
+        <div *ngIf="questionDifficulty.touched && questionDifficulty.pristine" class="invalid-feedback">
+          Select Difficulty
+        </div>
       </div>
 
       <div class="form-group form-inline row">
-        <label class="col-xs-3">Topic</label>
-        <input type="text" name="topic" [(ngModel)]="question.topic" [ngModelOptions]="{standalone: true}" class="form-control col-xs-3">
+        <label for="topic" class="col-xs-3">Topic</label>
+        <input type="text" name="topic" [(ngModel)]="question.topic" class="form-control col-xs-3 text-title"
+          #topic="ngModel" required minlength="3">
+        <div *ngIf="topic.invalid && (topic.dirty || topic.touched)" class="invalid-feedback">
+          <div *ngIf="topic.errors.required">
+            Topic is required.
+          </div>
+          <div *ngIf="topic.errors.minlength">
+            Topic must be atleast 3 characters .
+          </div>
+        </div>
       </div>
 
       <div class="form-group form-inline row search-results style-3">
         <label class="col-xs-3">Description</label>
-        <input type="text" name="title" (keyup)="getSuggestions($event)" [(ngModel)]="question.title" [ngModelOptions]="{standalone: true}" 
-          class="form-control col-xs-3">
+        <input type="text" name="title" (keyup)="getSuggestions($event)" [(ngModel)]="question.title"
+          class="form-control col-xs-3" #title="ngModel" required minlength="5">
+        <div *ngIf="title.invalid && (title.dirty || title.touched)" class="invalid-feedback">
+          <div *ngIf="title.errors.required">
+            Description is required.
+          </div>
+          <div *ngIf="title.errors.minlength">
+            Description must be atleast 5 characters .
+          </div>
+        </div>
       </div>
-      <!-- <quill-editor formControlName="description"></quill-editor> -->
-    
+
       <div class="form-group form-inline row">
         <label class="col-xs-3">Tags</label>
-        <input type="text" name="tags" [(ngModel)]="tags" [ngModelOptions]="{standalone: true}"  class="form-control col-xs-3">
+        <input type="text" name="tags" [(ngModel)]="tags" class="form-control col-xs-3 text-title">
       </div>
 
       <div class="form-group form-inline row">
         <label class="col-xs-3">Image</label>
-        <input type="text" name="image" [(ngModel)]="question.imageUrl" [ngModelOptions]="{standalone: true}"  class="form-control col-xs-3">
+        <input type="text" name="image" [(ngModel)]="question.imageUrl" class="form-control col-xs-3">
       </div>
       <div class="row">
-        <button (click)="addQuestion()" class="btn btn-primary">Add Question</button>
+        <button [disabled]="!addQuesForm.form.valid" (click)="addQuestion()" class="btn btn-primary">Add
+          Question</button>
         <button class="col-xs-offset-1 btn btn-warning" (click)="resetForm(true)">Reset</button>
       </div>
 
     </form>
+
   </div>
   <div class="col-xs-4">
     <ul class="list-group">

@@ -18,12 +18,15 @@ import { Subject } from 'src/app/_models/subject.model';
 export class ViewRequestsComponent implements OnInit {
 	isRejected = false;
 	loggedInUser: User;
-	pendingQuestions$: Observable<Question[]>;
-	rejectedQuestions$: Observable<Question[]>;
+	pendingQuestions: Question[];
+	rejectedQuestions: Question[];
 	selectedQuestion: Question;
 	tempSelectedQuestion: Question;
-	rejectedPageIndex = 0;
-	pendingPageIndex = 0;
+	rejectedPageIndex = 1;
+	pendingPageIndex = 1;
+	rejectedPageLen = 20; //change
+	pendingPageLen = 20;
+	pageSize = 20;
 	editMode = false;
 	tags: string;
 	constructor(
@@ -34,12 +37,26 @@ export class ViewRequestsComponent implements OnInit {
 
 	ngOnInit() {
 		this.loggedInUser = this.localStorageService.getCurrentUser();
-		this.pendingQuestions$ = this.quesRequestService.viewQuestionRequests(
-			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.PENDING, this.pendingPageIndex)
-		);
-		this.rejectedQuestions$ = this.quesRequestService.viewQuestionRequests(
-			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.REJECTED, this.rejectedPageIndex)
-		);
+		this.getPendingRequests();
+		this.getRejectedRequests();
+	}
+	getPendingRequests() {
+		this.quesRequestService
+			.viewQuestionRequests(
+				this.createQuesRequestDto(this.loggedInUser, QuestionStatus.PENDING, this.pendingPageIndex - 1)
+			)
+			.subscribe((questions) => {
+				this.pendingQuestions = questions;
+			});
+	}
+	getRejectedRequests() {
+		this.quesRequestService
+			.viewQuestionRequests(
+				this.createQuesRequestDto(this.loggedInUser, QuestionStatus.REJECTED, this.rejectedPageIndex - 1)
+			)
+			.subscribe((questions) => {
+				this.rejectedQuestions = questions;
+			});
 	}
 	createQuesRequestDto(user: User, status: QuestionStatus, pageIndex: number): QuesRequest {
 		var quesRequest = new QuesRequest();

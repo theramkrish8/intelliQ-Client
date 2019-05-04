@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/_models/user.model';
-import { Observable } from 'rxjs';
 import { Question } from 'src/app/_models/question.model';
 import { LocalStorageService } from 'src/app/_services/local-storage.service';
 import { QuestionRequestService } from 'src/app/_services/questionRequest.service';
@@ -17,14 +16,17 @@ import { QuestionService } from 'src/app/_services/question.service';
 export class ViewQuestionsComponent implements OnInit {
 	isAllQuestions = false;
 	loggedInUser: User;
-	userQuestions$: Observable<Question[]>;
-	allQuestions$: Observable<Question[]>;
+	userQuestions: Question[];
+	allQuestions: Question[];
 	selectedQuestion: Question;
 	tempSelectedQuestion: Question;
-	userPageIndex = 0;
-	allPageIndex = 0;
+	userPageIndex = 1;
+	userQuestionsLen = 50; // change
+	allPageIndex = 1;
+	allQuestionsLen = 50;
 	editMode = false;
 	tags: string;
+	pageSize = 20;
 	constructor(
 		private localStorageService: LocalStorageService,
 		private quesRequestService: QuestionRequestService,
@@ -34,13 +36,28 @@ export class ViewQuestionsComponent implements OnInit {
 
 	ngOnInit() {
 		this.loggedInUser = this.localStorageService.getCurrentUser();
-		this.userQuestions$ = this.quesRequestService.viewQuestionRequests(
-			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.userPageIndex)
-		);
-		this.allQuestions$ = this.quesService.viewAllApprovedQuestion(
-			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.allPageIndex)
-		);
+		this.getMyQuestions();
+		this.getAllQuestions();
 	}
+	getMyQuestions() {
+		this.quesRequestService
+			.viewQuestionRequests(
+				this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.userPageIndex - 1)
+			)
+			.subscribe((questions) => {
+				this.userQuestions = questions;
+			});
+	}
+	getAllQuestions() {
+		this.quesService
+			.viewAllApprovedQuestion(
+				this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.allPageIndex - 1)
+			)
+			.subscribe((questions) => {
+				this.allQuestions = questions;
+			});
+	}
+
 	createQuesRequestDto(user: User, status: QuestionStatus, pageIndex: number): QuesRequest {
 		var quesRequest = new QuesRequest();
 		quesRequest.userID = user.userId;

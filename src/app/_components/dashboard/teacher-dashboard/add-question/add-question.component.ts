@@ -12,7 +12,8 @@ import { UtilityService } from 'src/app/_services/utility.service';
 import { QuestionCriteria } from 'src/app/_dto/question-criteria.dto';
 import { QuestionService } from 'src/app/_services/question.service';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Quill } from 'quill';
+import Quill from 'quill';
+import { timeout } from 'q';
 
 @Component({
 	selector: 'app-add-question',
@@ -20,6 +21,8 @@ import { Quill } from 'quill';
 	styleUrls: [ './add-question.component.css' ]
 })
 export class AddQuestionComponent implements OnInit {
+	quill: Quill;
+	quillHtml: string;
 	lastSearchTerm: string;
 	loggedInUser: User;
 	stdSubjectMap = new Map<number, Subject[]>();
@@ -36,11 +39,15 @@ export class AddQuestionComponent implements OnInit {
 		private utilityService: UtilityService,
 		private quesService: QuestionService
 	) {}
-	@ViewChild('container1') container: ElementRef;
-
+	@ViewChild('myDiv') myDiv: ElementRef;
 	ngOnInit() {
-		// var cbVal = document.getElementById('testing');
-		// var quill = new Quill(cbVal);
+		// var editor = new Quill('.editor');
+		// var quill = new Quill('#editor', {
+		// 	theme: 'snow'
+		// });
+		// var cbVal = document.getElementById('editor');
+		// var quill = new Quill(this.myDiv.nativeElement);
+		// var quill = new Quill(this.myDiv.nativeElement);
 		this.loggedInUser = this.localStorageService.getCurrentUser();
 		var teacherRole = this.loggedInUser.roles[
 			this.utilityService.findRoleIndex(this.loggedInUser.roles, RoleType.TEACHER)
@@ -65,8 +72,15 @@ export class AddQuestionComponent implements OnInit {
 		}
 		this.question = new Question();
 		this.tags = '';
+		// var cbVal = document.getElementById('quillContainer');
+		// this.quill = new Quill(cbVal);
+		setTimeout(() => {
+			this.quill = Quill.find(document.getElementById('quillContainer'));
+		}, 1000);
 	}
 	addQuestion() {
+		var text = this.quill.getText().trim();
+		this.question.title = text;
 		this.question.groupCode = this.loggedInUser.school.group.code;
 		this.question.owner = new Contributer(this.loggedInUser.userId, this.loggedInUser.userName);
 		this.question.reviewer = new Contributer(
@@ -77,11 +91,11 @@ export class AddQuestionComponent implements OnInit {
 		this.question.tags = this.tags ? this.tags.split(',').map((x) => x.toLowerCase()) : [];
 		this.question.std = this.selectedStd;
 		this.question.subject = this.selectedSubject.title;
-		this.quesRequestService.addQuestion(this.question).subscribe((response) => {
-			this.question.title = '';
-			this.question.imageUrl = '';
-			// this.resetForm();
-		});
+		// this.quesRequestService.addQuestion(this.question).subscribe((response) => {
+		// 	this.question.title = '';
+		// 	this.question.imageUrl = '';
+		// 	// this.resetForm();
+		// });
 	}
 
 	getSchool(school: School) {
@@ -99,7 +113,12 @@ export class AddQuestionComponent implements OnInit {
 		this.tags = '';
 	}
 	getSuggestions(event) {
-		var searchTerm = this.question.title ? this.question.title.trim() : '';
+		if (!this.quill) {
+			var cbVal = document.getElementById('quillContainer');
+			this.quill = new Quill(cbVal);
+		}
+		var text = this.quill.getText(0, 10);
+		var searchTerm = text ? text.trim() : '';
 		if (event.keyCode !== 32) {
 			if (searchTerm.length < 3) {
 				this.suggestedQuestions = [];

@@ -58,7 +58,9 @@ import { QuestionListItemComponent } from './_components/dashboard/question-list
 import { QuestionPaperService } from './_services/question-paper.service';
 import { QuillModule } from 'ngx-quill';
 import { MustMatchDirective } from './directives/match-field.directive';
-
+import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ViewQuestionPaperComponent } from './_components/dashboard/teacher-dashboard/view-question-paper/view-question-paper.component';
 @NgModule({
 	declarations: [
 		AppComponent,
@@ -94,7 +96,8 @@ import { MustMatchDirective } from './directives/match-field.directive';
 		ReviewRequestsComponent,
 		QuestionDisplayComponent,
 		QuestionListItemComponent,
-		MustMatchDirective
+		MustMatchDirective,
+		ViewQuestionPaperComponent
 	],
 	imports: [
 		BrowserModule,
@@ -107,7 +110,10 @@ import { MustMatchDirective } from './directives/match-field.directive';
 		ToastrModule.forRoot(),
 		AngularFontAwesomeModule,
 		NgxSpinnerModule,
-		QuillModule
+		QuillModule,
+		AlertModule.forRoot(),
+		NgbModule,
+		TypeaheadModule.forRoot()
 	],
 	providers: [
 		AuthGuard,

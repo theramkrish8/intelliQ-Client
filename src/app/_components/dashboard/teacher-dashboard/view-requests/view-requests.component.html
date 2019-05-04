@@ -8,13 +8,17 @@
     </ul>
   </div>
 </div>
-
 <!-- peding requests -->
 <div class="row" *ngIf="!isRejected" class="questionsList">
+
+  <ngb-pagination [collectionSize]="pendingPageLen" [(page)]="pendingPageIndex" [pageSize]="pageSize"
+    aria-label="Default pagination" (pageChange)="getPendingRequests()"></ngb-pagination>
+
   <div class="col-xs-12">
     <div class="col-xs-5">
-      <div *ngIf="pendingQuestions$ | async as pendingQuestions">
-        <div (click)="selectedQuestion=question;" class="clickable" *ngFor="let question of pendingQuestions">
+      <div *ngIf="pendingQuestions">
+        <div (click)="selectedQuestion=question;" class="clickable"
+          *ngFor="let question of pendingQuestions  | slice: 0 :  pageSize">
           <app-question-list-item [standard]="question.std" [subject]="question.subject" [title]="question.title"
             [status]="question.status" [lastModifiedDate]="question.lastModifiedDate">
           </app-question-list-item>
@@ -38,11 +42,15 @@
 
 <!-- rejected requests -->
 <div class="row" *ngIf="isRejected" class="questionsList">
+
+  <ngb-pagination [collectionSize]="rejectedPageLen" [(page)]="rejectedPageIndex" [pageSize]="pageSize"
+    aria-label="Default pagination" (pageChange)="getRejectedRequests()"></ngb-pagination>
+
   <div class="col-xs-12">
     <div class="col-xs-5">
-      <div *ngIf="rejectedQuestions$ | async as rejectedQuestions">
+      <div *ngIf="rejectedQuestions">
         <div [id]="question.quesId" (click)="selectedQuestion=question;editMode=false;"
-          *ngFor="let question of rejectedQuestions" class="clickable">
+          *ngFor="let question of rejectedQuestions  | slice: 0 :  pageSize" class="clickable">
           <app-question-list-item [standard]="question.std" [subject]="question.subject" [title]="question.title"
             [status]="question.status" [lastModifiedDate]="question.lastModifiedDate">
           </app-question-list-item>
@@ -111,8 +119,8 @@
 
               <div class="form-group form-inline row">
                 <label class="col-xs-3">Topic</label>
-                <input type="text" name="topic" [(ngModel)]="tempSelectedQuestion.topic" class="form-control col-xs-8 text-title"
-                  #topic="ngModel" required minlength="3">
+                <input type="text" name="topic" [(ngModel)]="tempSelectedQuestion.topic"
+                  class="form-control col-xs-8 text-title" #topic="ngModel" required minlength="3">
                 <div *ngIf="topic.invalid && (topic.dirty || topic.touched)" class="invalid-feedback">
                   <div *ngIf="topic.errors.required">
                     Topic is required.
@@ -126,15 +134,15 @@
               <div class="form-group form-inline row">
                 <label class="col-xs-3">Description</label>
                 <input type="text" name="title" [(ngModel)]="tempSelectedQuestion.title" class="form-control col-xs-8"
-                #title="ngModel" required minlength="5">
+                  #title="ngModel" required minlength="5">
                 <div *ngIf="title.invalid && (title.dirty || title.touched)" class="invalid-feedback">
-                    <div *ngIf="title.errors.required">
-                      Description is required.
-                    </div>
-                    <div *ngIf="title.errors.minlength">
-                      Description must be atleast 5 characters .
-                    </div>
+                  <div *ngIf="title.errors.required">
+                    Description is required.
                   </div>
+                  <div *ngIf="title.errors.minlength">
+                    Description must be atleast 5 characters .
+                  </div>
+                </div>
               </div>
 
               <div class="form-group form-inline row">

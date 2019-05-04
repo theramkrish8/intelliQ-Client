@@ -8,9 +8,6 @@
       <li role="presentation" [ngClass]="{active:activeTab==='showPaper',clickable:true}"><a
           (click)="activeTab='showPaper'">Question
           Paper</a></li>
-      <li role="presentation" [ngClass]="{active:activeTab==='printPaper',clickable:true}"><a
-          (click)="activeTab='printPaper'">Print
-          Paper</a></li>
     </ul>
   </div>
 
@@ -102,7 +99,7 @@
                   </div>
                   <div class="col-xs-10">
                     <input type="number" placeholder="10 - 100%" [disabled]="!level.checked" class="form-control"
-                      [(ngModel)]="level.diffPercent" name="{{'diffPercent_'+level.type}}" min="0" max="100" >
+                      [(ngModel)]="level.diffPercent" name="{{'diffPercent_'+level.type}}" min="0" max="100">
                   </div>
                 </div>
               </div>
@@ -186,7 +183,8 @@
                   {{question.title}}
                   <i class="fa fa-exchange pull-left clickable" (click)="replaceClicked(pIndex,cIndex,question)"
                     aria-hidden="true"></i>
-                  <span class="badge">{{utilityService.getDifficultyDesc(question.difficulty)}}</span></li>
+                  <span class="badge">{{utilityService.getDifficultyDesc(question.difficulty)}}</span>
+                </li>
               </ul>
             </div>
           </div>
@@ -201,6 +199,8 @@
       </div>
     </div>
   </div>
+
+
 
   <!-- Modal Tag Description -->
   <div [ngClass]="{'fade':!showModal,'show':showModal}" class="modal" role="dialog">
@@ -230,7 +230,7 @@
           <h4 class="modal-title">Replace Question Criteria</h4>
         </div>
         <div class="modal-body" *ngIf="showReplaceModal">
-         
+
           <div class="form-group form-inline row">
             <label class="col-xs-6">Topic</label>
             <select class="form-control col-xs-6" [(ngModel)]="questionToReplace.topic">
@@ -265,9 +265,9 @@
               </option>
             </select>
           </div>
-       
+
         </div>
-      
+
         <div class="modal-footer">
           <button class="btn btn-success" data-dismiss="modal" (click)="replaceQuestion()">
             {{selectedReplacement?'Replace Question':'Find Questions'}}</button>

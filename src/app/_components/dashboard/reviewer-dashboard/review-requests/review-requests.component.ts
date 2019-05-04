@@ -7,7 +7,6 @@ import { UtilityService } from 'src/app/_services/utility.service';
 import { RoleType, QuestionStatus } from 'src/app/_models/enums';
 import { Question } from 'src/app/_models/question.model';
 import { Observable } from 'rxjs';
-import { NotificationService } from 'src/app/_services/notification.service';
 import { QuestionService } from 'src/app/_services/question.service';
 
 @Component({
@@ -19,10 +18,12 @@ export class ReviewRequestsComponent implements OnInit {
 	showRejectReason = false;
 	rejectReason: string;
 	loggedInUser: User;
-	pendingRequests$: Observable<Question[]>;
+	pendingRequests: Question[];
 	selectedQuestion: Question;
 	originalQuestion: Question;
-	pageIndex = 0;
+	pageIndex = 1;
+	reqLen = 20; //change
+	pageSize = 20;
 	compareMode = false;
 	constructor(
 		private localStorageService: LocalStorageService,
@@ -33,9 +34,16 @@ export class ReviewRequestsComponent implements OnInit {
 
 	ngOnInit() {
 		this.loggedInUser = this.localStorageService.getCurrentUser();
-		this.pendingRequests$ = this.quesRequestService.viewReviewerRequests(
-			this.createQuesRequestDto(this.loggedInUser, QuestionStatus.PENDING, this.pageIndex)
-		);
+		this.getReviewerRequests();
+	}
+	getReviewerRequests() {
+		this.quesRequestService
+			.viewReviewerRequests(
+				this.createQuesRequestDto(this.loggedInUser, QuestionStatus.PENDING, this.pageIndex - 1)
+			)
+			.subscribe((questions) => {
+				this.pendingRequests = questions;
+			});
 	}
 	createQuesRequestDto(user: User, status: QuestionStatus, pageIndex: number): QuesRequest {
 		var quesRequest = new QuesRequest();

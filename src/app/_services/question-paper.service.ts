@@ -63,4 +63,16 @@ export class QuestionPaperService {
 			})
 		);
 	}
+	fetchPapers(groupCode: string, teacherId: string) {
+		return this.restService.get('paper/release/' + groupCode + '/' + teacherId).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return [];
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
 }

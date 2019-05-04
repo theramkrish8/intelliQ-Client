@@ -6,6 +6,7 @@ import { AppResponse } from '../_dto/app-response.model';
 import { ResponseStatus } from '../_models/enums';
 import { Router } from '@angular/router';
 import { NotificationService } from './notification.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class AuthenticationService implements OnInit {
@@ -13,7 +14,8 @@ export class AuthenticationService implements OnInit {
 		private userService: UserService,
 		private localStorageService: LocalStorageService,
 		private router: Router,
-		private notificationService: NotificationService
+		private notificationService: NotificationService,
+		private cookieService: CookieService
 	) {
 		var user = this.localStorageService.getCurrentUser();
 		if (user) {
@@ -24,7 +26,7 @@ export class AuthenticationService implements OnInit {
 	ngOnInit() {}
 
 	isAuthenticated(): boolean {
-		return this.localStorageService.getCurrentUser() !== null;
+		return this.localStorageService.getCurrentUser() !== null && this.cookieService.check('XSRF-TOKEN');
 	}
 
 	login(user: User) {
@@ -58,6 +60,10 @@ export class AuthenticationService implements OnInit {
 				} else {
 					this.logout(true);
 				}
+			} else if (appResponse.status === ResponseStatus.FORBIDDEN) {
+				// this.notificationService.showErrorWithTimeout(appResponse.msg, null, 2000);
+				this.localStorageService.removeItemsFromLocalStorage([ 'user', 'group', 'school' ]);
+				this.router.navigate([ '/login' ]);
 			}
 		});
 	}

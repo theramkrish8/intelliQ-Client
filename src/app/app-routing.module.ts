@@ -26,6 +26,7 @@ import { ViewRequestsComponent } from './_components/dashboard/teacher-dashboard
 import { GeneratePaperComponent } from './_components/dashboard/teacher-dashboard/generate-paper/generate-paper.component';
 import { ReviewerDashboardComponent } from './_components/dashboard/reviewer-dashboard/reviewer-dashboard.component';
 import { ReviewRequestsComponent } from './_components/dashboard/reviewer-dashboard/review-requests/review-requests.component';
+import { ViewQuestionPaperComponent } from './_components/dashboard/teacher-dashboard/view-question-paper/view-question-paper.component';
 
 const routes: Routes = [
 	{
@@ -85,7 +86,8 @@ const routes: Routes = [
 					{ path: 'add-question', component: AddQuestionComponent, canActivate: [ AuthGuard ] },
 					{ path: 'view-questions', component: ViewQuestionsComponent, canActivate: [ AuthGuard ] },
 					{ path: 'view-requests', component: ViewRequestsComponent, canActivate: [ AuthGuard ] },
-					{ path: 'generate-paper', component: GeneratePaperComponent, canActivate: [ AuthGuard ] }
+					{ path: 'generate-paper', component: GeneratePaperComponent, canActivate: [ AuthGuard ] },
+					{ path: 'view-question-papers', component: ViewQuestionPaperComponent, canActivate: [ AuthGuard ] }
 				]
 			}
 		]

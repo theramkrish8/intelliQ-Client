@@ -130,7 +130,7 @@ export class GeneratePaperComponent implements OnInit {
 	}
 
 	generatePaper() {
-		if (!this.createQuestionCriteria(true)){
+		if (!this.createQuestionCriteria(true)) {
 			return;
 		}
 		this.questionPaperService
@@ -176,34 +176,33 @@ export class GeneratePaperComponent implements OnInit {
 		this.queCriteria.length = [];
 		if (this.selectedSections) {
 			this.selectedSections.forEach((section) => {
-
-				if (generatePaper){
-					if (section.totalQues === null || section.totalQues < 1){
-						errorMsg = "Question count should be atleast 1 for " + section.type;
+				if (generatePaper) {
+					if (section.totalQues === null || section.totalQues < 1) {
+						errorMsg = 'Question count should be atleast 1 for ' + section.type;
 						return;
 					}
-					if (section.marks === null || section.marks < 1){
-						errorMsg = "Marks should be atleast 1 for " + section.type;
+					if (section.marks === null || section.marks < 1) {
+						errorMsg = 'Marks should be atleast 1 for ' + section.type;
 						return;
 					}
 				}
 				var sec = new QuesLength();
-					sec.type = this.utilityService.getLengthEnum(section.type);
-					sec.count = section.totalQues;
-					sec.marks = section.marks;
-					this.queCriteria.length.push(sec);
+				sec.type = this.utilityService.getLengthEnum(section.type);
+				sec.count = section.totalQues;
+				sec.marks = section.marks;
+				this.queCriteria.length.push(sec);
 			});
 		}
-		if (errorMsg.length > 0){
+		if (errorMsg.length > 0) {
 			alert(errorMsg);
 			return false;
 		}
 		this.queCriteria.difficulty = [];
 		this.difficultyLevels.forEach((level) => {
 			if (level.checked) {
-				if (generatePaper){
-					if (level.diffPercent === null || level.diffPercent < 10){
-						errorMsg = "Diffculty percent must be atleast 10% for " + level.type;
+				if (generatePaper) {
+					if (level.diffPercent === null || level.diffPercent < 10) {
+						errorMsg = 'Diffculty percent must be atleast 10% for ' + level.type;
 						return;
 					}
 				}
@@ -213,13 +212,13 @@ export class GeneratePaperComponent implements OnInit {
 				this.queCriteria.difficulty.push(lvl);
 			}
 		});
-		if (errorMsg.length > 0){
+		if (errorMsg.length > 0) {
 			alert(errorMsg);
 			return false;
 		}
-		if (generatePaper){
-			if (this.queCriteria.difficulty.length === 0){
-				alert("Select atleast 1 Difficulty Level");
+		if (generatePaper) {
+			if (this.queCriteria.difficulty.length === 0) {
+				alert('Select atleast 1 Difficulty Level');
 				return false;
 			}
 		}
@@ -280,6 +279,16 @@ export class GeneratePaperComponent implements OnInit {
 				testPaper.subject = this.selectedSubject.title;
 				testPaper.sets = this.questionPapers;
 				testPaper.tag = this.modalTag;
+				testPaper.sets.forEach((set: QuestionPaperDto) => {
+					set.sections.forEach((section: Section) => {
+						var marks = this.selectedSections.find(
+							(x) => this.utilityService.getLengthEnum(x.type) === section.type
+						).marks;
+						section.questions.forEach((question: Question) => {
+							question.marks = marks;
+						});
+					});
+				});
 			}
 		}
 		var testDto = new TestDto(null, testPaper);
@@ -421,8 +430,8 @@ export class GeneratePaperComponent implements OnInit {
 	}
 	replaceQuestion() {
 		if (!this.selectedReplacement) {
-			if (this.questionToReplace.topic.length === 0){
-				alert("Please Select Topic");
+			if (this.questionToReplace.topic.length === 0) {
+				alert('Please Select Topic');
 				return;
 			}
 			var queCriteria = new QuestionCriteria(
@@ -448,6 +457,9 @@ export class GeneratePaperComponent implements OnInit {
 				}
 			});
 		} else {
+			this.selectedReplacement.marks = this.questionPapers[this.activeSet - 1].sections[
+				this.questionToReplace.sectionIndex
+			].questions[this.questionToReplace.questionIndex].marks;
 			this.questionPapers[this.activeSet - 1].sections[this.questionToReplace.sectionIndex].questions[
 				this.questionToReplace.questionIndex
 			] = this.selectedReplacement;

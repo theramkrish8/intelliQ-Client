@@ -146,7 +146,7 @@ export class UserService implements OnInit {
 	logout() {
 		this.restService.get('user/logout').subscribe((appResponse: AppResponse) => {
 			if (appResponse.status === ResponseStatus.FORBIDDEN) {
-				this.notificationService.showSuccessWithTimeout('Logged out successfully!', null, 2000);
+				this.notificationService.showErrorWithTimeout('Session time out!', null, 2000);
 			} else if (appResponse.status === ResponseStatus.SUCCESS) {
 				this.notificationService.showSuccessWithTimeout(appResponse.body, null, 2000);
 			}

@@ -1,0 +1,49 @@
+ <div class="row" style="margin-top:30px;">
+   <div class="col-xs-3 pull-left">
+     <div *ngIf="papers">
+       <h4>Papers:</h4>
+       <div class="list-group">
+         <a (click)="fetchPaper(paper.testId)" *ngFor="let paper of papers" class="list-group-item">{{paper.tag}}</a>
+       </div>
+     </div>
+   </div>
+
+   <div class="col-xs-9">
+     <div class="panel panel-primary" *ngIf="loadedPaper">
+       <div class="panel-heading">
+         <h4 class="panel-title">
+           Question Paper
+         </h4>
+       </div>
+       <div class="panel-body" *ngIf="questionPapers">
+         <div class="row">
+           <ul class="nav nav-tabs">
+             <li role="presentation" *ngFor="let queSet of questionPapers"
+               [ngClass]="{active:getActiveTabClass(queSet.set)}">
+               <a (click)="onSetSelected(queSet.set)">Set {{queSet.set}}</a>
+             </li>
+           </ul>
+
+           <div [ngClass]="utilityService.getClassForSection(utilityService.getSectionDesc(section.type))"
+             class="col-xs-10 col-xs-offset-1" *ngFor="let section of currSet.sections;let pIndex = index">
+             <div class="panel-heading">
+               <h3 class="panel-title">{{utilityService.getSectionDesc(section.type)}}</h3>
+             </div>
+             <div class="panel-body">
+               <ul class="list-group">
+                 <li *ngFor="let question of section.questions; let cIndex = index" class="list-group-item">
+                   {{question.title}}
+                   <span class="badge">{{question.marks}}</span>
+                 </li>
+               </ul>
+             </div>
+           </div>
+
+         </div>
+       </div>
+       <div class="panel-footer" *ngIf="questionPapers">
+         <button class="btn btn-warning">Print Paper</button>
+       </div>
+     </div>
+   </div>
+ </div>

@@ -1,14 +1,17 @@
 <div class="row" class="questionsList">
+   <ngb-pagination [collectionSize]="reqLen" [(page)]="pageIndex" [pageSize]="pageSize"
+     aria-label="Default pagination" (pageChange)="getReviewerRequests()"></ngb-pagination>
+
   <div class="col-xs-12">
     <div class="col-xs-5">
-      <div *ngIf="pendingRequests$ | async as pendingRequests">
-        <div [id]="question.quesId" (click)="onQuestionChanged(question)"
-         *ngFor="let question of pendingRequests" class="clickable">
-          <app-question-list-item [standard]="question.std"
-            [subject]="question.subject" [title]="question.title"
-            [status]="question.status"  [lastModifiedDate]="question.lastModifiedDate">
+      <div *ngIf="pendingRequests">
+        <div [id]="question.quesId" (click)="onQuestionChanged(question)" 
+        *ngFor="let question of pendingRequests | slice: 0 : pageSize"
+          class="clickable">
+          <app-question-list-item [standard]="question.std" [subject]="question.subject" [title]="question.title"
+            [status]="question.status" [lastModifiedDate]="question.lastModifiedDate">
           </app-question-list-item>
-      </div>
+        </div>
       </div>
     </div>
 
@@ -17,14 +20,14 @@
       <div [ngClass]="getClassForStatus(selectedQuestion.status)">
         <div class="panel-heading">{{selectedQuestion.status | enum:"status"}} Request</div>
         <div class="panel-body">
-            <app-question-display [selectedQues]="selectedQuestion" [showOwner]="true"></app-question-display>
+          <app-question-display [selectedQues]="selectedQuestion" [showOwner]="true"></app-question-display>
         </div>
         <div class="panel-footer">
           <div class="row">
-              <button class="btn btn-success col-xs-offset-1 col-xs-3" (click)="approveRequest()">Approve</button>
-              <button *ngIf="selectedQuestion.status===1" class="btn btn-primary col-xs-offset-1 col-xs-3"
-                  (click)="compareRequest()">Compare</button>
-              <button class="btn btn-danger col-xs-offset-1 col-xs-3" (click)="rejectRequest()">Reject</button>
+            <button class="btn btn-success col-xs-offset-1 col-xs-3" (click)="approveRequest()">Approve</button>
+            <button *ngIf="selectedQuestion.status===1" class="btn btn-primary col-xs-offset-1 col-xs-3"
+              (click)="compareRequest()">Compare</button>
+            <button class="btn btn-danger col-xs-offset-1 col-xs-3" (click)="rejectRequest()">Reject</button>
           </div>
         </div>
       </div>
@@ -61,20 +64,19 @@
           <div class="modal-body" *ngIf="compareMode">
             <div class="row">
               <div class="col-xs-6">
-                  <div [ngClass]="getClassForStatus(originalQuestion.status)">
-                      <div class="panel-heading">Original</div>
-                      <div class="panel-body">
-                          <app-question-display [selectedQues]="originalQuestion" [showOwner]="false"></app-question-display>
-                      </div>
+                <div [ngClass]="getClassForStatus(originalQuestion.status)">
+                  <div class="panel-heading">Original</div>
+                  <div class="panel-body">
+                    <app-question-display [selectedQues]="originalQuestion" [showOwner]="false"></app-question-display>
                   </div>
+                </div>
               </div>
               <div class="col-xs-6">
-                      <div [ngClass]="getClassForStatus(selectedQuestion.status)">
-                         <div class="panel-heading">Modified</div>
-                          <div class="panel-body">
-                              <app-question-display [selectedQues]="selectedQuestion" [showOwner]="false"></app-question-display>
-                          </div>
-                      </div>
+                <div [ngClass]="getClassForStatus(selectedQuestion.status)">
+                  <div class="panel-heading">Modified</div>
+                  <div class="panel-body">
+                    <app-question-display [selectedQues]="selectedQuestion" [showOwner]="false"></app-question-display>
+                  </div>
                 </div>
               </div>
             </div>
@@ -83,3 +85,4 @@
       </div>
     </div>
   </div>
+</div>

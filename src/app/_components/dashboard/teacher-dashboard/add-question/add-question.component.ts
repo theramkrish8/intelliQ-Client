@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { LocalStorageService } from 'src/app/_services/local-storage.service';
 import { User } from 'src/app/_models/user.model';
 import { Subject } from 'src/app/_models/subject.model';
@@ -14,6 +14,8 @@ import { QuestionService } from 'src/app/_services/question.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import Quill from 'quill';
 import { timeout } from 'q';
+import { Group } from 'src/app/_models/group.model';
+import { GroupService } from 'src/app/_services/group.service';
 
 @Component({
 	selector: 'app-add-question',
@@ -26,35 +28,64 @@ export class AddQuestionComponent implements OnInit {
 	lastSearchTerm: string;
 	loggedInUser: User;
 	stdSubjectMap = new Map<number, Subject[]>();
+	subjectMap = new Map<string, Subject>();
 	standards: Standard[];
 	question = new Question();
 	selectedStd = -1;
 	selectedSubject: Subject = null;
 	tags = '';
 	suggestedQuestions: Question[];
+	userGroup: Group;
+	tagsSuggestions: string[];
+	topicsSuggestions: string[];
+	toolbarOptions = [
+		[ 'bold', 'italic', 'underline' ], // toggled buttons
+		[ 'code-block' ],
+
+		[ { list: 'ordered' }, { list: 'bullet' } ],
+		[ { script: 'sub' }, { script: 'super' } ], // superscript/subscript
+
+		[ { size: [ 'small', false, 'large', 'huge' ] } ], // custom dropdown
+
+		[ { align: [] } ],
+
+		[ 'clean' ] // remove formatting button
+	];
+	quillModule = {
+		toolbar: this.toolbarOptions
+	};
 	constructor(
 		private localStorageService: LocalStorageService,
 		private notificationService: NotificationService,
 		private quesRequestService: QuestionRequestService,
 		private utilityService: UtilityService,
-		private quesService: QuestionService
+		private quesService: QuestionService,
+		private groupService: GroupService
 	) {}
-	@ViewChild('myDiv') myDiv: ElementRef;
+
 	ngOnInit() {
-		// var editor = new Quill('.editor');
-		// var quill = new Quill('#editor', {
-		// 	theme: 'snow'
-		// });
-		// var cbVal = document.getElementById('editor');
-		// var quill = new Quill(this.myDiv.nativeElement);
-		// var quill = new Quill(this.myDiv.nativeElement);
 		this.loggedInUser = this.localStorageService.getCurrentUser();
 		var teacherRole = this.loggedInUser.roles[
 			this.utilityService.findRoleIndex(this.loggedInUser.roles, RoleType.TEACHER)
 		];
 		this.createSubjectReviewerMap(teacherRole.stds);
+		this.fetchGroup();
 	}
-
+	fetchGroup() {
+		if (!this.userGroup) {
+			this.groupService.getGroupByCode(this.loggedInUser.school.group.code).subscribe((group: Group) => {
+				this.userGroup = group;
+				if (this.userGroup) {
+					this.createSubjectTopicMap(group);
+				}
+			});
+		}
+	}
+	createSubjectTopicMap(group: Group) {
+		group.subjects.forEach((subject: Subject) => {
+			this.subjectMap.set(subject.title, subject);
+		});
+	}
 	createSubjectReviewerMap(stds: Standard[]) {
 		this.standards = stds;
 		stds.forEach((std: Standard) => {
@@ -71,16 +102,15 @@ export class AddQuestionComponent implements OnInit {
 			);
 		}
 		this.question = new Question();
+		this.question.tags = [];
 		this.tags = '';
-		// var cbVal = document.getElementById('quillContainer');
-		// this.quill = new Quill(cbVal);
-		setTimeout(() => {
-			this.quill = Quill.find(document.getElementById('quillContainer'));
-		}, 1000);
+		this.tagsSuggestions = this.subjectMap.get(this.selectedSubject.title).tags;
+		this.topicsSuggestions = this.subjectMap.get(this.selectedSubject.title).topics;
 	}
 	addQuestion() {
-		var text = this.quill.getText().trim();
-		this.question.title = text;
+		var text = document.getElementById('quillContainer').textContent;
+		this.question.title = text ? text.trim() : '';
+		this.question.titleHtml = this.quillHtml;
 		this.question.groupCode = this.loggedInUser.school.group.code;
 		this.question.owner = new Contributer(this.loggedInUser.userId, this.loggedInUser.userName);
 		this.question.reviewer = new Contributer(
@@ -88,16 +118,45 @@ export class AddQuestionComponent implements OnInit {
 			this.selectedSubject.reviewer.userName
 		);
 		this.question.school = this.getSchool(this.loggedInUser.school);
-		this.question.tags = this.tags ? this.tags.split(',').map((x) => x.toLowerCase()) : [];
 		this.question.std = this.selectedStd;
 		this.question.subject = this.selectedSubject.title;
-		// this.quesRequestService.addQuestion(this.question).subscribe((response) => {
-		// 	this.question.title = '';
-		// 	this.question.imageUrl = '';
-		// 	// this.resetForm();
-		// });
+		this.quesRequestService.addQuestion(this.question).subscribe((response) => {
+			this.question.title = '';
+			this.question.imageUrl = '';
+			//this.resetForm();
+		});
 	}
 
+	addTag(event) {
+		if (this.tags && this.tags.length > 2) {
+			{
+				if (event.keyCode === 188 || event.keyCode === 13) {
+					// normal keypress
+					this.tags = this.tags.trim();
+					if (this.tags.length > 1 && this.tags[this.tags.length - 1] === ',') {
+						this.tags = this.tags.slice(0, this.tags.length - 1);
+					}
+					this.question.tags.push(this.tags);
+					this.tags = '';
+				} else if (event.item) {
+					// from typeahead
+					this.question.tags.push(this.tags);
+					this.tagsSuggestions = this.tagsSuggestions.filter((x) => x !== this.tags);
+					this.tags = '';
+				} else if (event.type === 'blur') {
+					//blur
+					this.tags = this.tags.trim();
+					this.question.tags.push(this.tags);
+					this.tagsSuggestions = this.tagsSuggestions.filter((x) => x !== this.tags);
+					this.tags = '';
+				}
+			}
+		}
+	}
+	removeTag(tag) {
+		this.question.tags = this.question.tags.filter((x) => x !== tag);
+		this.tagsSuggestions.push(tag);
+	}
 	getSchool(school: School) {
 		var scl = new School();
 		scl.schoolId = school.schoolId;
@@ -111,13 +170,10 @@ export class AddQuestionComponent implements OnInit {
 		this.selectedStd = -1;
 		this.selectedSubject = null;
 		this.tags = '';
+		this.question.tags = [];
 	}
 	getSuggestions(event) {
-		if (!this.quill) {
-			var cbVal = document.getElementById('quillContainer');
-			this.quill = new Quill(cbVal);
-		}
-		var text = this.quill.getText(0, 10);
+		var text = document.getElementById('quillContainer').textContent;
 		var searchTerm = text ? text.trim() : '';
 		if (event.keyCode !== 32) {
 			if (searchTerm.length < 3) {

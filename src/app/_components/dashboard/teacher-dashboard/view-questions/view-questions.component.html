@@ -16,7 +16,7 @@
   <div class="col-xs-12">
     <div class="col-xs-5">
       <div *ngIf="userQuestions" class="list-of-questions">
-        <div [id]="question.quesId" (click)="selectedQuestion=question;editMode=false;"
+        <div [id]="question.quesId" (click)="selectedQuestion=question;editMode=false;getSuggestions()"
           *ngFor="let question of userQuestions | slice: 0 :  pageSize" class="clickable">
           <app-question-list-item [standard]="question.std" [subject]="question.subject" [title]="question.title"
             [status]="question.status" [lastModifiedDate]="question.lastModifiedDate">
@@ -82,7 +82,8 @@
               <div class="form-group form-inline row">
                 <label class="col-xs-3">Topic</label>
                 <input type="text" name="topic" [(ngModel)]="tempSelectedQuestion.topic"
-                  class="form-control col-xs-8 text-title" #topic="ngModel" required minlength="3">
+                  class="form-control col-xs-8 text-title" #topic="ngModel" [typeahead]="topicsSuggestions" required
+                  minlength="3">
                 <div *ngIf="topic.invalid && (topic.dirty || topic.touched)" class="invalid-feedback">
                   <div *ngIf="topic.errors.required">
                     Topic is required.
@@ -109,7 +110,11 @@
 
               <div class="form-group form-inline row">
                 <label class="col-xs-3">Tags</label>
-                <input type="text" name="tags" [(ngModel)]="tags" class="form-control col-xs-8 text-title">
+                <input type="text" name="tags" [(ngModel)]="tags" (keyup)="addTag($event)"
+                  (typeaheadOnSelect)="addTag($event)" (blur)="addTag($event)" [typeahead]="tagsSuggestions"
+                  class="form-control col-xs-8 text-title">
+                <span class="badge" *ngFor="let tag of tempSelectedQuestion.tags">{{tag}} <span class="clickable"
+                    (click)="removeTag(tag)">&times;</span></span>
               </div>
 
               <div class="form-group form-inline row">

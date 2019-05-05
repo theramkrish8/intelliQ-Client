@@ -4,6 +4,7 @@ import { School } from './school.model';
 export class Question {
 	public quesId: string;
 	public title: string;
+	public titleHtml: string;
 	public std: number;
 	public subject: string;
 	public topic: string;

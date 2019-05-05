@@ -7,6 +7,8 @@ import { Question } from 'src/app/_models/question.model';
 	styleUrls: [ './question-display.component.css' ]
 })
 export class QuestionDisplayComponent implements OnInit {
+	toolbarOptions = [];
+	quillModule = {};
 	// tslint:disable-next-line:no-input-rename
 	@Input('selectedQues') selectedQuestion: Question;
 	@Input() showOwner: boolean;

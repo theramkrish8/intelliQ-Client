@@ -1,4 +1,5 @@
 <div class="row" style="margin-top:60px;">
+
   <div class="col-xs-offset-3 col-xs-5">
     <div class="form-group form-inline row">
       <label class="col-xs-3">Standard</label>
@@ -58,8 +59,8 @@
 
       <div class="form-group form-inline row">
         <label for="topic" class="col-xs-3">Topic</label>
-        <input type="text" name="topic" [(ngModel)]="question.topic" class="form-control col-xs-3 text-title"
-          #topic="ngModel" required minlength="3">
+        <input type="text" name="topic" [typeahead]="topicsSuggestions" [(ngModel)]="question.topic"
+          class="form-control col-xs-3 text-title" #topic="ngModel" required minlength="3">
         <div *ngIf="topic.invalid && (topic.dirty || topic.touched)" class="invalid-feedback">
           <div *ngIf="topic.errors.required">
             Topic is required.
@@ -86,13 +87,8 @@
       <div class="form-group form-inline row search-results style-3">
         <label class="col-xs-3">Description</label>
 
-        <!-- <div id="quillContainer" [(ngModel)]="quillHtml" name="title" (keyup)="getSuggestions($event)"></div> -->
-
-        <quill-editor id="quillContainer" [(ngModel)]="quillHtml" name="title" (keyup)="getSuggestions($event)" required
-          #title="ngModel" minlength="5"></quill-editor>
-
-        <!-- <input type="text" name="title" (keyup)="getSuggestions($event)" [(ngModel)]="question.title"
-          class="form-control col-xs-3" #title="ngModel" required minlength="5"> -->
+        <quill-editor id="quillContainer" [(ngModel)]="quillHtml" [modules]="quillModule" name="title"
+          (keyup)="getSuggestions($event)" required #title="ngModel" minlength="5"></quill-editor>
 
         <div *ngIf="title.invalid && (title.dirty || title.touched)" class="invalid-feedback">
           <div *ngIf="title.errors.required">
@@ -106,9 +102,11 @@
 
       <div class="form-group form-inline row">
         <label class="col-xs-3">Tags</label>
-        <input type="text" name="tags" [(ngModel)]="tags" class="form-control col-xs-3 text-title">
+        <input type="text" name="tags" [typeahead]="tagsSuggestions" (keyup)="addTag($event)"
+          (typeaheadOnSelect)="addTag($event)" [(ngModel)]="tags" class="form-control col-xs-3 text-title">
       </div>
-
+      <span class="badge" *ngFor="let tag of question.tags">{{tag}} <span class="clickable"
+          (click)="removeTag(tag)">&times;</span></span>
       <div class="form-group form-inline row">
         <label class="col-xs-3">Image</label>
         <input type="text" name="image" [(ngModel)]="question.imageUrl" class="form-control col-xs-3">

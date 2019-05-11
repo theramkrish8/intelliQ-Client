@@ -28,7 +28,7 @@
 }
 
 .table-input {
-  color: #007BFF;
+  color: #fff;
   background-color: transparent;
   border: none;
   outline: none;
@@ -89,4 +89,8 @@ hr {
   outline: none;
   font-size: 1.5em;
   color: #ffc107;
+}
+
+.badge-size-big {
+  font-size: 0.8em;
 }

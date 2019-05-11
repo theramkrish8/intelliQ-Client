@@ -213,20 +213,19 @@
                             </span>
                           </div>
                           <input type="text" class="form-control" placeholder="Chapters" id="chapters" name="chapters"
-                            [typeahead]="chapterSuggestions" (typeaheadOnSelect)="addChapter($event)"
-                            [(ngModel)]="chapterTxt" (blur)="chapterTxt=''">
+                            [typeahead]="chapterSuggestions" [typeaheadOptionsLimit]="7"
+                            (typeaheadOnSelect)="addChapter($event)" [(ngModel)]="chapterTxt" (blur)="chapterTxt=''">
 
                         </div>
                       </div>
-
-
 
                     </div>
 
                     <div class="offset-md-1 col-md-5 mt-3 text-white scroll-control">
 
-                      <span class="badge bg-dark text-white mr-1" *ngFor="let chapter of chapters">{{chapter}}<i
-                          (click)="removeChapter(chapter)" class="fas fa-times clickable ml-1"></i></span>
+                      <span class="badge bg-dark text-white mr-1 mb-1 badge-size-big"
+                        *ngFor="let chapter of chapters">{{chapter}}<i (click)="removeChapter(chapter)"
+                          class="fas fa-times clickable ml-1"></i></span>
 
                     </div>
 
@@ -288,7 +287,8 @@
                           <tbody>
 
                             <tr *ngFor="let section of allSections">
-                              <td *ngIf="section.checked" class="text-center">{{section.type}}</td>
+                              <td *ngIf="section.checked" class="text-center text-blue font-weight-bold">
+                                {{section.type}}</td>
 
                               <td *ngIf="section.checked"><input placeholder="Total Questions" type="number"
                                   name="{{'count_' + section.type}}" class="table-input" [(ngModel)]="section.totalQues"
@@ -317,7 +317,8 @@
                           </thead>
                           <tbody>
                             <tr *ngFor="let level of difficultyLevels">
-                              <td *ngIf="level.checked" class="text-center">{{level.type}}</td>
+                              <td *ngIf="level.checked" class="text-center text-blue font-weight-bold">{{level.type}}
+                              </td>
                               <td *ngIf="level.checked">
                                 <input type="number" placeholder="10 - 100%" [disabled]="!level.checked"
                                   class="table-input" [(ngModel)]="level.diffPercent"

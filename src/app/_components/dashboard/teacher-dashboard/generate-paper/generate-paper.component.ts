@@ -31,7 +31,6 @@ export class GeneratePaperComponent implements OnInit {
 	templatesArray: Template[];
 	draftsArray: TestPaper[];
 	modalTag = '';
-	showModal = false;
 	showReplaceModal = false;
 	activeTab = 'criteria';
 	questionPapers: QuestionPaperDto[];
@@ -44,7 +43,6 @@ export class GeneratePaperComponent implements OnInit {
 	selectedSubject: Subject = null;
 	sets = 1;
 	totalMarks: number;
-	selectedSections: { type: string; totalQues: number; marks: number }[];
 	activeSet = 1;
 	questionToReplace: {
 		quesId: string;
@@ -69,17 +67,8 @@ export class GeneratePaperComponent implements OnInit {
 	};
 	questions: Question[] = [];
 	selectedReplacement: Question = null;
-	difficultyLevels = [
-		{ type: 'Easy', checked: false, diffPercent: null },
-		{ type: 'Medium', checked: false, diffPercent: null },
-		{ type: 'Hard', checked: false, diffPercent: null }
-	];
-	allSections = [
-		{ type: 'Objective', checked: false, totalQues: null, marks: null },
-		{ type: 'Short', checked: false, totalQues: null, marks: null },
-		{ type: 'Brief', checked: false, totalQues: null, marks: null },
-		{ type: 'Long', checked: false, totalQues: null, marks: null }
-	];
+	difficultyLevels = this.getDifficultyLevels();
+	allSections = this.getAllSections();
 	chapterTxt = '';
 	chapters: string[] = [];
 	chapterSuggestions: string[];
@@ -133,7 +122,7 @@ export class GeneratePaperComponent implements OnInit {
 	}
 
 	generatePaper() {
-		if (!this.createQuestionCriteria()) {
+		if (!this.createQuestionCriteria(true)) {
 			return;
 		}
 		this.questionPaperService
@@ -165,7 +154,7 @@ export class GeneratePaperComponent implements OnInit {
 			});
 	}
 
-	createQuestionCriteria() {
+	createQuestionCriteria(validate: boolean) {
 		var errorMsg = '';
 
 		this.queCriteria = new QuestionCriteria(
@@ -180,13 +169,15 @@ export class GeneratePaperComponent implements OnInit {
 		this.queCriteria.length = [];
 		this.allSections.forEach((section) => {
 			if (section.checked) {
-				if (section.totalQues === null || section.totalQues < 1) {
-					errorMsg = 'Question count should be atleast 1 for ' + section.type;
-					return;
-				}
-				if (section.marks === null || section.marks < 1) {
-					errorMsg = 'Marks should be atleast 1 for ' + section.type;
-					return;
+				if (validate) {
+					if (section.totalQues === null || section.totalQues < 1) {
+						errorMsg = 'Question count should be atleast 1 for ' + section.type;
+						return;
+					}
+					if (section.marks === null || section.marks < 1) {
+						errorMsg = 'Marks should be atleast 1 for ' + section.type;
+						return;
+					}
 				}
 				var sec = new QuesLength();
 				sec.type = this.utilityService.getSectionEnum(section.type);
@@ -199,15 +190,16 @@ export class GeneratePaperComponent implements OnInit {
 			alert(errorMsg);
 			return false;
 		}
-		if (this.queCriteria.length.length === 0) {
+		if (this.queCriteria.length.length === 0 && validate) {
 			alert('Select atleast 1 Section');
 			return false;
 		}
 
 		this.queCriteria.difficulty = [];
+		var totalPercent = 0;
 		this.difficultyLevels.forEach((level) => {
 			if (level.checked) {
-				if (level.diffPercent === null || level.diffPercent < 10) {
+				if (validate && (level.diffPercent === null || level.diffPercent < 10)) {
 					errorMsg = 'Diffculty percent must be atleast 10% for ' + level.type;
 					return;
 				}
@@ -215,17 +207,24 @@ export class GeneratePaperComponent implements OnInit {
 				lvl.level = this.utilityService.getDifficultyEnum(level.type);
 				lvl.percent = level.diffPercent;
 				this.queCriteria.difficulty.push(lvl);
+				totalPercent += level.diffPercent;
 			}
 		});
 		if (errorMsg.length > 0) {
 			alert(errorMsg);
 			return false;
 		}
-
-		if (this.queCriteria.difficulty.length === 0) {
-			alert('Select atleast 1 Difficulty Level');
-			return false;
+		if (validate) {
+			if (this.queCriteria.difficulty.length === 0) {
+				alert('Select atleast 1 Difficulty Level');
+				return false;
+			}
+			if (totalPercent !== 100) {
+				alert('Cumulative difficulty must be 100%');
+				return false;
+			}
 		}
+
 		return true;
 	}
 
@@ -246,15 +245,15 @@ export class GeneratePaperComponent implements OnInit {
 	}
 	saveTemplate() {
 		var template = null;
-		if (this.queCriteria) {
-			if (this.loadedTemplate) {
-				template = this.loadedTemplate;
-			} else {
-				template = new Template(this.loggedInUser);
-			}
-			template.criteria = this.queCriteria;
-			template.tag = this.modalTag;
+		this.createQuestionCriteria(false);
+		if (this.loadedTemplate) {
+			template = this.loadedTemplate;
+		} else {
+			template = new Template(this.loggedInUser);
 		}
+		template.criteria = this.queCriteria;
+		template.tag = this.modalTag;
+
 		var testDto = new TestDto(template, null);
 		this.questionPaperService.savePaper(testDto, this.testPaperStatus).subscribe((response: String) => {
 			if (response) {
@@ -266,7 +265,6 @@ export class GeneratePaperComponent implements OnInit {
 					this.fetchAllTemplates();
 				}
 			}
-			this.showModal = false;
 		});
 	}
 
@@ -283,16 +281,16 @@ export class GeneratePaperComponent implements OnInit {
 				testPaper.subject = this.selectedSubject.title;
 				testPaper.sets = this.questionPapers;
 				testPaper.tag = this.modalTag;
-				testPaper.sets.forEach((set: QuestionPaperDto) => {
-					set.sections.forEach((section: Section) => {
-						var marks = this.selectedSections.find(
-							(x) => this.utilityService.getSectionEnum(x.type) === section.type
-						).marks;
-						section.questions.forEach((question: Question) => {
-							question.marks = marks;
-						});
-					});
-				});
+				// testPaper.sets.forEach((set: QuestionPaperDto) => {
+				// 	set.sections.forEach((section: Section) => {
+				// 		var marks = this.selectedSections.find(
+				// 			(x) => this.utilityService.getSectionEnum(x.type) === section.type
+				// 		).marks;
+				// 		section.questions.forEach((question: Question) => {
+				// 			question.marks = marks;
+				// 		});
+				// 	});
+				// });
 			}
 		}
 		var testDto = new TestDto(null, testPaper);
@@ -302,7 +300,7 @@ export class GeneratePaperComponent implements OnInit {
 				this.notificationService.showSuccessWithTimeout(msgs[1], null, 2000);
 				this.fetchAllDrafts();
 			}
-			this.showModal = false;
+			//hide modal
 		});
 	}
 	fetchDraftsAndTemplates() {
@@ -361,32 +359,14 @@ export class GeneratePaperComponent implements OnInit {
 			this.sets = template.criteria.sets;
 			this.totalMarks = template.criteria.totalMarks;
 			this.chapters = template.criteria.topics;
-			this.selectedSections = [];
 
-			template.criteria.length.forEach((section: QuesLength) => {
-				this.selectedSections.push({
-					type: this.utilityService.getSectionDesc(section.type),
-					totalQues: section.count,
-					marks: section.marks
-				});
-			});
-
-			this.difficultyLevels = [
-				{ type: 'Easy', checked: false, diffPercent: null },
-				{ type: 'Medium', checked: false, diffPercent: null },
-				{ type: 'Hard', checked: false, diffPercent: null }
-			];
+			this.difficultyLevels = this.getDifficultyLevels();
 			template.criteria.difficulty.forEach((difficulty: QuesDifficulty) => {
 				this.difficultyLevels[difficulty.level].checked = true;
 				this.difficultyLevels[difficulty.level].diffPercent = difficulty.percent;
 			});
 
-			this.allSections = [
-				{ type: 'Objective', checked: false, totalQues: null, marks: null },
-				{ type: 'Short', checked: false, totalQues: null, marks: null },
-				{ type: 'Brief', checked: false, totalQues: null, marks: null },
-				{ type: 'Long', checked: false, totalQues: null, marks: null }
-			];
+			this.allSections = this.getAllSections();
 			template.criteria.length.forEach((section: QuesLength) => {
 				this.allSections[section.type].checked = true;
 				this.allSections[section.type].totalQues = section.count;
@@ -396,27 +376,21 @@ export class GeneratePaperComponent implements OnInit {
 			this.chapterSuggestions = this.selectedSubject
 				? this.subjectMap.get(this.selectedSubject.title).topics
 				: [];
+
+			this.chapters.forEach((chapter) => {
+				this.chapterSuggestions = this.chapterSuggestions.filter((x) => x !== chapter);
+			});
 		}
 	}
 	resetTemplateForm() {
-		this.allSections = [
-			{ type: 'OBJECTIVE', checked: false, totalQues: null, marks: null },
-			{ type: 'SHORT', checked: false, totalQues: null, marks: null },
-			{ type: 'BRIEF', checked: false, totalQues: null, marks: null },
-			{ type: 'LONG', checked: false, totalQues: null, marks: null }
-		];
-		this.difficultyLevels = [
-			{ type: 'EASY', checked: false, diffPercent: null },
-			{ type: 'MEDIUM', checked: false, diffPercent: null },
-			{ type: 'HARD', checked: false, diffPercent: null }
-		];
+		this.allSections = this.getAllSections();
+		this.difficultyLevels = this.getDifficultyLevels();
 		this.loadedTemplate = null;
 		this.selectedTemplateId = '';
 		this.selectedStd = -1;
 		this.selectedSubject = null;
 		this.sets = 1;
 		this.totalMarks = null;
-		this.selectedSections = [];
 		this.chapters = [];
 		this.queCriteria = null;
 	}
@@ -501,5 +475,20 @@ export class GeneratePaperComponent implements OnInit {
 	onSubjectChanged() {
 		this.chapterSuggestions = this.selectedSubject ? this.subjectMap.get(this.selectedSubject.title).topics : [];
 		this.chapters = [];
+	}
+	getAllSections() {
+		return [
+			{ type: 'Objective', checked: false, totalQues: null, marks: null },
+			{ type: 'Short', checked: false, totalQues: null, marks: null },
+			{ type: 'Brief', checked: false, totalQues: null, marks: null },
+			{ type: 'Long', checked: false, totalQues: null, marks: null }
+		];
+	}
+	getDifficultyLevels() {
+		return [
+			{ type: 'Easy', checked: false, diffPercent: null },
+			{ type: 'Medium', checked: false, diffPercent: null },
+			{ type: 'Hard', checked: false, diffPercent: null }
+		];
 	}
 }

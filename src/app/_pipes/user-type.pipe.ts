@@ -8,8 +8,16 @@ import { RoleType } from '../_models/enums';
 export class UserTypePipe implements PipeTransform {
 	transform(users: User[], roleType: RoleType): any {
 		roleType = Number(roleType);
-		if (!users || roleType === -1) {
+		if (!users) {
 			return users;
+		}
+		if (roleType === -1) {
+			return users.filter((user: User) => {
+				if (user.roles.length === 1 && user.roles[0].roleType === RoleType.GROUPADMIN) {
+					return false;
+				}
+				return true;
+			});
 		}
 		// filter items array, items which match and return true will be
 		// kept, false will be filtered out

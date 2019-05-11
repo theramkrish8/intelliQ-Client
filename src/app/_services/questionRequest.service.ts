@@ -5,6 +5,7 @@ import { Question } from '../_models/question.model';
 import { AppResponse } from '../_dto/app-response.model';
 import { UtilityService } from './utility.service';
 import { QuesRequest } from '../_dto/ques-request.dto';
+import { QuestionResponseDto } from '../_dto/question-response.dto';
 
 @Injectable()
 export class QuestionRequestService {
@@ -29,7 +30,7 @@ export class QuestionRequestService {
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {
-					return [];
+					return new QuestionResponseDto();
 				}
 				return result;
 			})
@@ -40,7 +41,7 @@ export class QuestionRequestService {
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {
-					return [];
+					return new QuestionResponseDto();
 				}
 				return result;
 			})

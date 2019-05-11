@@ -8,4 +8,5 @@ export class QuesRequest {
 	public standards: Standard[];
 	public status: QuestionStatus;
 	public page: number;
+	public getCount: boolean;
 }

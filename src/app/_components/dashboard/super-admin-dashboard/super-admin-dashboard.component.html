@@ -1,11 +1,7 @@
-<div class="row">
-  <div class="col-xs-12">
-    <ul class="nav nav-tabs">
-      <li role="presentation" routerLinkActive="active"><a [routerLink]="['group']">Group</a></li>
-      <li role="presentation" routerLinkActive="active"><a [routerLink]="['school']">School</a></li>
-      <li role="presentation" routerLinkActive="active"><a [routerLink]="['admin']">Admin</a></li>
-      <li role="presentation" routerLinkActive="active"><a [routerLink]="['metadata']">Meta Data</a></li>
-    </ul>
-  </div>
+<div class="sidenav text-white">
+  <a class="btn btn-dark" routerLinkActive="active active-tab" [routerLink]="['group']">Group</a>
+  <a class="btn btn-dark" routerLinkActive="active active-tab" [routerLink]="['school']">School</a>
+  <a class="btn btn-dark" routerLinkActive="active active-tab" [routerLink]="['admin']">Admin</a>
+  <a class="btn btn-dark" routerLinkActive="active active-tab" [routerLink]="['metadata']">Meta Data</a>
 </div>
 <router-outlet></router-outlet>

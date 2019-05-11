@@ -1,4 +1,4 @@
-import { RoleType, ResponseStatus, LengthType, DifficultyType } from '../_models/enums';
+import { RoleType, ResponseStatus, LengthType, DifficultyType, QuestionStatus } from '../_models/enums';
 import { AppResponse } from '../_dto/app-response.model';
 import { NotificationService } from './notification.service';
 import { Injectable } from '@angular/core';
@@ -14,6 +14,7 @@ export class UtilityService {
 		private router: Router
 	) {}
 
+	//Roles
 	getRoleDescription(roleType: RoleType) {
 		switch (roleType) {
 			case RoleType.SUPERADMIN:
@@ -32,7 +33,25 @@ export class UtilityService {
 				return 'teacher';
 		}
 	}
-	getRoleCode(roleDesc: String): any {
+	getRoleDescriptionForDisplay(roleType: RoleType) {
+		switch (roleType) {
+			case RoleType.SUPERADMIN:
+				return 'Super Admin';
+
+			case RoleType.GROUPADMIN:
+				return 'Group Admin';
+
+			case RoleType.SCHOOLADMIN:
+				return 'School Admin';
+
+			case RoleType.REVIEWER:
+				return 'Reviewer';
+
+			case RoleType.TEACHER:
+				return 'Teacher';
+		}
+	}
+	getRoleEnum(roleDesc: String): any {
 		switch (roleDesc) {
 			case 'super-admin':
 				return RoleType.SUPERADMIN;
@@ -52,26 +71,30 @@ export class UtilityService {
 				return '';
 		}
 	}
-	getLengthEnum(section: string) {
+
+	//Section
+	getSectionEnum(section: string) {
 		switch (section) {
-			case 'OBJECTIVE':
+			case 'Objective':
 				return LengthType.OBJECTIVE;
-			case 'SHORT':
+			case 'Short':
 				return LengthType.SHORT;
-			case 'BRIEF':
+			case 'Brief':
 				return LengthType.BRIEF;
-			case 'LONG':
+			case 'Long':
 				return LengthType.LONG;
 		}
 	}
-	getDifficultyEnum(difficultyLevel: string) {
-		switch (difficultyLevel) {
-			case 'EASY':
-				return DifficultyType.EASY;
-			case 'MEDIUM':
-				return DifficultyType.MEDIUM;
-			case 'HARD':
-				return DifficultyType.HARD;
+	getSectionDesc(section: LengthType) {
+		switch (section) {
+			case LengthType.OBJECTIVE:
+				return 'Objective';
+			case LengthType.SHORT:
+				return 'Short';
+			case LengthType.BRIEF:
+				return 'Brief';
+			case LengthType.LONG:
+				return 'Long';
 		}
 	}
 	getClassForSection(section: string) {
@@ -87,29 +110,55 @@ export class UtilityService {
 		}
 	}
 
-	getSectionDesc(section: LengthType) {
-		switch (section) {
-			case LengthType.OBJECTIVE:
-				return 'OBJECTIVE';
-			case LengthType.SHORT:
-				return 'SHORT';
-			case LengthType.BRIEF:
-				return 'BRIEF';
-			case LengthType.LONG:
-				return 'LONG';
+	//difficulty
+	getDifficultyEnum(difficultyLevel: string) {
+		switch (difficultyLevel) {
+			case 'Easy':
+				return DifficultyType.EASY;
+			case 'Medium':
+				return DifficultyType.MEDIUM;
+			case 'Hard':
+				return DifficultyType.HARD;
 		}
 	}
-
 	getDifficultyDesc(level: DifficultyType) {
 		switch (level) {
 			case DifficultyType.EASY:
-				return 'EASY';
+				return 'Easy';
 			case DifficultyType.MEDIUM:
-				return 'MEDIUM';
+				return 'Medium';
 			case DifficultyType.HARD:
-				return 'HARD';
+				return 'Hard';
 		}
 	}
+
+	//Question status
+	getClassForStatus(status: QuestionStatus) {
+		switch (status) {
+			case QuestionStatus.NEW:
+				return 'bg-new';
+			case QuestionStatus.TRANSIT:
+				return 'bg-modify';
+			case QuestionStatus.REMOVE:
+				return 'bg-remove';
+			case QuestionStatus.REJECTED:
+				return 'bg-remove';
+		}
+	}
+	getDescriptionForQuestionStatus(status: QuestionStatus) {
+		switch (status) {
+			case QuestionStatus.NEW:
+				return 'New';
+			case QuestionStatus.TRANSIT:
+				return 'Modify';
+			case QuestionStatus.REMOVE:
+				return 'Remove';
+			case QuestionStatus.REJECTED:
+				return 'Rejected';
+		}
+	}
+	
+
 	getAppResponse(appResponse: AppResponse, showError: boolean, showSuccess: boolean) {
 		var timeOut = 3000;
 		if (appResponse.status === ResponseStatus.FORBIDDEN && this.router.url !== '/login') {

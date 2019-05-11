@@ -10,6 +10,7 @@ import { QuestionService } from 'src/app/_services/question.service';
 import { Group } from 'src/app/_models/group.model';
 import { Subject } from 'src/app/_models/subject.model';
 import { GroupService } from 'src/app/_services/group.service';
+import { QuestionResponseDto } from 'src/app/_dto/question-response.dto';
 
 @Component({
 	selector: 'app-view-questions',
@@ -17,6 +18,9 @@ import { GroupService } from 'src/app/_services/group.service';
 	styleUrls: [ './view-questions.component.css' ]
 })
 export class ViewQuestionsComponent implements OnInit {
+	imageUrl: string;
+	tempImageUrl = '';
+	subjectMap = new Map<string, Subject>();
 	isAllQuestions = false;
 	loggedInUser: User;
 	userQuestions: Question[];
@@ -24,15 +28,31 @@ export class ViewQuestionsComponent implements OnInit {
 	selectedQuestion: Question;
 	tempSelectedQuestion: Question;
 	userPageIndex = 1;
-	userQuestionsLen = 50; // change
+	userQuestionsLen: number;
 	allPageIndex = 1;
-	allQuestionsLen = 50;
+	allQuestionsLen: number;
 	editMode = false;
 	tags: string;
-	pageSize = 20;
-	subjectMap = new Map<string, Subject>();
-	tagsSuggestions: string[];
+	pageSize = 10;
 	topicsSuggestions: string[];
+	chaptersSuggestions: string[];
+	quillHtml: string;
+	toolbarOptions = [
+		[ 'bold', 'italic', 'underline' ], // toggled buttons
+		[ 'code-block' ],
+
+		[ { list: 'ordered' }, { list: 'bullet' } ],
+		[ { script: 'sub' }, { script: 'super' } ], // superscript/subscript
+
+		[ { size: [ 'small', false, 'large', 'huge' ] } ], // custom dropdown
+
+		[ { align: [] } ],
+
+		[ 'clean' ] // remove formatting button
+	];
+	quillModule = {
+		toolbar: this.toolbarOptions
+	};
 	constructor(
 		private localStorageService: LocalStorageService,
 		private quesRequestService: QuestionRequestService,
@@ -45,23 +65,21 @@ export class ViewQuestionsComponent implements OnInit {
 		this.loggedInUser = this.localStorageService.getCurrentUser();
 		this.getMyQuestions();
 		this.getAllQuestions();
-		this.fetchGroup();
-	}
-	fetchGroup() {
-		this.groupService.getGroupByCode(this.loggedInUser.school.group.code).subscribe((group: Group) => {
+		this.groupService.groupFetched.subscribe((group: Group) => {
 			if (group) {
 				this.createSubjectTopicMap(group);
 			}
 		});
 	}
+
 	createSubjectTopicMap(group: Group) {
 		group.subjects.forEach((subject: Subject) => {
 			this.subjectMap.set(subject.title, subject);
 		});
 	}
 	getSuggestions() {
-		this.tagsSuggestions = this.subjectMap.get(this.selectedQuestion.subject).tags;
-		this.topicsSuggestions = this.subjectMap.get(this.selectedQuestion.subject).topics;
+		this.topicsSuggestions = this.subjectMap.get(this.selectedQuestion.subject).tags;
+		this.chaptersSuggestions = this.subjectMap.get(this.selectedQuestion.subject).topics;
 		this.tags = '';
 	}
 	addTag(event) {
@@ -78,13 +96,13 @@ export class ViewQuestionsComponent implements OnInit {
 				} else if (event.item) {
 					// from typeahead
 					this.tempSelectedQuestion.tags.push(this.tags);
-					this.tagsSuggestions = this.tagsSuggestions.filter((x) => x !== this.tags);
+					this.topicsSuggestions = this.topicsSuggestions.filter((x) => x !== this.tags);
 					this.tags = '';
 				} else if (event.type === 'blur') {
 					//blur
 					this.tags = this.tags.trim();
 					this.tempSelectedQuestion.tags.push(this.tags);
-					this.tagsSuggestions = this.tagsSuggestions.filter((x) => x !== this.tags);
+					this.topicsSuggestions = this.topicsSuggestions.filter((x) => x !== this.tags);
 					this.tags = '';
 				}
 			}
@@ -92,28 +110,36 @@ export class ViewQuestionsComponent implements OnInit {
 	}
 	removeTag(tag) {
 		this.tempSelectedQuestion.tags = this.tempSelectedQuestion.tags.filter((x) => x !== tag);
-		this.tagsSuggestions.push(tag);
+		this.topicsSuggestions.push(tag);
 	}
 	getMyQuestions() {
+		var getCount = this.userQuestionsLen ? false : true;
 		this.quesRequestService
 			.viewQuestionRequests(
-				this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.userPageIndex - 1)
+				this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.userPageIndex - 1, getCount)
 			)
-			.subscribe((questions) => {
-				this.userQuestions = questions;
+			.subscribe((questionResponseDto: QuestionResponseDto) => {
+				this.userQuestions = questionResponseDto.questions;
+				if (getCount) {
+					this.userQuestionsLen = questionResponseDto.records;
+				}
 			});
 	}
 	getAllQuestions() {
+		var getCount = this.allQuestionsLen ? false : true;
 		this.quesService
 			.viewAllApprovedQuestion(
-				this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.allPageIndex - 1)
+				this.createQuesRequestDto(this.loggedInUser, QuestionStatus.APPROVED, this.allPageIndex - 1, getCount)
 			)
-			.subscribe((questions) => {
-				this.allQuestions = questions;
+			.subscribe((questionResponseDto: QuestionResponseDto) => {
+				this.allQuestions = questionResponseDto.questions;
+				if (getCount) {
+					this.allQuestionsLen = questionResponseDto.records;
+				}
 			});
 	}
 
-	createQuesRequestDto(user: User, status: QuestionStatus, pageIndex: number): QuesRequest {
+	createQuesRequestDto(user: User, status: QuestionStatus, pageIndex: number, getCount: boolean): QuesRequest {
 		var quesRequest = new QuesRequest();
 		quesRequest.userID = user.userId;
 		quesRequest.groupCode = user.school.group.code;
@@ -121,14 +147,10 @@ export class ViewQuestionsComponent implements OnInit {
 		quesRequest.schoolID = user.school.schoolId;
 		quesRequest.standards = user.roles[this.utilityService.findRoleIndex(user.roles, RoleType.TEACHER)].stds;
 		quesRequest.status = status;
+		quesRequest.getCount = getCount;
 		return quesRequest;
 	}
 
-	onAllTabClick() {
-		this.editMode = false;
-		this.selectedQuestion = null;
-		this.isAllQuestions = true;
-	}
 	deleteQuestion() {
 		this.quesRequestService.deleteQuestionRequest(this.selectedQuestion).subscribe((response) => {
 			if (response) {
@@ -137,19 +159,34 @@ export class ViewQuestionsComponent implements OnInit {
 			}
 		});
 	}
+
 	onEditClicked() {
 		this.editMode = true;
-		this.tempSelectedQuestion = this.selectedQuestion;
-		this.tempSelectedQuestion.tags = this.tempSelectedQuestion.tags ? this.tempSelectedQuestion.tags : [];
-		//this.tags = this.tempSelectedQuestion.tags ? this.tempSelectedQuestion.tags.toString() : '';
+		this.tempSelectedQuestion = JSON.parse(JSON.stringify(this.selectedQuestion));
+		this.tags = '';
+		this.quillHtml = this.tempSelectedQuestion.titleHtml;
+		this.topicsSuggestions = this.subjectMap.get(this.tempSelectedQuestion.subject).tags;
+		this.chaptersSuggestions = this.subjectMap.get(this.tempSelectedQuestion.subject).topics;
 	}
 	updateQuestion() {
-		//this.tempSelectedQuestion.tags = this.tags.split(',');
+		var text = document.getElementById('quillContainer').textContent;
+		this.tempSelectedQuestion.title = text ? text.trim() : '';
+		this.tempSelectedQuestion.titleHtml = this.quillHtml;
+		if (this.tempImageUrl) {
+			this.tempSelectedQuestion.imageUrl = this.tempImageUrl;
+		}
 		this.quesRequestService.updateQuestion(this.tempSelectedQuestion).subscribe((response) => {
 			if (response) {
 				this.selectedQuestion = null;
 				this.editMode = false;
 			}
 		});
+	}
+
+	getOwner(question: Question) {
+		if (this.loggedInUser.school.code === question.school.code) {
+			return question.owner.userName;
+		}
+		return question.school.shortName + ', ' + question.school.address.city;
 	}
 }

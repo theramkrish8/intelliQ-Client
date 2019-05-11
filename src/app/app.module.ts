@@ -34,11 +34,10 @@ import { SchoolService } from './_services/school.service';
 import { MetaService } from './_services/meta.service';
 import { GroupProfileComponent } from './_components/dashboard/group-admin-dashboard/group-profile/group-profile.component';
 import { GroupSchoolsComponent } from './_components/dashboard/group-admin-dashboard/group-schools/group-schools.component';
-import { GroupSubjectsComponent } from './_components/dashboard/group-admin-dashboard/group-subjects/group-subjects.component';
 import { CsvPipe } from './_pipes/csv.pipe';
 import { AddressPipe } from './_pipes/address.pipe';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { SchoolProfileComponent } from './_components/dashboard/school-admin-dashboard/school-profile/school-profile.component';
+import { SchoolProfileComponent } from './_components/school-profile/school-profile.component';
 import { SchoolUsersComponent } from './_components/dashboard/school-admin-dashboard/school-users/school-users.component';
 import { UserTypePipe } from './_pipes/user-type.pipe';
 import { UserProfileComponent } from './_components/user-profile/user-profile.component';
@@ -53,14 +52,16 @@ import { EnumPipe } from './_pipes/enum.pipe';
 import { TrimPipe } from './_pipes/trim.pipe';
 import { ReviewerDashboardComponent } from './_components/dashboard/reviewer-dashboard/reviewer-dashboard.component';
 import { ReviewRequestsComponent } from './_components/dashboard/reviewer-dashboard/review-requests/review-requests.component';
-import { QuestionDisplayComponent } from './_components/dashboard/question-display/question-display.component';
-import { QuestionListItemComponent } from './_components/dashboard/question-list-item/question-list-item.component';
 import { QuestionPaperService } from './_services/question-paper.service';
 import { QuillModule } from 'ngx-quill';
 import { MustMatchDirective } from './directives/match-field.directive';
 import { AlertModule, TypeaheadModule } from 'ngx-bootstrap';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ViewQuestionPaperComponent } from './_components/dashboard/teacher-dashboard/view-question-paper/view-question-paper.component';
+import { RolePipePipe } from './_pipes/role-pipe.pipe';
+import { TimetableComponent } from './_components/timetable/timetable.component';
+import { ViewTeachersComponent } from './_components/dashboard/reviewer-dashboard/view-teachers/view-teachers.component';
+import { SafePipe } from './_pipes/safe.pipe';
 @NgModule({
 	declarations: [
 		AppComponent,
@@ -79,7 +80,6 @@ import { ViewQuestionPaperComponent } from './_components/dashboard/teacher-dash
 		UpsertMetadataComponent,
 		GroupProfileComponent,
 		GroupSchoolsComponent,
-		GroupSubjectsComponent,
 		CsvPipe,
 		AddressPipe,
 		SchoolProfileComponent,
@@ -94,10 +94,12 @@ import { ViewQuestionPaperComponent } from './_components/dashboard/teacher-dash
 		EnumPipe,
 		TrimPipe,
 		ReviewRequestsComponent,
-		QuestionDisplayComponent,
-		QuestionListItemComponent,
 		MustMatchDirective,
-		ViewQuestionPaperComponent
+		ViewQuestionPaperComponent,
+		RolePipePipe,
+		TimetableComponent,
+		ViewTeachersComponent,
+		SafePipe
 	],
 	imports: [
 		BrowserModule,

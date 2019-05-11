@@ -15,8 +15,7 @@ import { AddAdminComponent } from './_components/dashboard/super-admin-dashboard
 import { UpsertMetadataComponent } from './_components/dashboard/super-admin-dashboard/upsert-metadata/upsert-metadata.component';
 import { GroupProfileComponent } from './_components/dashboard/group-admin-dashboard/group-profile/group-profile.component';
 import { GroupSchoolsComponent } from './_components/dashboard/group-admin-dashboard/group-schools/group-schools.component';
-import { GroupSubjectsComponent } from './_components/dashboard/group-admin-dashboard/group-subjects/group-subjects.component';
-import { SchoolProfileComponent } from './_components/dashboard/school-admin-dashboard/school-profile/school-profile.component';
+import { SchoolProfileComponent } from './_components/school-profile/school-profile.component';
 import { SchoolUsersComponent } from './_components/dashboard/school-admin-dashboard/school-users/school-users.component';
 import { UserProfileComponent } from './_components/user-profile/user-profile.component';
 import { SchoolUpsertUsersComponent } from './_components/dashboard/school-admin-dashboard/school-upsert-users/school-upsert-users.component';
@@ -27,6 +26,8 @@ import { GeneratePaperComponent } from './_components/dashboard/teacher-dashboar
 import { ReviewerDashboardComponent } from './_components/dashboard/reviewer-dashboard/reviewer-dashboard.component';
 import { ReviewRequestsComponent } from './_components/dashboard/reviewer-dashboard/review-requests/review-requests.component';
 import { ViewQuestionPaperComponent } from './_components/dashboard/teacher-dashboard/view-question-paper/view-question-paper.component';
+import { TimetableComponent } from './_components/timetable/timetable.component';
+import { ViewTeachersComponent } from './_components/dashboard/reviewer-dashboard/view-teachers/view-teachers.component';
 
 const routes: Routes = [
 	{
@@ -53,8 +54,7 @@ const routes: Routes = [
 				children: [
 					{ path: '', redirectTo: 'profile', pathMatch: 'full' },
 					{ path: 'profile', component: GroupProfileComponent, canActivate: [ AuthGuard ] },
-					{ path: 'schools', component: GroupSchoolsComponent, canActivate: [ AuthGuard ] },
-					{ path: 'subjects', component: GroupSubjectsComponent, canActivate: [ AuthGuard ] }
+					{ path: 'schools', component: GroupSchoolsComponent, canActivate: [ AuthGuard ] }
 				]
 			},
 			{
@@ -62,8 +62,7 @@ const routes: Routes = [
 				component: SchoolAdminDashboardComponent,
 				canActivate: [ AuthGuard ],
 				children: [
-					{ path: '', redirectTo: 'profile', pathMatch: 'full' },
-					{ path: 'profile', component: SchoolProfileComponent, canActivate: [ AuthGuard ] },
+					{ path: '', redirectTo: 'users/view', pathMatch: 'full' },
 					{ path: 'users/view', component: SchoolUsersComponent, canActivate: [ AuthGuard ] },
 					{ path: 'users/upsert', component: SchoolUpsertUsersComponent, canActivate: [ AuthGuard ] }
 				]
@@ -73,7 +72,8 @@ const routes: Routes = [
 				component: ReviewerDashboardComponent,
 				canActivate: [ AuthGuard ],
 				children: [
-					{ path: '', redirectTo: 'review-requests', pathMatch: 'full' },
+					{ path: '', redirectTo: 'view-teachers', pathMatch: 'full' },
+					{ path: 'view-teachers', component: ViewTeachersComponent, canActivate: [ AuthGuard ] },
 					{ path: 'review-requests', component: ReviewRequestsComponent, canActivate: [ AuthGuard ] }
 				]
 			},
@@ -98,7 +98,8 @@ const routes: Routes = [
 	{ path: 'roles', component: RoleSelectionComponent, canActivate: [ AuthGuard ] },
 	{ path: 'login', component: LoginComponent },
 	{ path: 'profile', component: UserProfileComponent, canActivate: [ AuthGuard ] },
-
+	{ path: 'school-profile', component: SchoolProfileComponent, canActivate: [ AuthGuard ] },
+	{ path: 'timetable', component: TimetableComponent, canActivate: [ AuthGuard ] },
 	{ path: 'not-found', component: PageNotFoundComponent },
 	{ path: '**', redirectTo: 'not-found' }
 ];

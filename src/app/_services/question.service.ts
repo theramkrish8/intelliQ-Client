@@ -5,6 +5,7 @@ import { AppResponse } from '../_dto/app-response.model';
 import { UtilityService } from './utility.service';
 import { QuesRequest } from '../_dto/ques-request.dto';
 import { QuestionCriteria } from '../_dto/question-criteria.dto';
+import { QuestionResponseDto } from '../_dto/question-response.dto';
 
 @Injectable()
 export class QuestionService {
@@ -21,7 +22,7 @@ export class QuestionService {
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {
-					return [];
+					return new QuestionResponseDto();
 				}
 				return result;
 			})

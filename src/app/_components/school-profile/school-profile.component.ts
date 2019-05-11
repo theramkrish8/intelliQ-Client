@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { School } from 'src/app/_models/school.model';
 import { SchoolService } from 'src/app/_services/school.service';
 import { LocalStorageService } from 'src/app/_services/local-storage.service';
+import { User } from 'src/app/_models/user.model';
+import { RoleType } from 'src/app/_models/enums';
 
 @Component({
 	selector: 'app-school-profile',
@@ -10,15 +12,16 @@ import { LocalStorageService } from 'src/app/_services/local-storage.service';
 })
 export class SchoolProfileComponent implements OnInit {
 	school: School;
-
+	isSchoolAdmin: boolean;
+	user: User;
 	constructor(private schoolService: SchoolService, private localStorageService: LocalStorageService) {}
 
 	ngOnInit() {
-		this.schoolService
-			.getSchoolBySchoolCode(this.localStorageService.getCurrentUser().school.code)
-			.subscribe((school: School) => {
-				this.school = school;
-			});
+		this.user = this.localStorageService.getCurrentUser();
+		this.schoolService.getSchoolBySchoolCode(this.user.school.code).subscribe((school: School) => {
+			this.school = school;
+		});
+		this.isSchoolAdmin = this.user.roles.findIndex((role) => role.roleType === RoleType.SCHOOLADMIN) > -1;
 	}
 	updateSchool() {
 		this.school.contact.mobile = this.convertContactToArray(this.school.contact.mobile, false);

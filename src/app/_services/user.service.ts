@@ -13,6 +13,7 @@ import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class UserService implements OnInit {
+	userRoleUpdated = new BehaviorSubject<string>(null);
 	userDetailsUpdated = new BehaviorSubject<User>(null);
 	constructor(
 		private localStorageService: LocalStorageService,
@@ -34,8 +35,21 @@ export class UserService implements OnInit {
 		return null;
 	}
 
-	getUserByMobile(mobile: string) {
-		return this.restService.get('user/info/mobile/' + mobile).pipe(
+	getSchoolUserInfo(schoolId: string, identifier: string, value: String) {
+		return this.restService.get('user/school/info/' + schoolId + '/' + identifier + '/' + value).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
+
+	getUserInfo(identifier: string, value: String) {
+		return this.restService.get('user/info/' + identifier + '/' + value).pipe(
 			map((appResponse: AppResponse) => {
 				var result = this.utilityService.getAppResponse(appResponse, true, false);
 				if (result === null) {
@@ -75,6 +89,18 @@ export class UserService implements OnInit {
 			})
 		);
 	}
+	updateUserSchedule(user: User) {
+		return this.restService.put('user/updateSchedule', user).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, true);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
 	getUsersBySchoolId(schoolId: string) {
 		return this.restService.get('user/all/school/' + schoolId).pipe(
 			map((appResponse: AppResponse) => {
@@ -99,6 +125,19 @@ export class UserService implements OnInit {
 			})
 		);
 	}
+	getTeachersUnderReviewer(schoolId: string, reviewerId: string) {
+		return this.restService.get('user/all/reviewer/' + schoolId + '/' + reviewerId).pipe(
+			map((appResponse: AppResponse) => {
+				var result = this.utilityService.getAppResponse(appResponse, true, false);
+				if (result === null) {
+					return null;
+				}
+				// process result if required and return same
+				return result;
+			})
+		);
+	}
+
 	removeUser(schoolId: string, userId: string) {
 		return this.restService.delete('user/remove/' + schoolId + '/' + userId, null).pipe(
 			map((appResponse: AppResponse) => {

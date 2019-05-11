@@ -187,7 +187,7 @@ export class GeneratePaperComponent implements OnInit {
 					}
 				}
 				var sec = new QuesLength();
-				sec.type = this.utilityService.getLengthEnum(section.type);
+				sec.type = this.utilityService.getSectionEnum(section.type);
 				sec.count = section.totalQues;
 				sec.marks = section.marks;
 				this.queCriteria.length.push(sec);
@@ -282,7 +282,7 @@ export class GeneratePaperComponent implements OnInit {
 				testPaper.sets.forEach((set: QuestionPaperDto) => {
 					set.sections.forEach((section: Section) => {
 						var marks = this.selectedSections.find(
-							(x) => this.utilityService.getLengthEnum(x.type) === section.type
+							(x) => this.utilityService.getSectionEnum(x.type) === section.type
 						).marks;
 						section.questions.forEach((question: Question) => {
 							question.marks = marks;

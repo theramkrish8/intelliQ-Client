@@ -1,10 +1,5 @@
-<div class="row">
-  <div class="col-xs-12">
-    <ul class="nav nav-tabs">
-      <li role="presentation" routerLinkActive="active"><a [routerLink]="['profile']">Profile</a></li>
-      <li role="presentation" routerLinkActive="active"><a [routerLink]="['schools']">Schools</a></li>
-      <li role="presentation" routerLinkActive="active"><a [routerLink]="['subjects']">Subjects</a></li>
-    </ul>
-  </div>
+<div class="sidenav text-white">
+  <a class="btn btn-dark" routerLinkActive="active active-tab" [routerLink]="['profile']">Profile</a>
+  <a class="btn btn-dark" routerLinkActive="active active-tab" [routerLink]="['schools']">Schools</a>
 </div>
 <router-outlet></router-outlet>

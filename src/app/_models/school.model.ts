@@ -16,6 +16,13 @@ export class School {
 	public createDate: Date;
 	public lastModifiedDate: Date;
 	public renewalDate: Date;
+	public schedule: Schedule;
 
-	constructor() {}
+	constructor() {
+		//this.schedule = new Schedule();
+	}
+}
+export class Schedule {
+	public days: number;
+	public periods: number;
 }

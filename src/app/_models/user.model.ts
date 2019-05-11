@@ -15,9 +15,23 @@ export class User {
 	public school: School;
 	public prevSchools: School[];
 	public roles: Role[];
-
+	public days: Day[];
 	constructor() {
 		this.roles = [];
 		this.prevSchools = [];
+		this.days = [];
 	}
+}
+export class Day {
+	public day: string;
+	public periods: Period[];
+	constructor() {
+		this.periods = [];
+	}
+}
+
+export class Period {
+	public hour: number;
+	public std: string;
+	public subject: string;
 }

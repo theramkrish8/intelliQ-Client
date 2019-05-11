@@ -1,11 +1,11 @@
-<div class="row" style="margin-top:60px;">
+<div class="row feature-content main-content">
   <div class="col-xs-6">
     <h4>Add New Group:</h4>
     <form #addGroupForm="ngForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <input type="text" name="groupcode" [(ngModel)]="groupCode" class="form-control text-uppercase"
-         placeholder="Group Code"  required pattern="[A-Za-z]*" #groupcode="ngModel" />
-         <div *ngIf="groupcode.invalid && (groupcode.dirty || groupcode.touched)" class="invalid-feedback">
+          placeholder="Group Code" required pattern="[A-Za-z]*" #groupcode="ngModel" />
+        <div *ngIf="groupcode.invalid && (groupcode.dirty || groupcode.touched)" class="invalid-feedback">
           <div *ngIf="groupcode.errors.required">
             Group code is required.
           </div>

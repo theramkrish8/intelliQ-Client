@@ -28,10 +28,25 @@ export class RoleSelectionComponent implements OnInit, OnDestroy {
 	}
 
 	onRoleSelected(type: string) {
+		this.userService.userRoleUpdated.next(type);
 		this.router.navigate([ 'dashboard', type.toLowerCase() ]);
 	}
 
 	ngOnDestroy() {
 		this.userSubscription.unsubscribe();
+	}
+	getClassForRole(role) {
+		switch (role) {
+			case 'group-admin':
+				return 'bg-modify';
+			case 'school-admin':
+				return 'bg-remove';
+			case 'reviewer':
+				return 'bg-new';
+			case 'teacher':
+				return 'bg-blue';
+			case 'super-admin':
+				return 'bg-modify';
+		}
 	}
 }

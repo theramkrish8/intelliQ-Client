@@ -4,6 +4,11 @@ import { User } from 'src/app/_models/user.model';
 import { LocalStorageService } from 'src/app/_services/local-storage.service';
 import { Profile } from 'src/app/_dto/profile.dto';
 import { NotificationService } from 'src/app/_services/notification.service';
+import { UtilityService } from 'src/app/_services/utility.service';
+import { NgForm } from '@angular/forms';
+import { RoleType } from 'src/app/_models/enums';
+import { Role } from 'src/app/_models/role.model';
+import { Standard } from 'src/app/_models/standard.model';
 
 @Component({
 	selector: 'app-user-profile',
@@ -11,29 +16,56 @@ import { NotificationService } from 'src/app/_services/notification.service';
 	styleUrls: [ './user-profile.component.css' ]
 })
 export class UserProfileComponent implements OnInit {
+	hideModal: boolean;
+	otp1: string;
+	otp2: string;
+	otp3: string;
+	otp4: string;
+	otp5: string;
+	otp6: string;
 	user: User;
-	activeTab = 'profile';
+	activeTab = 'password';
 	oldPassword: string;
 	newPassword: string;
 	confirmPassword: string;
 	otpGenerated = false;
-	otp: string;
 	newMobile: string;
 	otpSessionId: string;
 	firstName: string;
 	lastName: string;
+	isReviewer: boolean;
+	isTeacher: boolean;
+	reviewerStds: Standard[];
+	teacherStds: Standard[];
 	constructor(
 		private userService: UserService,
 		private localStorageService: LocalStorageService,
-		private notificationService: NotificationService
-	) {
+		private notificationService: NotificationService,
+		private utilityService: UtilityService
+	) {}
+
+	ngOnInit() {
 		this.user = this.localStorageService.getCurrentUser();
 		var index = this.user.name.indexOf(' ');
 		this.firstName = this.user.name.substring(0, index);
 		this.lastName = this.user.name.substring(index + 1);
+		this.user.roles.forEach((role: Role) => {
+			if (role.roleType === RoleType.REVIEWER) {
+				this.isReviewer = true;
+				this.reviewerStds = role.stds;
+				this.reviewerStds.sort((a, b) => {
+					return a.std - b.std;
+				});
+			}
+			if (role.roleType === RoleType.TEACHER) {
+				this.isTeacher = true;
+				this.teacherStds = role.stds;
+				this.teacherStds.sort((a, b) => {
+					return a.std - b.std;
+				});
+			}
+		});
 	}
-
-	ngOnInit() {}
 	updateUser() {
 		this.user.dob = new Date(this.user.dob);
 		this.user.name = this.firstName + ' ' + this.lastName;
@@ -44,7 +76,7 @@ export class UserProfileComponent implements OnInit {
 			}
 		});
 	}
-	updatePassword() {
+	updatePassword(pwdForm: NgForm) {
 		var profile = new Profile();
 		profile.userId = this.user.userId;
 		profile.oldPwd = this.oldPassword;
@@ -52,16 +84,24 @@ export class UserProfileComponent implements OnInit {
 		profile.forgotPwd = false;
 		this.userService.resetPassword(profile).subscribe((response) => {
 			if (response) {
-				this.oldPassword = '';
-				this.newPassword = '';
-				this.confirmPassword = '';
+				pwdForm.form.reset();
 			}
 		});
 	}
 
-	updateMobile() {
-		if (this.otp) {
-			this.userService.verifyOtp(this.otp, this.otpSessionId).subscribe((response) => {
+	generateOtp() {
+		this.userService.generateMobileOtp(this.newMobile).subscribe((response) => {
+			if (response) {
+				this.notificationService.showSuccessWithTimeout('OTP sent successfully !!', null, 2000);
+				this.otpSessionId = response;
+				this.otpGenerated = true;
+			}
+		});
+	}
+	verifyOtp() {
+		var otp = this.otp1 + this.otp2 + this.otp3 + this.otp4 + this.otp5 + this.otp6;
+		if (otp && otp.length === 6) {
+			this.userService.verifyOtp(otp, this.otpSessionId).subscribe((response) => {
 				if (response) {
 					var profile = new Profile();
 					profile.userId = this.user.userId;
@@ -70,7 +110,7 @@ export class UserProfileComponent implements OnInit {
 						if (res) {
 							this.user.mobile = this.newMobile;
 							this.newMobile = '';
-							this.otp = '';
+							this.otp1 = this.otp2 = this.otp3 = this.otp4 = this.otp5 = this.otp6 = '';
 							this.otpGenerated = false;
 							this.localStorageService.addItemToLocalStorage('user', this.user);
 							this.userService.userDetailsUpdated.next(this.user);
@@ -78,22 +118,20 @@ export class UserProfileComponent implements OnInit {
 					});
 				}
 			});
-		} else {
-			this.userService.generateMobileOtp(this.newMobile).subscribe((response) => {
-				if (response) {
-					this.notificationService.showSuccessWithTimeout("OTP sent successfully !!", null, 2000);
-					this.otpSessionId = response;
-					this.otpGenerated = true;
-				}
-			});
 		}
 	}
 	reset() {
 		this.newMobile = '';
-		this.otp = '';
 		this.otpGenerated = false;
 		this.oldPassword = '';
 		this.newPassword = '';
 		this.confirmPassword = '';
+	}
+	calculateAge(dob: string) {
+		var dateOfBirth = new Date(dob);
+		var diff_ms = Date.now() - dateOfBirth.getTime();
+		var age_dt = new Date(diff_ms);
+
+		return Math.abs(age_dt.getUTCFullYear() - 1970);
 	}
 }

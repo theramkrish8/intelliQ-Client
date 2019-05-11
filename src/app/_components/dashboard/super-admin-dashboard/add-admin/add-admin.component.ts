@@ -64,7 +64,7 @@ export class AddAdminComponent implements OnInit {
 
 	findUser() {
 		if (this.mobile && this.mobile.length === 10) {
-			this.userService.getUserByMobile(this.mobile).subscribe((user: User) => {
+			this.userService.getUserInfo('mobile', this.mobile).subscribe((user: User) => {
 				if (user && user.school.schoolId && user.school.group.groupId !== this.selectedGroup.groupId) {
 					this.notificationService.showErrorWithTimeout(
 						'User is not part of group ' + this.selectedGroup.code,

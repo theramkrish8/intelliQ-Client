@@ -11,7 +11,7 @@ import { QuestionRequestService } from 'src/app/_services/questionRequest.servic
 import { UtilityService } from 'src/app/_services/utility.service';
 import { QuestionCriteria } from 'src/app/_dto/question-criteria.dto';
 import { QuestionService } from 'src/app/_services/question.service';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, NgForm } from '@angular/forms';
 import Quill from 'quill';
 import { timeout } from 'q';
 import { Group } from 'src/app/_models/group.model';
@@ -31,13 +31,12 @@ export class AddQuestionComponent implements OnInit {
 	subjectMap = new Map<string, Subject>();
 	standards: Standard[];
 	question = new Question();
-	selectedStd = -1;
+	selectedStd: number = null;
 	selectedSubject: Subject = null;
 	tags = '';
 	suggestedQuestions: Question[];
-	userGroup: Group;
 	tagsSuggestions: string[];
-	topicsSuggestions: string[];
+	chaptersSuggestions: string[];
 	toolbarOptions = [
 		[ 'bold', 'italic', 'underline' ], // toggled buttons
 		[ 'code-block' ],
@@ -69,25 +68,20 @@ export class AddQuestionComponent implements OnInit {
 			this.utilityService.findRoleIndex(this.loggedInUser.roles, RoleType.TEACHER)
 		];
 		this.createSubjectReviewerMap(teacherRole.stds);
-		this.fetchGroup();
+		this.groupService.groupFetched.subscribe((group: Group) => {
+			if (group) {
+				this.createSubjectTopicMap(group);
+			}
+		});
 	}
-	fetchGroup() {
-		if (!this.userGroup) {
-			this.groupService.getGroupByCode(this.loggedInUser.school.group.code).subscribe((group: Group) => {
-				this.userGroup = group;
-				if (this.userGroup) {
-					this.createSubjectTopicMap(group);
-				}
-			});
-		}
-	}
+
 	createSubjectTopicMap(group: Group) {
 		group.subjects.forEach((subject: Subject) => {
 			this.subjectMap.set(subject.title, subject);
 		});
 	}
 	createSubjectReviewerMap(stds: Standard[]) {
-		this.standards = stds;
+		this.standards = stds.sort((a, b) => a.std - b.std);
 		stds.forEach((std: Standard) => {
 			this.stdSubjectMap.set(std.std, std.subjects);
 		});
@@ -104,8 +98,9 @@ export class AddQuestionComponent implements OnInit {
 		this.question = new Question();
 		this.question.tags = [];
 		this.tags = '';
+		this.quillHtml = '';
 		this.tagsSuggestions = this.subjectMap.get(this.selectedSubject.title).tags;
-		this.topicsSuggestions = this.subjectMap.get(this.selectedSubject.title).topics;
+		this.chaptersSuggestions = this.subjectMap.get(this.selectedSubject.title).topics;
 	}
 	addQuestion() {
 		var text = document.getElementById('quillContainer').textContent;
@@ -121,7 +116,7 @@ export class AddQuestionComponent implements OnInit {
 		this.question.std = this.selectedStd;
 		this.question.subject = this.selectedSubject.title;
 		this.quesRequestService.addQuestion(this.question).subscribe((response) => {
-			this.question.title = '';
+			this.quillHtml = '';
 			this.question.imageUrl = '';
 			//this.resetForm();
 		});
@@ -165,11 +160,9 @@ export class AddQuestionComponent implements OnInit {
 		scl.address = school.address;
 		return scl;
 	}
-	resetForm() {
+	resetForm(addQuesForm: NgForm) {
+		addQuesForm.form.reset();
 		this.question = new Question();
-		this.selectedStd = -1;
-		this.selectedSubject = null;
-		this.tags = '';
 		this.question.tags = [];
 	}
 	getSuggestions(event) {
@@ -182,7 +175,6 @@ export class AddQuestionComponent implements OnInit {
 			}
 			return;
 		}
-
 		if (searchTerm.length > 2 && this.lastSearchTerm !== searchTerm) {
 			var questionCriteria = new QuestionCriteria(
 				this.loggedInUser.school.group.code,

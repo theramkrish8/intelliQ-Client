@@ -75,7 +75,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 		}
 		this.prevMobile = this.user.mobile;
 		if (this.utilityService.isValidMobile(this.user.mobile)) {
-			this.userService.getUserByMobile(this.user.mobile).subscribe((user: User) => {
+			this.userService.getUserInfo('mobile', this.user.mobile).subscribe((user: User) => {
 				this.resetForm(false);
 				if (user) {
 					if (user.school.code && user.school.schoolId !== this.loggedUser.school.schoolId) {
@@ -101,7 +101,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 				}
 			});
 		} else {
-			alert("Enter a valid mobile number");
+			alert('Enter a valid mobile number');
 			this.mobileElem.nativeElement.focus();
 		}
 	}
@@ -181,20 +181,20 @@ export class SchoolUpsertUsersComponent implements OnInit {
 	getClassForSubject(subject: Subject) {
 		var cls = '';
 		if (this.stdMap.has(this.selectedStd) && this.stdMap.get(this.selectedStd).has(subject.title)) {
-			cls = 'btn-info';
+			cls = 'bg-new';
 		} else {
-			cls = 'btn-default';
+			cls = 'btn-secondary';
 		}
 		if (this.isTeacher && this.selectedSubject === subject.title) {
-			cls += ' active btn-boundary-subject';
+			cls += ' active bg-blue';
 		}
 		return cls;
 	}
 	getClassForStandard(std) {
 		var cls = '';
-		cls = this.stdMap.has(std) ? 'btn-warning' : 'btn-default';
+		cls = this.stdMap.has(std) ? 'bg-new' : 'btn-secondary';
 		if (this.selectedStd === std) {
-			cls += ' active btn-boundary-std';
+			cls += ' active bg-blue';
 		}
 		return cls;
 	}

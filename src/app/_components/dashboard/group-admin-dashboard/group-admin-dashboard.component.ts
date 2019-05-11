@@ -14,11 +14,6 @@ export class GroupAdminDashboardComponent implements OnInit {
 	constructor(private groupService: GroupService, private localStorageService: LocalStorageService) {}
 
 	ngOnInit() {
-		this.localStorageService.removeItemFromLocalStorage('group');
-		this.groupService
-			.getGroupByCode(this.localStorageService.getCurrentUser().school.group.code)
-			.subscribe((group: Group) => {
-				this.localStorageService.addItemToLocalStorage('group', group);
-			});
+		this.groupService.getGroupByCode(this.localStorageService.getCurrentUser().school.group.code).subscribe();
 	}
 }

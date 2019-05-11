@@ -4,12 +4,12 @@ import { Group } from '../_models/group.model';
 import { map } from 'rxjs/operators';
 import { AppResponse } from '../_dto/app-response.model';
 import { UtilityService } from './utility.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class GroupService {
 	constructor(private restService: RestService, private utilityService: UtilityService) {}
-	public groupFetched = new Subject<Group>();
+	public groupFetched = new BehaviorSubject<Group>(null);
 	addGroup(group: Group) {
 		return this.restService.post('group/add', group).pipe(
 			map((appResponse: AppResponse) => {

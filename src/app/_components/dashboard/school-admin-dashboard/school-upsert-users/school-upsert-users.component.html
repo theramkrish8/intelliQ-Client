@@ -3,8 +3,8 @@
     <div class="row">
       <div class="offset-md-3 col-md-1">
         <div class="form-group form-inline">
-          <a class="badge badge-pill btn-warning p-2" (click)="resetForm(true)" data-balloon=" Reset Form"
-            data-balloon-pos="left">
+          <a *ngIf="roleType!==''" class="badge badge-pill btn-warning p-2" (click)="resetForm(true)"
+            data-balloon=" Reset Form" data-balloon-pos="left">
             <i class="fas fa-redo-alt text-white"></i>
           </a>
         </div>

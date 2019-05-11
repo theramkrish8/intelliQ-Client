@@ -1,148 +1,4 @@
-<div class="row" class="feature-content" style="margin-top:30px;">
-
-  <div class="col-xs-12">
-    <ul class="nav nav-tabs">
-      <li role="presentation" [ngClass]="{active:activeTab==='criteria',clickable:true}"><a
-          (click)="activeTab='criteria';setTemplateForm()">Criteria</a>
-      </li>
-      <li role="presentation" [ngClass]="{active:activeTab==='showPaper',clickable:true}"><a
-          (click)="activeTab='showPaper'">Question
-          Paper</a></li>
-    </ul>
-  </div>
-
-  <!--Criteria Tab-->
-  <div class="col-xs-12" style="margin-top:20px;">
-
-    <div *ngIf="templatesArray && activeTab=='criteria'">
-      <div class="form-group form-inline">
-        <label>Saved Templates:</label>
-        <select [disabled]="!templatesArray" class="form-control templatesArray" name="templates"
-          [(ngModel)]="selectedTemplateId" (ngModelChange)="fetchTemplate()">
-          <option value="" disabled selected>Select Template</option>
-          <option *ngFor="let template of templatesArray" [value]="template.templateId">{{template.tag}}</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="panel panel-primary" *ngIf="activeTab=='criteria'">
-      <div class="panel-heading">
-        <i (click)="resetTemplateForm()" class="fa fa-undo pull-left clickable" aria-hidden="true"></i>
-        <i (click)="showModalForm('template')" class="fa fa-floppy-o pull-right clickable" aria-hidden="true"></i>
-        <h4 class="panel-title">Question Criteria</h4>
-      </div>
-
-      <form #criteriaForm="ngForm">
-        <div class="panel-body col-xs-offset-4">
-
-          <div class="form-group form-inline row">
-            <label for="std" class="col-xs-3">Standard</label>
-            <select (change)="selectedSubject=null" class="form-control col-xs-3" [(ngModel)]="selectedStd" name="std">
-              <option [ngValue]="-1" disabled selected>Select Standard</option>
-              <option *ngFor="let standard of standards" [ngValue]="standard.std">{{standard.std}}</option>
-            </select>
-          </div>
-
-          <div class="form-group form-inline row">
-            <label class="col-xs-3">Subject</label>
-            <select [disabled]="selectedStd===-1" class="form-control col-xs-3" [(ngModel)]="selectedSubject"
-              name="selectedSubject">
-              <option [ngValue]="null" disabled selected>Select Subject</option>
-              <option *ngFor="let subject of stdSubjectMap.get(selectedStd)" [ngValue]="subject">{{subject.title}}
-              </option>
-            </select>
-          </div>
-
-          <div *ngIf="selectedSubject">
-
-            <div class="form-group form-inline row">
-              <label class="col-xs-3">Sets</label>
-              <select class="form-control col-xs-3" [(ngModel)]="sets" name="sets">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-              </select>
-            </div>
-
-            <div class="form-group form-inline row">
-              <label for="marks" class="col-xs-3">Total Marks</label>
-              <input type="number" name="marks" [(ngModel)]="totalMarks" class="form-control col-xs-3" #marks="ngModel"
-                required min="0" max="1000">
-              <div *ngIf="marks.invalid && (marks.dirty || marks.touched)" class="invalid-feedback">
-                <div *ngIf="marks.errors.required">
-                  Total Marks are required.
-                </div>
-
-              </div>
-            </div>
-
-            <div class="form-group form-inline row">
-              <label for="sTopics" class="col-xs-3">Topics</label>
-              <select multiple class="form-control col-xs-3" [(ngModel)]="topics" name="sTopics" #sTopics="ngModel"
-                required>
-                <option *ngFor="let topic of subjectMap.get(selectedSubject.title).topics" [ngValue]="topic">
-                  {{topic}}
-                </option>
-              </select>
-              <div *ngIf="sTopics.touched && sTopics.pristine" class="invalid-feedback">
-                At least 1 topic is required
-              </div>
-            </div>
-
-            <div class="row">
-              <label class="col-xs-3">Difficulty %</label>
-              <div class="col-xs-3">
-                <div class="form-group form-inline row" *ngFor="let level of difficultyLevels">
-                  <div class="col-xs-2">
-                    <label>{{level.type}}</label>
-                    <input type="checkbox" [(ngModel)]="level.checked" name="{{'diffCb_'+level.type}}">
-                  </div>
-                  <div class="col-xs-10">
-                    <input type="number" placeholder="10 - 100%" [disabled]="!level.checked" class="form-control"
-                      [(ngModel)]="level.diffPercent" name="{{'diffPercent_'+level.type}}" min="0" max="100">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group form-inline row">
-              <label for="sections" class="col-xs-3">Sections</label>
-              <select multiple class="form-control col-xs-3" [(ngModel)]="selectedSections" name="sections"
-                #sections="ngModel" required>
-                <option *ngFor="let section of allSections" [value]="section">{{section.type}}</option>
-              </select>
-              <div *ngIf="sections.touched && sections.pristine" class="invalid-feedback">
-                At least 1 section is required
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-xs-3" *ngFor="let section of selectedSections">
-                <div [ngClass]="utilityService.getClassForSection(section.type)">
-                  <div class="panel-heading">{{section.type}}</div>
-                  <div class="panel-body">
-                    <input placeholder="Total Questions" type="number" name="{{'count_' + section.type}}"
-                      class="form-control" [(ngModel)]="section.totalQues" min="0" max="100">
-                    <input placeholder="Marks" type="number" name="{{'marks_' + section.type}}" class="form-control"
-                      [(ngModel)]="section.marks" min="0" max="100">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="panel-footer">
-          <button [disabled]="!criteriaForm.form.valid || selectedSubject === null" (click)="generatePaper()"
-            class="btn btn-primary">Generate Paper</button>
-        </div>
-
-      </form>
-
-
-    </div>
-  </div>
+<div hidden class="row" class="feature-content main-content">
 
 
   <!--Show Paper Tab-->
@@ -202,79 +58,534 @@
 
 
 
-  <!-- Modal Tag Description -->
-  <div [ngClass]="{'fade':!showModal,'show':showModal}" class="modal" role="dialog">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"
-            (click)="modalTag='';showModal=false;">&times;</button>
-          <h4 class="modal-title">Info</h4>
-        </div>
-        <div class="modal-body">
-          <input type="text" [(ngModel)]="modalTag" class="form-control" placeholder="Enter Name">
-        </div>
-        <div class="modal-footer">
-          <button [disabled]="!modalTag" class="btn btn-success" data-dismiss="modal" (click)="saveData()">Save</button>
+</div>
+
+<div class="main-content container-fluid">
+  <div class="feature-content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card feature-card">
+
+          <ul class="nav nav-pills">
+            <li class="nav-item">
+              <a class="nav-link active text-white" data-toggle="tab" href="#criteria"
+                (click)="activeTab='criteria';setTemplateForm()">Criteria</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" data-toggle="tab" href="#edit" (click)="activeTab='showPaper'">Question
+                Paper</a>
+            </li>
+
+          </ul>
+
+          <div class="tab-content feature-tab">
+
+            <!--Criteria Tab-->
+            <div id="criteria" class="tab-pane active">
+              <div class="row mt-3">
+                <div class="offset-md-1 col-md-2">
+                  <a class="badge badge-pill btn-warning p-2" data-balloon="Reset Form" data-balloon-pos="left">
+                    <i class="fas fa-redo-alt text-white" (click)="resetTemplateForm()"></i>
+                  </a>
+                </div>
+                <div class="offset-md-1 col-md-6" *ngIf="templatesArray && activeTab=='criteria'">
+                  <div class="form-group form-inline">
+                    <label for="templates">Saved Templates:</label>
+                    <div class="input-group ml-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-graduation-cap"></i>
+                        </span>
+                      </div>
+                      <select [disabled]="!templatesArray" class="form-control custom-select" name="templates"
+                        [(ngModel)]="selectedTemplateId" (ngModelChange)="fetchTemplate()" id="templates">
+                        <option value="" disabled selected>Select Template</option>
+                        <option *ngFor="let template of templatesArray" [value]="template.templateId">{{template.tag}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <a class="badge badge-pill btn-danger p-2" data-balloon="Remove Template" data-balloon-pos="left">
+                    <i class="fas fa-trash-alt text-white"></i>
+                  </a>
+                </div>
+              </div>
+              <hr>
+              <form *ngIf="activeTab=='criteria'" #criteriaForm="ngForm" autocomplete="off">
+
+                <!-- Std-Subjects -->
+                <div class="row">
+
+                  <div class="offset-md-1 col-md-4">
+                    <div class="form-group">
+                      <label for="std">Standard:</label>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="fas fa-graduation-cap"></i>
+                          </span>
+                        </div>
+                        <select (change)="selectedSubject=null;chapters=[];" class="form-control custom-select"
+                          [(ngModel)]="selectedStd" name="std" id="std">
+                          <option [ngValue]="-1" disabled selected>Select Standard</option>
+                          <option *ngFor="let standard of standards" [ngValue]="standard.std">{{standard.std}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="offset-md-1 col-md-4">
+                    <div class="form-group">
+                      <label for="subject">Subject:</label>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="fas fa-book"></i>
+                          </span>
+                        </div>
+                        <select [disabled]="selectedStd===-1" class="form-control custom-select" id="subject"
+                          [(ngModel)]="selectedSubject" name="selectedSubject" (change)="onSubjectChanged()">
+                          <option [ngValue]="null" disabled selected>Select Subject</option>
+                          <option *ngFor="let subject of stdSubjectMap.get(selectedStd)" [ngValue]="subject">
+                            {{subject.title}}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <fieldset [disabled]="!selectedSubject">
+
+                  <div class="row">
+                    <div class="offset-md-1 col-md-4">
+                      <div class="form-group">
+                        <label for="sets">Sets:</label>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fas fa-box"></i>
+                            </span>
+                          </div>
+                          <select class="form-control custom-select" id="sets" [(ngModel)]="sets" name="sets">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                          </select>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="offset-md-1 col-md-4">
+                      <div class="form-group">
+                        <label for="total">Total marks:</label>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fas fa-box"></i>
+                            </span>
+                          </div>
+                          <input type="number" name="marks" [(ngModel)]="totalMarks" class="form-control"
+                            #marks="ngModel" required min="0" max="1000" id="total" placeholder="Marks">
+                          <div *ngIf="marks.invalid && (marks.dirty || marks.touched)" class="invalid-feedback">
+                            <div *ngIf="marks.errors.required">
+                              Total Marks are required.
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="offset-md-1 col-md-4">
+                      <div class="form-group">
+                        <label for="chapters">Chapters:</label>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fas fa-bookmark"></i>
+                            </span>
+                          </div>
+                          <input type="text" class="form-control" placeholder="Chapters" id="chapters" name="chapters"
+                            [typeahead]="chapterSuggestions" (typeaheadOnSelect)="addChapter($event)"
+                            [(ngModel)]="chapterTxt" (blur)="chapterTxt=''">
+
+                        </div>
+                      </div>
+
+
+
+                    </div>
+
+                    <div class="offset-md-1 col-md-5 mt-3 text-white scroll-control">
+
+                      <span class="badge bg-dark text-white mr-1" *ngFor="let chapter of chapters">{{chapter}}<i
+                          (click)="removeChapter(chapter)" class="fas fa-times clickable ml-1"></i></span>
+
+                    </div>
+
+
+                  </div>
+
+                  <div class="row">
+
+                    <div class="offset-md-1 col-md-4">
+                      <div class="form-group">
+                        <label for="section">Sections:</label>
+                        <div>
+
+                          <div class="custom-control custom-checkbox custom-control-inline"
+                            *ngFor="let section of allSections">
+                            <input type="checkbox" class="custom-control-input" [(ngModel)]="section.checked"
+                              name="{{'sec_'+section.type}}" id="{{'secId_'+section.type}}">
+                            <label class="custom-control-label" for="{{'secId_'+section.type}}">{{section.type}}</label>
+                          </div>
+
+
+
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="offset-md-1 col-md-4">
+                      <div class="form-group">
+                        <label for="difficulty">Difficulty:</label>
+                        <div>
+
+                          <div class="custom-control custom-checkbox  custom-control-inline"
+                            *ngFor="let level of difficultyLevels">
+                            <input type="checkbox" class="custom-control-input" [(ngModel)]="level.checked"
+                              name="{{'diffCb_'+level.type}}" id="{{'diffId_'+level.type}}">
+                            <label class="custom-control-label" for="{{'diffId_'+level.type}}">{{level.type}}</label>
+                          </div>
+
+
+
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+                    <!-- SECTION INPUT -->
+                    <div class="offset-md-1 col-md-4">
+                      <div class="table-responsive">
+                        <table class="table table-dark table-hover rounded-lg">
+                          <thead style="color: #ffc107;font-style: italic;" class="text-center">
+                            <tr>
+                              <th>Section</th>
+                              <th>Questions</th>
+                              <th>Marks</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+
+                            <tr *ngFor="let section of allSections">
+                              <td *ngIf="section.checked" class="text-center">{{section.type}}</td>
+
+                              <td *ngIf="section.checked"><input placeholder="Total Questions" type="number"
+                                  name="{{'count_' + section.type}}" class="table-input" [(ngModel)]="section.totalQues"
+                                  min="0" max="100"></td>
+
+                              <td *ngIf="section.checked"> <input placeholder="Marks" type="number"
+                                  name="{{'marks_' + section.type}}" class="table-input" [(ngModel)]="section.marks"
+                                  min="0" max="100"></td>
+
+                            </tr>
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- DIFFICULTY INPUT -->
+                    <div class="offset-md-1 col-md-4">
+                      <div class="table-responsive">
+                        <table class="table table-dark table-hover rounded-lg">
+                          <thead style="color: #ffc107;font-style: italic;" class="text-center">
+                            <tr>
+                              <th>Difficulty</th>
+                              <th>Percent %</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let level of difficultyLevels">
+                              <td *ngIf="level.checked" class="text-center">{{level.type}}</td>
+                              <td *ngIf="level.checked">
+                                <input type="number" placeholder="10 - 100%" [disabled]="!level.checked"
+                                  class="table-input" [(ngModel)]="level.diffPercent"
+                                  name="{{'diffPercent_'+level.type}}" min="0" max="100">
+
+                              </td>
+                            </tr>
+
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                  </div>
+                  <hr>
+                  <div class="row mb-3">
+                    <div class="offset-md-3 col-md-3">
+                      <button class="btn bg-blue text-white" (click)="showModalForm('template')" data-toggle="modal"
+                        data-target="#titleModal"> <i class="fas fa-save pr-2"></i>Save Template</button>
+                    </div>
+                    <div class="offset-md-1 col-md-3">
+                      <button class="btn bg-new text-white"
+                        [disabled]="!criteriaForm.form.valid || selectedSubject === null || chapters.length === 0"
+                        (click)="generatePaper()"> <i class="fas fa-cogs pr-2"></i>Generate Paper</button>
+                    </div>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+
+            <div id="edit" class="tab-pane ml-3 mt-3">
+              <div class="row mt-3">
+                <div class="offset-md-4 col-md-6">
+                  <div class="form-group form-inline">
+                    <label for="drafts">Saved Drafts:</label>
+                    <div class="input-group ml-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="fas fa-graduation-cap"></i>
+                        </span>
+                      </div>
+                      <select class="form-control custom-select" id="drafts">
+                        <option disabled>Select Drafts</option>
+                        <option>Draft 1</option>
+                        <option>Draft 2</option>
+                        <option>Draft 3</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="offset-md-1 col-md-1">
+                  <a class="badge badge-pill btn-danger p-2" data-balloon="Remove Draft" data-balloon-pos="left">
+                    <i class="fas fa-trash-alt text-white"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="row mt-3">
+                <div class="col-md-12">
+                  <h4><span>Objective</span></h4>
+                </div>
+              </div>
+              <hr>
+              <div class="row mb-3 question-item">
+                <div class="col-md-1">
+                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
+                    data-balloon-pos="right">
+                    <i class="fas fa-exchange-alt text-white"></i>
+                  </span>
+                  <span class="badge badge-pill btn-secondary hidden-control" data-balloon="Edit question"
+                    data-balloon-pos="right">
+                    <i class="fas fa-pencil-alt text-white"></i>
+                  </span>
+                </div>
+                <div class="col-md-10">
+                  <span>Identify the parts of brain in below image :</span>
+                  <div class="text-center"><img src="images/brain.png" class="rounded-lg" width="300" height="200">
+                  </div>
+                </div>
+                <div class="col-md-1">
+                  <span class="badge bg-dark text-white p-1">1</span>
+                </div>
+              </div>
+
+              <div class="row mb-3 question-item">
+                <div class="col-md-1">
+                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
+                    data-balloon-pos="right">
+                    <i class="fas fa-exchange-alt text-white"></i>
+                  </span>
+                </div>
+                <div class="col-md-10">
+                  <span>What is known as "Power house of cell" ?</span>
+                </div>
+                <div class="col-md-1">
+                  <span class="badge bg-dark text-white p-1">1</span>
+                </div>
+              </div>
+
+              <div class="row mb-3 question-item">
+                <div class="col-md-1">
+                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
+                    data-balloon-pos="right">
+                    <i class="fas fa-exchange-alt text-white"></i>
+                  </span>
+                </div>
+                <div class="col-md-10">
+                  <span>Which organ has double-layered membrane ?</span>
+                </div>
+                <div class="col-md-1">
+                  <span class="badge bg-dark text-white p-1">1</span>
+                </div>
+              </div>
+
+              <div class="row mt-3 ">
+                <div class="col-md-12">
+                  <h4><span>Short</span></h4>
+                </div>
+              </div>
+              <hr>
+              <div class="row mb-3 question-item">
+                <div class="col-md-1">
+                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
+                    data-balloon-pos="right">
+                    <i class="fas fa-exchange-alt text-white"></i>
+                  </span>
+                </div>
+                <div class="col-md-10">
+                  <span>Explain about kidney ?</span>
+                </div>
+                <div class="col-md-1">
+                  <span class="badge bg-dark text-white p-1">2</span>
+                </div>
+              </div>
+
+              <div class="row mb-3 question-item">
+                <div class="col-md-1">
+                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
+                    data-balloon-pos="right">
+                    <i class="fas fa-exchange-alt text-white"></i>
+                  </span>
+                </div>
+                <div class="col-md-10">
+                  <span>Give details of nephron in short using below diagram.</span>
+                  <div class="text-center"><img src="images/nephron.jpg" class="rounded-lg" width="300" height="200">
+                  </div>
+                </div>
+                <div class="col-md-1">
+                  <span class="badge bg-dark text-white p-1">2</span>
+                </div>
+              </div>
+
+              <div class="row mb-3 question-item">
+                <div class="col-md-1">
+                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
+                    data-balloon-pos="right">
+                    <i class="fas fa-exchange-alt text-white"></i>
+                  </span>
+                  <span class="badge badge-pill btn-secondary hidden-control" data-balloon="Edit question"
+                    data-balloon-pos="right">
+                    <i class="fas fa-pencil-alt text-white"></i>
+                  </span>
+
+                </div>
+                <div class="col-md-10">
+                  <span>Where is medula oblongata situated ?</span>
+                </div>
+                <div class="col-md-1">
+                  <span class="badge bg-dark text-white p-1">2</span>
+                </div>
+              </div>
+
+              <hr>
+              <div class="row mb-3 mt-3">
+                <div class="offset-md-3 col-md-3">
+                  <button class="btn bg-blue text-white"> <i class="fas fa-save pr-2"></i>Save As Draft</button>
+                </div>
+                <div class="offset-md-1 col-md-3">
+                  <button class="btn bg-new text-white"> <i class="fas fa-cogs pr-2"></i>Finalize Paper</button>
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
+
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Modal Replace Question -->
-  <div [ngClass]="{'fade':!showReplaceModal,'show':showReplaceModal}" class="modal" role="dialog">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" (click)="showReplaceModal=false;">&times;</button>
-          <h4 class="modal-title">Replace Question Criteria</h4>
+
+<!-- Modal Tag Save Description -->
+<div class="modal fade" id="titleModal">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content compareModalBox">
+      <div class="modal-header text-white">
+        <h4 class="modal-title" style="margin-left:45%">Title</h4>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="card question-card text-center">
+          <div class="card-body">
+            <input type="text" [(ngModel)]="modalTag" class="form-control modal-input" placeholder="Title">
+          </div>
         </div>
-        <div class="modal-body" *ngIf="showReplaceModal">
+        <button [disabled]="!modalTag" class="btn btn-block bg-new text-white" data-dismiss="modal"
+          (click)="saveData()">Save</button>
+      </div>
 
-          <div class="form-group form-inline row">
-            <label class="col-xs-6">Topic</label>
-            <select class="form-control col-xs-6" [(ngModel)]="questionToReplace.topic">
-              <option disabled value="">Select Topic</option>
-              <option *ngFor="let topic of subjectMap.get(questionToReplace.subject).topics" [ngValue]="topic">
-                {{topic}}
-              </option>
-            </select>
-          </div>
-          <div class="form-group form-inline row">
-            <label class="col-xs-6">Tags</label>
-            <select multiple class="form-control col-xs-6" [(ngModel)]="questionToReplace.tags">
-              <option *ngFor="let tag of subjectMap.get(questionToReplace.subject).tags" [ngValue]="tag">
-                {{tag}}
-              </option>
-            </select>
-          </div>
-          <div class="form-group form-inline row">
-            <label class="col-xs-6">Difficulty</label>
-            <select class="form-control col-xs-6" [(ngModel)]="questionToReplace.difficulty.level">
-              <option *ngFor="let level of difficultyLevels" [ngValue]="utilityService.getDifficultyEnum(level.type)">
-                {{level.type}}
-              </option>
-            </select>
-          </div>
-          <div class="form-group form-inline row" *ngIf="questions.length>0">
-            <label class="col-xs-6">Questions</label>
-            <select class="form-control col-xs-6" [(ngModel)]="selectedReplacement">
-              <option disabled value="null">Select Question</option>
-              <option *ngFor="let question of questions" [ngValue]="question">
-                {{question.title}}
-              </option>
-            </select>
-          </div>
+    </div>
+  </div>
+</div>
 
+
+
+<!-- Modal Replace Question -->
+<div [ngClass]="{'fade':!showReplaceModal,'show':showReplaceModal}" class="modal" role="dialog">
+  <div class="modal-dialog modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" (click)="showReplaceModal=false;">&times;</button>
+        <h4 class="modal-title">Replace Question Criteria</h4>
+      </div>
+      <div class="modal-body" *ngIf="showReplaceModal">
+
+        <div class="form-group form-inline row">
+          <label class="col-xs-6">Topic</label>
+          <select class="form-control col-xs-6" [(ngModel)]="questionToReplace.topic">
+            <option disabled value="">Select Topic</option>
+            <option *ngFor="let topic of subjectMap.get(questionToReplace.subject).topics" [ngValue]="topic">
+              {{topic}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group form-inline row">
+          <label class="col-xs-6">Tags</label>
+          <select multiple class="form-control col-xs-6" [(ngModel)]="questionToReplace.tags">
+            <option *ngFor="let tag of subjectMap.get(questionToReplace.subject).tags" [ngValue]="tag">
+              {{tag}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group form-inline row">
+          <label class="col-xs-6">Difficulty</label>
+          <select class="form-control col-xs-6" [(ngModel)]="questionToReplace.difficulty.level">
+            <option *ngFor="let level of difficultyLevels" [ngValue]="utilityService.getDifficultyEnum(level.type)">
+              {{level.type}}
+            </option>
+          </select>
+        </div>
+        <div class="form-group form-inline row" *ngIf="questions.length>0">
+          <label class="col-xs-6">Questions</label>
+          <select class="form-control col-xs-6" [(ngModel)]="selectedReplacement">
+            <option disabled value="null">Select Question</option>
+            <option *ngFor="let question of questions" [ngValue]="question">
+              {{question.title}}
+            </option>
+          </select>
         </div>
 
-        <div class="modal-footer">
-          <button class="btn btn-success" data-dismiss="modal" (click)="replaceQuestion()">
-            {{selectedReplacement?'Replace Question':'Find Questions'}}</button>
-        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success" data-dismiss="modal" (click)="replaceQuestion()">
+          {{selectedReplacement?'Replace Question':'Find Questions'}}</button>
       </div>
     </div>
   </div>
-
-
 </div>

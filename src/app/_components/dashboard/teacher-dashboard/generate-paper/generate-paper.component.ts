@@ -70,21 +70,24 @@ export class GeneratePaperComponent implements OnInit {
 	questions: Question[] = [];
 	selectedReplacement: Question = null;
 	difficultyLevels = [
-		{ type: 'EASY', checked: false, diffPercent: null },
-		{ type: 'MEDIUM', checked: false, diffPercent: null },
-		{ type: 'HARD', checked: false, diffPercent: null }
+		{ type: 'Easy', checked: false, diffPercent: null },
+		{ type: 'Medium', checked: false, diffPercent: null },
+		{ type: 'Hard', checked: false, diffPercent: null }
 	];
 	allSections = [
-		{ type: 'OBJECTIVE', totalQues: null, marks: null },
-		{ type: 'SHORT', totalQues: null, marks: null },
-		{ type: 'BRIEF', totalQues: null, marks: null },
-		{ type: 'LONG', totalQues: null, marks: null }
+		{ type: 'Objective', checked: false, totalQues: null, marks: null },
+		{ type: 'Short', checked: false, totalQues: null, marks: null },
+		{ type: 'Brief', checked: false, totalQues: null, marks: null },
+		{ type: 'Long', checked: false, totalQues: null, marks: null }
 	];
-	topics: string[];
+	chapterTxt = '';
+	chapters: string[] = [];
+	chapterSuggestions: string[];
 	currSet: QuestionPaperDto;
 	queCriteria: QuestionCriteria;
 	testPaperStatus = 'draft';
 	replaceCriteriaModel: { type: string; totalQues: number; marks: number };
+	chaptersSuggestions: string[];
 
 	constructor(
 		private notificationService: NotificationService,
@@ -130,7 +133,7 @@ export class GeneratePaperComponent implements OnInit {
 	}
 
 	generatePaper() {
-		if (!this.createQuestionCriteria(true)) {
+		if (!this.createQuestionCriteria()) {
 			return;
 		}
 		this.questionPaperService
@@ -161,7 +164,8 @@ export class GeneratePaperComponent implements OnInit {
 				this.activeSet = 1;
 			});
 	}
-	createQuestionCriteria(generatePaper: boolean) {
+
+	createQuestionCriteria() {
 		var errorMsg = '';
 
 		this.queCriteria = new QuestionCriteria(
@@ -172,39 +176,40 @@ export class GeneratePaperComponent implements OnInit {
 		);
 		this.queCriteria.sets = Number(this.sets);
 		this.queCriteria.totalMarks = this.totalMarks;
-		this.queCriteria.topics = this.topics ? this.topics.sort() : [];
+		this.queCriteria.topics = this.chapters ? this.chapters.sort() : [];
 		this.queCriteria.length = [];
-		if (this.selectedSections) {
-			this.selectedSections.forEach((section) => {
-				if (generatePaper) {
-					if (section.totalQues === null || section.totalQues < 1) {
-						errorMsg = 'Question count should be atleast 1 for ' + section.type;
-						return;
-					}
-					if (section.marks === null || section.marks < 1) {
-						errorMsg = 'Marks should be atleast 1 for ' + section.type;
-						return;
-					}
+		this.allSections.forEach((section) => {
+			if (section.checked) {
+				if (section.totalQues === null || section.totalQues < 1) {
+					errorMsg = 'Question count should be atleast 1 for ' + section.type;
+					return;
+				}
+				if (section.marks === null || section.marks < 1) {
+					errorMsg = 'Marks should be atleast 1 for ' + section.type;
+					return;
 				}
 				var sec = new QuesLength();
 				sec.type = this.utilityService.getSectionEnum(section.type);
 				sec.count = section.totalQues;
 				sec.marks = section.marks;
 				this.queCriteria.length.push(sec);
-			});
-		}
+			}
+		});
 		if (errorMsg.length > 0) {
 			alert(errorMsg);
 			return false;
 		}
+		if (this.queCriteria.length.length === 0) {
+			alert('Select atleast 1 Section');
+			return false;
+		}
+
 		this.queCriteria.difficulty = [];
 		this.difficultyLevels.forEach((level) => {
 			if (level.checked) {
-				if (generatePaper) {
-					if (level.diffPercent === null || level.diffPercent < 10) {
-						errorMsg = 'Diffculty percent must be atleast 10% for ' + level.type;
-						return;
-					}
+				if (level.diffPercent === null || level.diffPercent < 10) {
+					errorMsg = 'Diffculty percent must be atleast 10% for ' + level.type;
+					return;
 				}
 				var lvl = new QuesDifficulty();
 				lvl.level = this.utilityService.getDifficultyEnum(level.type);
@@ -216,11 +221,10 @@ export class GeneratePaperComponent implements OnInit {
 			alert(errorMsg);
 			return false;
 		}
-		if (generatePaper) {
-			if (this.queCriteria.difficulty.length === 0) {
-				alert('Select atleast 1 Difficulty Level');
-				return false;
-			}
+
+		if (this.queCriteria.difficulty.length === 0) {
+			alert('Select atleast 1 Difficulty Level');
+			return false;
 		}
 		return true;
 	}
@@ -346,6 +350,7 @@ export class GeneratePaperComponent implements OnInit {
 				this.setTemplateForm();
 			});
 	}
+
 	setTemplateForm() {
 		var template = this.loadedTemplate;
 		if (template) {
@@ -355,8 +360,9 @@ export class GeneratePaperComponent implements OnInit {
 				.find((x) => x.title === template.criteria.subject);
 			this.sets = template.criteria.sets;
 			this.totalMarks = template.criteria.totalMarks;
-			this.topics = template.criteria.topics;
+			this.chapters = template.criteria.topics;
 			this.selectedSections = [];
+
 			template.criteria.length.forEach((section: QuesLength) => {
 				this.selectedSections.push({
 					type: this.utilityService.getSectionDesc(section.type),
@@ -366,32 +372,38 @@ export class GeneratePaperComponent implements OnInit {
 			});
 
 			this.difficultyLevels = [
-				{ type: 'EASY', checked: false, diffPercent: null },
-				{ type: 'MEDIUM', checked: false, diffPercent: null },
-				{ type: 'HARD', checked: false, diffPercent: null }
+				{ type: 'Easy', checked: false, diffPercent: null },
+				{ type: 'Medium', checked: false, diffPercent: null },
+				{ type: 'Hard', checked: false, diffPercent: null }
 			];
 			template.criteria.difficulty.forEach((difficulty: QuesDifficulty) => {
 				this.difficultyLevels[difficulty.level].checked = true;
 				this.difficultyLevels[difficulty.level].diffPercent = difficulty.percent;
 			});
+
 			this.allSections = [
-				{ type: 'OBJECTIVE', totalQues: null, marks: null },
-				{ type: 'SHORT', totalQues: null, marks: null },
-				{ type: 'BRIEF', totalQues: null, marks: null },
-				{ type: 'LONG', totalQues: null, marks: null }
+				{ type: 'Objective', checked: false, totalQues: null, marks: null },
+				{ type: 'Short', checked: false, totalQues: null, marks: null },
+				{ type: 'Brief', checked: false, totalQues: null, marks: null },
+				{ type: 'Long', checked: false, totalQues: null, marks: null }
 			];
-			this.selectedSections.forEach((section) => {
-				var index = this.allSections.findIndex((x) => x.type === section.type);
-				this.allSections[index] = section;
+			template.criteria.length.forEach((section: QuesLength) => {
+				this.allSections[section.type].checked = true;
+				this.allSections[section.type].totalQues = section.count;
+				this.allSections[section.type].marks = section.marks;
 			});
+
+			this.chapterSuggestions = this.selectedSubject
+				? this.subjectMap.get(this.selectedSubject.title).topics
+				: [];
 		}
 	}
 	resetTemplateForm() {
 		this.allSections = [
-			{ type: 'OBJECTIVE', totalQues: null, marks: null },
-			{ type: 'SHORT', totalQues: null, marks: null },
-			{ type: 'BRIEF', totalQues: null, marks: null },
-			{ type: 'LONG', totalQues: null, marks: null }
+			{ type: 'OBJECTIVE', checked: false, totalQues: null, marks: null },
+			{ type: 'SHORT', checked: false, totalQues: null, marks: null },
+			{ type: 'BRIEF', checked: false, totalQues: null, marks: null },
+			{ type: 'LONG', checked: false, totalQues: null, marks: null }
 		];
 		this.difficultyLevels = [
 			{ type: 'EASY', checked: false, diffPercent: null },
@@ -405,7 +417,7 @@ export class GeneratePaperComponent implements OnInit {
 		this.sets = 1;
 		this.totalMarks = null;
 		this.selectedSections = [];
-		this.topics = [];
+		this.chapters = [];
 		this.queCriteria = null;
 	}
 	replaceClicked(pIndex: number, cIndex: number, question: Question) {
@@ -473,6 +485,21 @@ export class GeneratePaperComponent implements OnInit {
 		} else {
 			this.modalTag = this.loadedDraft ? this.loadedDraft.tag : '';
 		}
-		this.showModal = true;
+	}
+
+	addChapter(event) {
+		if (event.item) {
+			this.chapters.push(event.item);
+			this.chapterSuggestions = this.chapterSuggestions.filter((x) => x !== event.item);
+			this.chapterTxt = '';
+		}
+	}
+	removeChapter(chapter: string) {
+		this.chapters = this.chapters.filter((x) => x !== chapter);
+		this.chapterSuggestions.push(chapter);
+	}
+	onSubjectChanged() {
+		this.chapterSuggestions = this.selectedSubject ? this.subjectMap.get(this.selectedSubject.title).topics : [];
+		this.chapters = [];
 	}
 }

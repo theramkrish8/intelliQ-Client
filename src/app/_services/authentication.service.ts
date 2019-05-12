@@ -34,12 +34,12 @@ export class AuthenticationService implements OnInit {
 	}
 
 	persistUser(user: User) {
-		this.localStorageService.addItemsToLocalStorage([ 'user' ], [ JSON.stringify(user) ]);
+		this.localStorageService.addItemToLocalStorage('user', user);
 		this.userService.userDetailsUpdated.next(user);
 	}
 
 	logout(redirectToLogin: boolean) {
-		this.localStorageService.removeItemsFromLocalStorage([ 'user', 'group', 'school' ]);
+		this.localStorageService.removeItemFromLocalStorage('user');
 		this.userService.userDetailsUpdated.next(null);
 
 		this.userService.logout();
@@ -62,7 +62,7 @@ export class AuthenticationService implements OnInit {
 				}
 			} else if (appResponse.status === ResponseStatus.FORBIDDEN) {
 				// this.notificationService.showErrorWithTimeout(appResponse.msg, null, 2000);
-				this.localStorageService.removeItemsFromLocalStorage([ 'user', 'group', 'school' ]);
+				this.localStorageService.removeItemFromLocalStorage('user');
 				this.router.navigate([ '/login' ]);
 			}
 		});

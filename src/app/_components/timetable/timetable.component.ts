@@ -36,7 +36,7 @@ export class TimetableComponent implements OnInit {
 		user.days = this.user.days;
 		this.userService.updateUserSchedule(user).subscribe((response) => {
 			if (response) {
-				this.localStorageService.addItemsToLocalStorage([ 'user' ], [ JSON.stringify(this.user) ]);
+				this.localStorageService.addItemToLocalStorage('user', this.user);
 			}
 		});
 	}

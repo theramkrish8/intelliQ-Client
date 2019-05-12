@@ -12,7 +12,7 @@
     <div *ngIf="adminType">
 
       <div *ngIf="adminType=='schoolAdmin'">
-        <form>
+        <form autocomplete="off">
           <div class="form-group">
             <input [disabled]="selectedSchool" type="text" class="form-control text-uppercase" placeholder="School Code"
               [(ngModel)]="schoolCode" #sCode="ngModel" name="sCode" required pattern="[A-Za-z0-9_]*">
@@ -72,7 +72,7 @@
       </div>
 
       <div *ngIf="adminType=='groupAdmin'">
-        <form>
+        <form autocomplete="off">
           <div class="form-group">
             <input [disabled]="selectedGroup" type="text" class="form-control text-uppercase" placeholder="Group Code"
               [(ngModel)]="groupCode" name="groupcode" #groupcode="ngModel" minlength="4" required

@@ -37,8 +37,8 @@ export class GroupSchoolsComponent implements OnInit {
 		}
 
 		this.schoolService.getSchoolBySchoolCode(this.schoolCode).subscribe((school: School) => {
+			this.schools = [];
 			if (school) {
-				this.schools = [];
 				this.schools.push(school);
 			} else {
 				this.notificationService.showErrorWithTimeout('No school found with given code!', null, 2000);

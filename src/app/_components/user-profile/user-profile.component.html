@@ -59,7 +59,7 @@
           <div id="bio" class="container tab-pane active">
             <div class="row">
               <div class="col-md-6 offset-md-3">
-                <form #profileForm="ngForm" (ngSubmit)="updateUser();">
+                <form autocomplete="off" #profileForm="ngForm" (ngSubmit)="updateUser();">
 
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -142,7 +142,8 @@
           <div id="mobile" class="container tab-pane fade">
             <div class="row">
               <div class="col-md-6 offset-md-3">
-                <form #mobileForm="ngForm" (ngSubmit)="generateOtp();" [appMustMatch]="['cMobile', 'nMobile','NO']">
+                <form autocomplete="off" #mobileForm="ngForm" (ngSubmit)="generateOtp();"
+                  [appMustMatch]="['cMobile', 'nMobile','NO']">
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text bg-dark text-white">
@@ -189,7 +190,7 @@
           <div id="password" class="container tab-pane fade">
             <div class="row">
               <div class="col-md-6 offset-md-3">
-                <form #pwdForm="ngForm" (ngSubmit)="updatePassword(pwdForm);"
+                <form autocomplete="off" #pwdForm="ngForm" (ngSubmit)="updatePassword(pwdForm);"
                   [appMustMatch]="['newPwd', 'confirmPwd','YES']">
 
                   <div class="input-group mb-3">
@@ -322,7 +323,7 @@
         <!-- Modal body -->
         <div class="modal-body mx-auto">
 
-          <form class="form-inline ">
+          <form autocomplete="off" class="form-inline ">
 
             <div class="form-group font-weight-bold">
               <input type="text" name="otp1" [(ngModel)]="otp1" maxlength="1"

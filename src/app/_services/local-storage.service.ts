@@ -16,12 +16,6 @@ export class LocalStorageService {
 		localStorage.setItem(key, value);
 	}
 
-	addItemsToLocalStorage(keys: string[], values: string[]) {
-		for (var i = 0; i < keys.length; i++) {
-			localStorage.setItem(keys[i], values[i]);
-		}
-	}
-
 	getItemFromLocalStorage(key: string, convertToObject: boolean): any {
 		var value = localStorage.getItem(key);
 		if (value && convertToObject) {
@@ -32,11 +26,5 @@ export class LocalStorageService {
 
 	removeItemFromLocalStorage(key: string) {
 		localStorage.removeItem(key);
-	}
-
-	removeItemsFromLocalStorage(keys: string[]) {
-		for (var i = 0; i < keys.length; i++) {
-			localStorage.removeItem(keys[i]);
-		}
 	}
 }

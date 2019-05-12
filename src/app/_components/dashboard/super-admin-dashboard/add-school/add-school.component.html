@@ -1,7 +1,7 @@
 <div class="row feature-content main-content">
   <div class="col-xs-6 ">
     <h4>Add New School:</h4>
-    <form #addSchoolForm="ngForm">
+    <form autocomplete="off" #addSchoolForm="ngForm">
       <div class="form-group">
         <input type="text" required="true" [readonly]="selectedGroup" class="form-control text-uppercase"
           placeholder="Group Code" name="groupCode" [(ngModel)]="groupCode" minlength="4">

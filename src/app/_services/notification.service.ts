@@ -5,17 +5,19 @@ import { ToastrService } from 'ngx-toastr';
 export class NotificationService {
 	constructor(private toastr: ToastrService) {}
 
-	showSuccessWithTimeout(message, title, timespan) {
+	showSuccessWithTimeout(message: string, title: string, timespan: number) {
 		this.toastr.success(message, title, {
 			timeOut: timespan,
-			positionClass: 'toast-top-center'
+			positionClass: 'toast-top-center',
+			progressBar: true
 		});
 	}
 
 	showErrorWithTimeout(message: string, title: string, timespan: number) {
-		this.toastr.error(message, title, {
+		this.toastr.warning(message, title, {
 			timeOut: timespan,
-			positionClass: 'toast-top-center'
+			positionClass: 'toast-top-center',
+			progressBar: true
 		});
 	}
 }

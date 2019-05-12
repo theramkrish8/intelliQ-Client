@@ -7,7 +7,7 @@
     </div>
 
     <div class="card-body">
-      <form (ngSubmit)="onSubmit()">
+      <form autocomplete="off" (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label for="mobile">Mobile:</label>
           <input type="text" [(ngModel)]="mobile" name="mobile" id="mobile" maxlength="10" class="form-control" />
@@ -36,7 +36,7 @@
     </div>
 
     <div class="card-body">
-      <form>
+      <form autocomplete="off">
         <div class="form-group">
           <label for="fmobile">Mobile:</label>
           <input type="text" class="form-control" name="fmobile" id="fmobile">
@@ -67,7 +67,7 @@
           <span class="text-center text-white font-weight-lighter font-italic">
             <h3>OTP</h3>
           </span>
-          <form class="form-inline ">
+          <form autocomplete="off" class="form-inline ">
 
             <div class="form-group font-weight-bold">
               <input type="text" maxlength="1" class="border-otp  font-weight-bold  text-center" />

@@ -12,11 +12,6 @@ export class SchoolAdminDashboardComponent implements OnInit {
 	constructor(private localStorageService: LocalStorageService, private schoolService: SchoolService) {}
 
 	ngOnInit() {
-		this.localStorageService.removeItemFromLocalStorage('school');
-		this.schoolService
-			.getSchoolBySchoolCode(this.localStorageService.getCurrentUser().school.code)
-			.subscribe((school: School) => {
-				this.localStorageService.addItemToLocalStorage('school', school);
-			});
+		this.schoolService.getSchoolBySchoolCode(this.localStorageService.getCurrentUser().school.code).subscribe();
 	}
 }

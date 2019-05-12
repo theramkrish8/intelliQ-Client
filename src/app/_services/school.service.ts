@@ -4,13 +4,18 @@ import { Group } from '../_models/group.model';
 import { map } from 'rxjs/operators';
 import { AppResponse } from '../_dto/app-response.model';
 import { UtilityService } from './utility.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { School } from '../_models/school.model';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable()
 export class SchoolService {
-	constructor(private restService: RestService, private utilityService: UtilityService) {}
-	public schoolFetched = new Subject<School>();
+	constructor(
+		private restService: RestService,
+		private utilityService: UtilityService,
+		private localStorageService: LocalStorageService
+	) {}
+	public schoolFetched = new BehaviorSubject<School>(null);
 
 	addSchool(school: School) {
 		return this.restService.post('school/add', school).pipe(
@@ -32,7 +37,10 @@ export class SchoolService {
 				if (result === null) {
 					return null;
 				}
-				this.schoolFetched.next(result);
+				var school = result as School;
+				if (this.localStorageService.getCurrentUser().school.code === school.code) {
+					this.schoolFetched.next(result);
+				}
 				// process result if required and return same
 				return result;
 			})

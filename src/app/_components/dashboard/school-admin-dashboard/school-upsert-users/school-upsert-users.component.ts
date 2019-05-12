@@ -35,6 +35,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 	lastClickedStd = -1;
 	lastClickedSub = '';
 	isTeacher: boolean;
+	school: School;
 	constructor(
 		private utilityService: UtilityService,
 		private userService: UserService,
@@ -55,12 +56,12 @@ export class SchoolUpsertUsersComponent implements OnInit {
 				this.subjects = group.subjects;
 			}
 		});
-		var schoolLoc = this.localStorageService.getItemFromLocalStorage('school', true);
-		if (schoolLoc) {
-			this.stds = schoolLoc.stds;
-		}
+
 		this.schoolService.schoolFetched.subscribe((school: School) => {
-			this.stds = school.stds;
+			if (school) {
+				this.stds = school.stds;
+				this.school = school;
+			}
 		});
 		this.userService
 			.getUsersBySchoolIdAndRoleType(this.loggedUser.school.schoolId, RoleType.REVIEWER)
@@ -101,7 +102,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 				}
 			});
 		} else {
-			alert('Enter a valid mobile number');
+			this.notificationService.showErrorWithTimeout('Enter a valid mobile number', null, 2000);
 			this.mobileElem.nativeElement.focus();
 		}
 	}
@@ -200,7 +201,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 	}
 	addUser() {
 		if (!this.user.name) {
-			this.notificationService.showErrorWithTimeout('Please Enter Name ', null, 2000);
+			this.notificationService.showErrorWithTimeout('Please Enter Name', null, 2000);
 			return;
 		}
 
@@ -225,7 +226,7 @@ export class SchoolUpsertUsersComponent implements OnInit {
 			this.user.roles.push(newRole);
 		}
 
-		this.user.school = this.localStorageService.getItemFromLocalStorage('school', true);
+		this.user.school = this.school;
 		if (this.user.userId) {
 			this.userService.updateUser(this.user).subscribe((response) => {
 				if (response && this.user.userId === this.loggedUser.userId) {

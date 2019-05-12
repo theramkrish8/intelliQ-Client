@@ -66,8 +66,8 @@ export class ViewTeachersComponent implements OnInit {
 		this.userService
 			.getSchoolUserInfo(this.loggedInUser.school.schoolId, identifier, this.searchTerm)
 			.subscribe((user: User) => {
+				this.users = [];
 				if (user) {
-					this.users = [];
 					this.users.push(user);
 				} else {
 					this.notificationService.showErrorWithTimeout(

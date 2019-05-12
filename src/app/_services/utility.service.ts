@@ -157,13 +157,12 @@ export class UtilityService {
 				return 'Rejected';
 		}
 	}
-	
 
 	getAppResponse(appResponse: AppResponse, showError: boolean, showSuccess: boolean) {
 		var timeOut = 3000;
 		if (appResponse.status === ResponseStatus.FORBIDDEN && this.router.url !== '/login') {
 			this.notificationService.showErrorWithTimeout(appResponse.msg, null, timeOut);
-			this.localStorageService.removeItemsFromLocalStorage([ 'user', 'group', 'school' ]);
+			this.localStorageService.removeItemFromLocalStorage('user');
 			this.router.navigate([ '/login' ]);
 
 			return null;

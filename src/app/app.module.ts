@@ -109,7 +109,9 @@ import { SafePipe } from './_pipes/safe.pipe';
 		HttpModule,
 		HttpClientModule,
 		BrowserAnimationsModule,
-		ToastrModule.forRoot(),
+		ToastrModule.forRoot({
+			preventDuplicates: true
+		}),
 		AngularFontAwesomeModule,
 		NgxSpinnerModule,
 		QuillModule,

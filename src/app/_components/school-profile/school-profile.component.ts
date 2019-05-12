@@ -29,7 +29,7 @@ export class SchoolProfileComponent implements OnInit {
 		this.school.stds = this.convertContactToArray(this.school.stds, true);
 		this.schoolService.updateSchool(this.school).subscribe((response) => {
 			if (response) {
-				this.localStorageService.addItemToLocalStorage('school', this.school);
+				this.schoolService.schoolFetched.next(this.school);
 			}
 		});
 	}

@@ -44,7 +44,7 @@
           <div id="basic" class="container tab-pane active">
             <div class="row">
               <div class="col-md-6 offset-md-3">
-                <form #bioForm="ngForm" *ngIf="school" (ngSubmit)="updateSchool();">
+                <form autocomplete="off" #bioForm="ngForm" *ngIf="school" (ngSubmit)="updateSchool();">
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text bg-dark text-white">
@@ -100,7 +100,7 @@
             <div class="row">
               <div class="col-md-6 offset-md-3">
 
-                <form #addressForm="ngForm" *ngIf="school" (ngSubmit)="updateSchool();">
+                <form autocomplete="off" #addressForm="ngForm" *ngIf="school" (ngSubmit)="updateSchool();">
 
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
@@ -170,7 +170,7 @@
           <div id="contact" class="container tab-pane fade">
             <div class="row">
               <div class="col-md-6 offset-md-3">
-                <form #contactForm="ngForm" *ngIf="school" (ngSubmit)="updateSchool();">
+                <form autocomplete="off" #contactForm="ngForm" *ngIf="school" (ngSubmit)="updateSchool();">
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text bg-dark text-white">
@@ -224,7 +224,7 @@
           <div id="schedule" class="container tab-pane fade">
             <div class="row">
               <div class="col-md-6 offset-md-3">
-                <form #scheduleForm="ngForm" *ngIf="school" (ngSubmit)="updateSchool();">
+                <form autocomplete="off" #scheduleForm="ngForm" *ngIf="school" (ngSubmit)="updateSchool();">
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text bg-dark text-white">

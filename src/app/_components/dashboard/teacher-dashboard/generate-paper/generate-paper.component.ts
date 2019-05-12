@@ -134,8 +134,6 @@ export class GeneratePaperComponent implements OnInit {
 						null,
 						2000
 					);
-				} else {
-					this.activeTab = 'showPaper';
 					this.activeSet = 1;
 					this.questionPapers = questionPapers.sort((a, b) => {
 						return a.set - b.set;
@@ -187,11 +185,11 @@ export class GeneratePaperComponent implements OnInit {
 			}
 		});
 		if (errorMsg.length > 0) {
-			alert(errorMsg);
+			this.notificationService.showErrorWithTimeout(errorMsg, null, 2000);
 			return false;
 		}
 		if (this.queCriteria.length.length === 0 && validate) {
-			alert('Select atleast 1 Section');
+			this.notificationService.showErrorWithTimeout('Select atleast 1 Section', null, 2000);
 			return false;
 		}
 
@@ -211,16 +209,16 @@ export class GeneratePaperComponent implements OnInit {
 			}
 		});
 		if (errorMsg.length > 0) {
-			alert(errorMsg);
+			this.notificationService.showErrorWithTimeout(errorMsg, null, 2000);
 			return false;
 		}
 		if (validate) {
 			if (this.queCriteria.difficulty.length === 0) {
-				alert('Select atleast 1 Difficulty Level');
+				this.notificationService.showErrorWithTimeout('Select atleast 1 Difficulty Level', null, 2000);
 				return false;
 			}
 			if (totalPercent !== 100) {
-				alert('Cumulative difficulty must be 100%');
+				this.notificationService.showErrorWithTimeout('Cumulative difficulty must be 100%', null, 2000);
 				return false;
 			}
 		}
@@ -417,7 +415,7 @@ export class GeneratePaperComponent implements OnInit {
 	replaceQuestion() {
 		if (!this.selectedReplacement) {
 			if (this.questionToReplace.topic.length === 0) {
-				alert('Please Select Topic');
+				this.notificationService.showErrorWithTimeout('Please Select Topic!', null, 2000);
 				return;
 			}
 			var queCriteria = new QuestionCriteria(

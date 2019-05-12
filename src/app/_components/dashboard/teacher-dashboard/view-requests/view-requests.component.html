@@ -70,7 +70,7 @@
                       <!-- LIST CONTENT -->
                       <div id="box_{{question.quesId}}" class="collapse" data-parent="#accordion">
                         <div class="card-body question-list-content">
-                          <form>
+                          <form autocomplete="off">
                             <fieldset [disabled]="true">
                               <div class="row">
                                 <div class="offset-md-1 col-md-4">
@@ -254,7 +254,7 @@
                       <!-- LIST CONTENT -->
                       <div id="box_{{question.quesId}}" class="collapse" data-parent="#accordion">
                         <div class="card-body question-list-content">
-                          <form *ngIf="!editMode">
+                          <form autocomplete="off" *ngIf="!editMode">
                             <fieldset [disabled]="true">
                               <div class="row">
                                 <div class="offset-md-1 col-md-9 mb-3  text-center">
@@ -393,7 +393,7 @@
                             </div>
                           </form>
 
-                          <form *ngIf="editMode" #editForm="ngForm">
+                          <form autocomplete="off" *ngIf="editMode" #editForm="ngForm">
                             <div class="row">
 
                               <div class="offset-md-1 col-md-4">

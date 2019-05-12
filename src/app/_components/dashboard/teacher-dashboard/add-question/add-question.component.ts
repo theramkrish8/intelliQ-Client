@@ -90,7 +90,10 @@ export class AddQuestionComponent implements OnInit {
 	checkReviewer() {
 		if (!this.selectedSubject.reviewer.userId) {
 			this.notificationService.showErrorWithTimeout(
-				{ message: { message: { message: 'No Reviewer found for ' + this.selectedSubject.title + '.', title: null, timespan: 2000 } } });
+				'No Reviewer found for ' + this.selectedSubject.title + '.',
+				null,
+				2000
+			);
 		}
 		this.question = new Question();
 		this.question.tags = [];

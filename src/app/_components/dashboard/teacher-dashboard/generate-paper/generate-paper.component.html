@@ -1,78 +1,19 @@
-<div hidden class="row" class="feature-content main-content">
-
-
-  <!--Show Paper Tab-->
-  <div class="col-xs-12">
-    <div *ngIf="draftsArray && activeTab=='showPaper'">
-      <div class="form-group form-inline">
-        <label>Saved Drafts:</label>
-        <select [disabled]="!draftsArray" class="form-control templatesArray" name="drafts" [(ngModel)]="selectedDraft"
-          (ngModelChange)="fetchDraft()">
-          <option value="" disabled selected>Select Draft</option>
-          <option *ngFor="let draft of draftsArray" [value]="draft.testId">{{draft.tag}}</option>
-        </select>
-      </div>
-    </div>
-    <div class="panel panel-primary" *ngIf="activeTab=='showPaper'">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          Question Paper
-        </h4>
-      </div>
-      <div class="panel-body" *ngIf="questionPapers">
-        <div class="row">
-          <ul class="nav nav-tabs">
-            <li role="presentation" *ngFor="let queSet of questionPapers"
-              [ngClass]="{active:getActiveTabClass(queSet.set)}">
-              <a (click)="onSetSelected(queSet.set)">Set {{queSet.set}}</a>
-            </li>
-          </ul>
-
-          <div [ngClass]="utilityService.getClassForSection(utilityService.getSectionDesc(section.type))"
-            class="col-xs-10 col-xs-offset-1" *ngFor="let section of currSet.sections;let pIndex = index">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{utilityService.getSectionDesc(section.type)}}</h3>
-            </div>
-            <div class="panel-body">
-              <ul class="list-group">
-                <li *ngFor="let question of section.questions; let cIndex = index" class="list-group-item">
-                  {{question.title}}
-                  <i class="fa fa-exchange pull-left clickable" (click)="replaceClicked(pIndex,cIndex,question)"
-                    aria-hidden="true"></i>
-                  <span class="badge">{{utilityService.getDifficultyDesc(question.difficulty)}}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-        </div>
-      </div>
-      <div class="panel-footer" *ngIf="questionPapers">
-        <button (click)="showModalForm('draft');testPaperStatus='draft'" class="btn btn-warning">Save as
-          Draft</button>
-        <button (click)="showModalForm('draft');testPaperStatus='save'" class="btn btn-success col-xs-offset-1">Finalize
-          Paper</button>
-      </div>
-    </div>
-  </div>
-
-
-
-</div>
-
 <div class="main-content container-fluid">
   <div class="feature-content">
     <div class="row">
       <div class="col-md-12">
         <div class="card feature-card">
 
+          <!--Navbar-->
           <ul class="nav nav-pills">
             <li class="nav-item">
-              <a class="nav-link active text-white" data-toggle="tab" href="#criteria"
-                (click)="activeTab='criteria';setTemplateForm()">Criteria</a>
+              <a class="nav-link text-white" data-toggle="tab" href="#criteria"
+                (click)="activeTab='criteria';setTemplateForm()"
+                [ngClass]="{'active': activeTab==='criteria'}">Criteria</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-white" data-toggle="tab" href="#edit" (click)="activeTab='showPaper'">Question
+              <a class="nav-link text-white" data-toggle="tab" href="#edit" (click)="activeTab='showPaper'"
+                [ngClass]="{'active': activeTab==='showPaper'}">Question
                 Paper</a>
             </li>
 
@@ -81,7 +22,7 @@
           <div class="tab-content feature-tab">
 
             <!--Criteria Tab-->
-            <div id="criteria" class="tab-pane active">
+            <div id="criteria" class="tab-pane" [ngClass]="{'active': activeTab==='criteria'}">
               <div class="row mt-3">
                 <div class="offset-md-1 col-md-2">
                   <a class="badge badge-pill btn-warning p-2" data-balloon="Reset Form" data-balloon-pos="left">
@@ -113,7 +54,7 @@
                 </div>
               </div>
               <hr>
-              <form autocomplete="off"*ngIf="activeTab=='criteria'" #criteriaForm="ngForm">
+              <form autocomplete="off" *ngIf="activeTab=='criteria'" #criteriaForm="ngForm">
 
                 <!-- Std-Subjects -->
                 <div class="row">
@@ -336,7 +277,7 @@
                   <hr>
                   <div class="row mb-3">
                     <div class="offset-md-3 col-md-3">
-                      <button class="btn bg-blue text-white" (click)="showModalForm('template')" data-toggle="modal"
+                      <button class="btn bg-blue text-white" (click)="setModalTitle('template')" data-toggle="modal"
                         data-target="#titleModal"> <i class="fas fa-save pr-2"></i>Save Template</button>
                     </div>
                     <div class="offset-md-1 col-md-3">
@@ -349,8 +290,10 @@
               </form>
             </div>
 
-            <div id="edit" class="tab-pane ml-3 mt-3">
-              <div class="row mt-3">
+            <!--Paper Tab-->
+            <div id="edit" class="tab-pane ml-3 mt-3" [ngClass]="{'active': activeTab==='showPaper'}"
+              *ngIf="activeTab=='showPaper'">
+              <div class="row mt-3" *ngIf="draftsArray">
                 <div class="offset-md-4 col-md-6">
                   <div class="form-group form-inline">
                     <label for="drafts">Saved Drafts:</label>
@@ -360,11 +303,10 @@
                           <i class="fas fa-graduation-cap"></i>
                         </span>
                       </div>
-                      <select class="form-control custom-select" id="drafts">
-                        <option disabled>Select Drafts</option>
-                        <option>Draft 1</option>
-                        <option>Draft 2</option>
-                        <option>Draft 3</option>
+                      <select [disabled]="!draftsArray" class="form-control custom-select" id="drafts" name="drafts"
+                        [(ngModel)]="selectedDraft" (ngModelChange)="fetchDraft()">
+                        <option value="" disabled selected>Select Draft</option>
+                        <option *ngFor="let draft of draftsArray" [value]="draft.testId">{{draft.tag}}</option>
                       </select>
                     </div>
                   </div>
@@ -375,132 +317,67 @@
                   </a>
                 </div>
               </div>
-              <div class="row mt-3">
-                <div class="col-md-12">
-                  <h4><span>Objective</span></h4>
-                </div>
-              </div>
-              <hr>
-              <div class="row mb-3 question-item">
-                <div class="col-md-1">
-                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
-                    data-balloon-pos="right">
-                    <i class="fas fa-exchange-alt text-white"></i>
-                  </span>
-                  <span class="badge badge-pill btn-secondary hidden-control" data-balloon="Edit question"
-                    data-balloon-pos="right">
-                    <i class="fas fa-pencil-alt text-white"></i>
-                  </span>
-                </div>
-                <div class="col-md-10">
-                  <span>Identify the parts of brain in below image :</span>
-                  <div class="text-center"><img src="images/brain.png" class="rounded-lg" width="300" height="200">
+
+
+              <div *ngIf="questionPapers">
+                <!--Sets Tab-->
+                <ul class="nav nav-tabs">
+                  <li class="nav-item" *ngFor="let queSet of questionPapers">
+                    <a class="nav-link clickable" (click)="onSetSelected(queSet.set)"
+                      [ngClass]="{active:getActiveTabClass(queSet.set)}">Set {{queSet.set}}</a>
+                  </li>
+                </ul>
+
+
+                <div *ngFor="let section of currSet.sections;let pIndex = index">
+                  <!-- Section Header -->
+                  <div class="row mt-3">
+                    <div class="col-md-12">
+                      <h4><span>{{utilityService.getSectionDesc(section.type)}}</span></h4>
+                    </div>
+                  </div>
+                  <hr>
+                  <!-- Questions -->
+                  <div class="row mb-3 question-item" *ngFor="let question of section.questions; let cIndex = index">
+                    <div class="col-md-1">
+                      <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
+                        data-balloon-pos="right">
+                        <a (click)="replaceClicked(pIndex,cIndex,question)" data-toggle="modal"
+                          data-target="#replaceModal">
+                          <i class="fas fa-exchange-alt text-white "></i></a>
+                      </span>
+                      <span class="ml-2">{{cIndex+1}}.</span>
+                    </div>
+                    <div class="col-md-10">
+                      <span [innerHTML]="question.titleHtml?question.titleHtml:question.title | safe : 'html'"></span>
+                      <div *ngIf="question.imageUrl" class="text-center"><img [src]="question.imageUrl" width="200"
+                          height="200" class="img-rounded img-thumbnail" alt="">
+                      </div>
+                    </div>
+                    <div class="col-md-1">
+                      <span class="badge text-white p-1"
+                        [ngClass]="utilityService.getClassForDifficulty(question.difficulty)">
+                        {{utilityService.getDifficultyDesc(question.difficulty)}}</span>
+                    </div>
                   </div>
                 </div>
-                <div class="col-md-1">
-                  <span class="badge bg-dark text-white p-1">1</span>
-                </div>
-              </div>
 
-              <div class="row mb-3 question-item">
-                <div class="col-md-1">
-                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
-                    data-balloon-pos="right">
-                    <i class="fas fa-exchange-alt text-white"></i>
-                  </span>
-                </div>
-                <div class="col-md-10">
-                  <span>What is known as "Power house of cell" ?</span>
-                </div>
-                <div class="col-md-1">
-                  <span class="badge bg-dark text-white p-1">1</span>
-                </div>
-              </div>
+                <hr>
 
-              <div class="row mb-3 question-item">
-                <div class="col-md-1">
-                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
-                    data-balloon-pos="right">
-                    <i class="fas fa-exchange-alt text-white"></i>
-                  </span>
-                </div>
-                <div class="col-md-10">
-                  <span>Which organ has double-layered membrane ?</span>
-                </div>
-                <div class="col-md-1">
-                  <span class="badge bg-dark text-white p-1">1</span>
-                </div>
-              </div>
-
-              <div class="row mt-3 ">
-                <div class="col-md-12">
-                  <h4><span>Short</span></h4>
-                </div>
-              </div>
-              <hr>
-              <div class="row mb-3 question-item">
-                <div class="col-md-1">
-                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
-                    data-balloon-pos="right">
-                    <i class="fas fa-exchange-alt text-white"></i>
-                  </span>
-                </div>
-                <div class="col-md-10">
-                  <span>Explain about kidney ?</span>
-                </div>
-                <div class="col-md-1">
-                  <span class="badge bg-dark text-white p-1">2</span>
-                </div>
-              </div>
-
-              <div class="row mb-3 question-item">
-                <div class="col-md-1">
-                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
-                    data-balloon-pos="right">
-                    <i class="fas fa-exchange-alt text-white"></i>
-                  </span>
-                </div>
-                <div class="col-md-10">
-                  <span>Give details of nephron in short using below diagram.</span>
-                  <div class="text-center"><img src="images/nephron.jpg" class="rounded-lg" width="300" height="200">
+                <div class="row mb-3 mt-3">
+                  <div class="offset-md-3 col-md-3">
+                    <button class="btn bg-blue text-white" (click)="setModalTitle('draft');testPaperStatus='draft'"
+                      data-toggle="modal" data-target="#titleModal"> <i class="fas fa-save pr-2"></i>Save As
+                      Draft</button>
+                  </div>
+                  <div class="offset-md-1 col-md-3">
+                    <button class="btn bg-new text-white" (click)="setModalTitle('draft');testPaperStatus='save'"
+                      data-toggle="modal" data-target="#titleModal"> <i class="fas fa-cogs pr-2"></i>Finalize
+                      Paper</button>
                   </div>
                 </div>
-                <div class="col-md-1">
-                  <span class="badge bg-dark text-white p-1">2</span>
-                </div>
+
               </div>
-
-              <div class="row mb-3 question-item">
-                <div class="col-md-1">
-                  <span class="badge badge-pill btn-warning hidden-control" data-balloon="Choose another question"
-                    data-balloon-pos="right">
-                    <i class="fas fa-exchange-alt text-white"></i>
-                  </span>
-                  <span class="badge badge-pill btn-secondary hidden-control" data-balloon="Edit question"
-                    data-balloon-pos="right">
-                    <i class="fas fa-pencil-alt text-white"></i>
-                  </span>
-
-                </div>
-                <div class="col-md-10">
-                  <span>Where is medula oblongata situated ?</span>
-                </div>
-                <div class="col-md-1">
-                  <span class="badge bg-dark text-white p-1">2</span>
-                </div>
-              </div>
-
-              <hr>
-              <div class="row mb-3 mt-3">
-                <div class="offset-md-3 col-md-3">
-                  <button class="btn bg-blue text-white"> <i class="fas fa-save pr-2"></i>Save As Draft</button>
-                </div>
-                <div class="offset-md-1 col-md-3">
-                  <button class="btn bg-new text-white"> <i class="fas fa-cogs pr-2"></i>Finalize Paper</button>
-                </div>
-              </div>
-
-
             </div>
 
           </div>
@@ -536,56 +413,130 @@
 
 
 
-<!-- Modal Replace Question -->
-<div [ngClass]="{'fade':!showReplaceModal,'show':showReplaceModal}" class="modal" role="dialog">
-  <div class="modal-dialog modal-md">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" (click)="showReplaceModal=false;">&times;</button>
-        <h4 class="modal-title">Replace Question Criteria</h4>
-      </div>
-      <div class="modal-body" *ngIf="showReplaceModal">
 
-        <div class="form-group form-inline row">
-          <label class="col-xs-6">Topic</label>
-          <select class="form-control col-xs-6" [(ngModel)]="questionToReplace.topic">
-            <option disabled value="">Select Topic</option>
-            <option *ngFor="let topic of subjectMap.get(questionToReplace.subject).topics" [ngValue]="topic">
-              {{topic}}
-            </option>
-          </select>
-        </div>
-        <div class="form-group form-inline row">
-          <label class="col-xs-6">Tags</label>
-          <select multiple class="form-control col-xs-6" [(ngModel)]="questionToReplace.tags">
-            <option *ngFor="let tag of subjectMap.get(questionToReplace.subject).tags" [ngValue]="tag">
-              {{tag}}
-            </option>
-          </select>
-        </div>
-        <div class="form-group form-inline row">
-          <label class="col-xs-6">Difficulty</label>
-          <select class="form-control col-xs-6" [(ngModel)]="questionToReplace.difficulty.level">
-            <option *ngFor="let level of difficultyLevels" [ngValue]="utilityService.getDifficultyEnum(level.type)">
-              {{level.type}}
-            </option>
-          </select>
-        </div>
-        <div class="form-group form-inline row" *ngIf="questions.length>0">
-          <label class="col-xs-6">Questions</label>
-          <select class="form-control col-xs-6" [(ngModel)]="selectedReplacement">
-            <option disabled value="null">Select Question</option>
-            <option *ngFor="let question of questions" [ngValue]="question">
-              {{question.title}}
-            </option>
-          </select>
-        </div>
+<!-- Replace MODAL -->
+<div class="modal fade" id="replaceModal" *ngIf="showReplaceModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content compareModalBox">
+      <!-- Modal body -->
+      <div class="modal-body" *ngIf="questionToReplace">
+        <div class="row">
 
-      </div>
+        
+          <div class="col-md-12">
+            <div class="card question-card">
+              <div class="card-header text-white text-center">
+                <form autocomplete="off" #replaceForm="ngForm">
+                  <div class="row">
+                    <div class="offset-md-1 col-md-4">
+                      <div class="form-group">
+                        <label for="chapterReplace">Chapter:</label>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fas fa-bookmark"></i>
+                            </span>
+                          </div>
+                          <input type="text" class="form-control text-title" placeholder="Chapter" id="chapterReplace"
+                            name="chapterReplace" [typeahead]="subjectMap.get(questionToReplace.subject).topics"
+                            [(ngModel)]="questionToReplace.topic" #chapterReplace="ngModel" required
+                            (typeaheadOnSelect)="addChapterReplace($event)">
+                          <div *ngIf="chapterReplace.invalid && (chapterReplace.dirty || chapterReplace.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="chapterReplace.errors.required">
+                              Chapter is required.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-success" data-dismiss="modal" (click)="replaceQuestion()">
-          {{selectedReplacement?'Replace Question':'Find Questions'}}</button>
+                    </div>
+
+                    <div class="offset-md-1 col-md-4">
+                      <div class="form-group">
+                        <label for="topicsReplace">Topics:</label>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="far fa-bookmark"></i>
+                            </span>
+                          </div>
+                          <input type="text" class="form-control text-title" placeholder="Topics" id="topicsReplace"
+                            name="topicsReplace" [typeahead]="subjectMap.get(questionToReplace.subject).tags"
+                            (blur)="topicStr=''" (typeaheadOnSelect)="addTopicReplace($event);topicStr=''"
+                            [(ngModel)]="topicStr">
+                        </div>
+                      </div>
+
+
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="offset-md-1 col-md-4">
+                      <div class="form-group">
+                        <label for="difficultyReplace">Difficulty:</label>
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fas fa-book"></i>
+                            </span>
+                          </div>
+
+                          <select class="form-control custom-select" id="difficultyReplace"
+                            [(ngModel)]="questionToReplace.difficulty.level" name="difficultyReplace">
+                            <option *ngFor="let level of difficultyLevels"
+                              [ngValue]="utilityService.getDifficultyEnum(level.type)">
+                              {{level.type}}
+                            </option>
+                          </select>
+
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div class="offset-md-1 col-md-5 text-white modal-scroll-control ">
+
+                      <span class="badge bg-pink text-white mr-1 mb-1 badge-size-big"
+                        *ngFor="let tag of questionToReplace.tags">{{tag}}<i (click)="removeTopicReplace(tag)"
+                          class="fas fa-times clickable ml-1"></i></span>
+                    </div>
+                  </div>
+
+                  <div class="row mt-2">
+                    <button class="btn bg-new btn-block text-white" [disabled]="replaceForm.invalid"
+                      (click)="showReplaceSuggestion()">
+                      Find Questions</button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="card-body">
+
+                <div class="table-responsive question-suggestion-area"
+                  *ngIf="suggestedQuestions && suggestedQuestions.length>0">
+                  <table class="table table-dark table-hover table-striped rounded-lg">
+
+                    <tbody>
+                      <tr *ngFor="let ques of suggestedQuestions" data-balloon="Click to replace"
+                        data-balloon-pos="left" data-dismiss="modal" (click)="replaceQuestion(ques)">
+                        <td>
+                          <span class="question-description-area"
+                            [innerHTML]="ques.titleHtml?ques.titleHtml:ques.title | safe:'html'"></span>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+
+
+        </div>
       </div>
     </div>
   </div>

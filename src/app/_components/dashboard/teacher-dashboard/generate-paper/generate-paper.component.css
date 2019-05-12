@@ -94,3 +94,25 @@ hr {
 .badge-size-big {
   font-size: 0.8em;
 }
+
+
+.compareModalBox {
+  background-color: #00000090;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.5);
+}
+
+.modal-scroll-control {
+  overflow-y: auto;
+  height: 80px;
+}
+
+.question-suggestion-area {
+  overflow: auto;
+  height: 400px;
+}
+
+.question-description-area {
+  overflow: auto;
+  max-height: 100px;
+}

@@ -97,18 +97,6 @@ export class UtilityService {
 				return 'Long';
 		}
 	}
-	getClassForSection(section: string) {
-		switch (section) {
-			case 'OBJECTIVE':
-				return 'panel panel-info';
-			case 'SHORT':
-				return 'panel panel-warning';
-			case 'BRIEF':
-				return 'panel panel-danger';
-			case 'LONG':
-				return 'panel panel-success';
-		}
-	}
 
 	//difficulty
 	getDifficultyEnum(difficultyLevel: string) {
@@ -129,6 +117,16 @@ export class UtilityService {
 				return 'Medium';
 			case DifficultyType.HARD:
 				return 'Hard';
+		}
+	}
+	getClassForDifficulty(level: DifficultyType) {
+		switch (level) {
+			case DifficultyType.EASY:
+				return 'bg-new';
+			case DifficultyType.MEDIUM:
+				return 'bg-modify';
+			case DifficultyType.HARD:
+				return 'bg-blue';
 		}
 	}
 

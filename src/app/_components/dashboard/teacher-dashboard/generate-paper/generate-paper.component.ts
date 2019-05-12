@@ -54,18 +54,8 @@ export class GeneratePaperComponent implements OnInit {
 		tags: string[];
 		sectionIndex: number;
 		questionIndex: number;
-	} = {
-		quesId: '',
-		std: 0,
-		subject: '',
-		topic: '',
-		difficulty: null,
-		length: [],
-		tags: [],
-		sectionIndex: 0,
-		questionIndex: 0
 	};
-	questions: Question[] = [];
+	suggestedQuestions: Question[] = [];
 	selectedReplacement: Question = null;
 	difficultyLevels = this.getDifficultyLevels();
 	allSections = this.getAllSections();
@@ -134,21 +124,25 @@ export class GeneratePaperComponent implements OnInit {
 						null,
 						2000
 					);
-					this.activeSet = 1;
-					this.questionPapers = questionPapers.sort((a, b) => {
-						return a.set - b.set;
-					});
-					this.questionPapers.forEach((set: QuestionPaperDto) => {
-						set.sections = set.sections.sort((a, b) => {
-							return a.type - b.type;
-						});
-					});
-					this.currSet = this.questionPapers[0];
+					return;
 				}
-				this.loadedTemplate = null;
+				this.questionPapers = questionPapers.sort((a, b) => {
+					return a.set - b.set;
+				});
+				this.questionPapers.forEach((set: QuestionPaperDto) => {
+					set.sections = set.sections.sort((a, b) => {
+						return a.type - b.type;
+					});
+				});
+				this.currSet = this.questionPapers[0];
+
+				if (this.loadedTemplate) {
+					this.loadedTemplate.criteria = this.queCriteria;
+				}
 				this.loadedDraft = null;
 				this.selectedDraft = '';
 				this.activeSet = 1;
+				this.activeTab = 'showPaper';
 			});
 	}
 
@@ -393,6 +387,17 @@ export class GeneratePaperComponent implements OnInit {
 		this.queCriteria = null;
 	}
 	replaceClicked(pIndex: number, cIndex: number, question: Question) {
+		this.questionToReplace = {
+			quesId: '',
+			std: 0,
+			subject: '',
+			topic: '',
+			difficulty: null,
+			length: [],
+			tags: [],
+			sectionIndex: 0,
+			questionIndex: 0
+		};
 		if (this.loadedDraft) {
 			this.questionToReplace.std = this.loadedDraft.std;
 			this.questionToReplace.subject = this.loadedDraft.subject;
@@ -408,50 +413,52 @@ export class GeneratePaperComponent implements OnInit {
 		this.questionToReplace.sectionIndex = pIndex;
 		this.questionToReplace.questionIndex = cIndex;
 		this.questionToReplace.quesId = question.quesId;
-		this.questions = [];
+		this.suggestedQuestions = []; //for replace
 		this.selectedReplacement = null;
 		this.showReplaceModal = true;
 	}
-	replaceQuestion() {
-		if (!this.selectedReplacement) {
-			if (this.questionToReplace.topic.length === 0) {
-				this.notificationService.showErrorWithTimeout('Please Select Topic!', null, 2000);
-				return;
-			}
-			var queCriteria = new QuestionCriteria(
-				this.loggedInUser.school.group.code,
-				this.questionToReplace.std,
-				this.questionToReplace.subject,
-				null
-			);
-			queCriteria.difficulty = [ this.questionToReplace.difficulty ];
-			queCriteria.length = this.questionToReplace.length;
-			queCriteria.tags = this.questionToReplace.tags;
-			queCriteria.topics = [ this.questionToReplace.topic ];
-			this.questionService.getFilteredQuestion(queCriteria).subscribe((questions: Question[]) => {
-				questions = questions.filter((x) => x.quesId !== this.questionToReplace.quesId);
-				if (questions.length > 0) {
-					this.questions = questions;
-				} else {
-					this.notificationService.showErrorWithTimeout(
-						'Oops! No Questions found matching your criteria.',
-						null,
-						2000
-					);
-				}
-			});
-		} else {
-			this.selectedReplacement.marks = this.questionPapers[this.activeSet - 1].sections[
-				this.questionToReplace.sectionIndex
-			].questions[this.questionToReplace.questionIndex].marks;
-			this.questionPapers[this.activeSet - 1].sections[this.questionToReplace.sectionIndex].questions[
-				this.questionToReplace.questionIndex
-			] = this.selectedReplacement;
-			this.notificationService.showSuccessWithTimeout('Question replaced!', null, 2000);
-			this.showReplaceModal = false;
-		}
+	replaceQuestion(question: Question) {
+		this.selectedReplacement = question;
+		this.selectedReplacement.marks = this.questionPapers[this.activeSet - 1].sections[
+			this.questionToReplace.sectionIndex
+		].questions[this.questionToReplace.questionIndex].marks;
+		this.questionPapers[this.activeSet - 1].sections[this.questionToReplace.sectionIndex].questions[
+			this.questionToReplace.questionIndex
+		] = this.selectedReplacement;
+		//this.notificationService.showSuccessWithTimeout('Question replaced!', null, 2000);
+		this.showReplaceModal = false;
+		this.questionToReplace = null;
 	}
-	showModalForm(type: string) {
+	showReplaceSuggestion() {
+		if (this.questionToReplace.topic.length === 0) {
+			this.notificationService.showErrorWithTimeout('Please Select Topic!', null, 2000);
+			return;
+		}
+		var queCriteria = new QuestionCriteria(
+			this.loggedInUser.school.group.code,
+			this.questionToReplace.std,
+			this.questionToReplace.subject,
+			null
+		);
+		queCriteria.difficulty = [ this.questionToReplace.difficulty ];
+		queCriteria.length = this.questionToReplace.length;
+		queCriteria.tags = this.questionToReplace.tags;
+		queCriteria.topics = [ this.questionToReplace.topic ];
+		this.questionService.getFilteredQuestion(queCriteria).subscribe((questions: Question[]) => {
+			questions = questions.filter((x) => x.quesId !== this.questionToReplace.quesId);
+			this.suggestedQuestions = [];
+			if (questions.length > 0) {
+				this.suggestedQuestions = questions;
+			} else {
+				this.notificationService.showErrorWithTimeout(
+					'Oops! No Questions found matching your criteria.',
+					null,
+					2000
+				);
+			}
+		});
+	}
+	setModalTitle(type: string) {
 		if (type === 'template') {
 			this.modalTag = this.loadedTemplate ? this.loadedTemplate.tag : '';
 		} else {
@@ -469,6 +476,20 @@ export class GeneratePaperComponent implements OnInit {
 	removeChapter(chapter: string) {
 		this.chapters = this.chapters.filter((x) => x !== chapter);
 		this.chapterSuggestions.push(chapter);
+	}
+
+	addChapterReplace(event) {
+		if (event.item) {
+			this.questionToReplace.topic = event.item;
+		}
+	}
+	addTopicReplace(event) {
+		if (event.item) {
+			this.questionToReplace.tags.push(event.item);
+		}
+	}
+	removeTopicReplace(topic: string) {
+		this.questionToReplace.tags = this.questionToReplace.tags.filter((x) => x !== topic);
 	}
 	onSubjectChanged() {
 		this.chapterSuggestions = this.selectedSubject ? this.subjectMap.get(this.selectedSubject.title).topics : [];
